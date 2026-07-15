@@ -36,14 +36,14 @@ exports[`TripCard renders the grid mode 1`] = `
     [
       {
         "backgroundColor": "#FFFFFF",
-        "borderColor": "rgba(5,51,43,0.08)",
+        "borderColor": "#E3D6C3",
         "borderRadius": 18,
         "borderWidth": 1,
         "overflow": "hidden",
       },
       {
         "elevation": 2,
-        "shadowColor": "#05332B",
+        "shadowColor": "#2A231B",
         "shadowOffset": {
           "height": 2,
           "width": 0,
@@ -64,7 +64,7 @@ exports[`TripCard renders the grid mode 1`] = `
       [
         {
           "alignItems": "center",
-          "backgroundColor": "#E5DFD8",
+          "backgroundColor": "#E6DCCB",
           "justifyContent": "center",
           "overflow": "hidden",
           "position": "relative",
@@ -88,7 +88,7 @@ exports[`TripCard renders the grid mode 1`] = `
       meetOrSlice={0}
       minX={0}
       minY={0}
-      stroke="#B9AFA4"
+      stroke="#D3C4AD"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.6}
@@ -122,7 +122,7 @@ exports[`TripCard renders the grid mode 1`] = `
         }
         stroke={
           {
-            "payload": 4290359204,
+            "payload": 4292068525,
             "type": 0,
           }
         }
@@ -178,7 +178,7 @@ exports[`TripCard renders the grid mode 1`] = `
     <Text
       style={
         {
-          "color": "#05332B",
+          "color": "#2A231B",
           "fontFamily": "HankenGrotesk_700Bold",
           "fontSize": 15.5,
           "letterSpacing": -0.2,
@@ -210,8 +210,9 @@ exports[`TripCard renders the grid mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -255,8 +256,9 @@ exports[`TripCard renders the grid mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -298,8 +300,9 @@ exports[`TripCard renders the grid mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -339,7 +342,7 @@ exports[`TripCard renders the grid mode 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "flexShrink": 1,
             "fontFamily": "HankenGrotesk_400Regular",
             "fontSize": 12.5,
@@ -379,8 +382,8 @@ exports[`TripCard renders the grid mode 1`] = `
               "paddingVertical": 4,
             },
             {
-              "backgroundColor": "#E9E7E5",
-              "borderColor": "rgba(5,51,43,0.08)",
+              "backgroundColor": "#F4EDE2",
+              "borderColor": "#E3D6C3",
             },
             undefined,
           ]
@@ -394,7 +397,7 @@ exports[`TripCard renders the grid mode 1`] = `
                 "fontSize": 11,
               },
               {
-                "color": "#05332B",
+                "color": "#2A231B",
               },
             ]
           }
@@ -405,7 +408,7 @@ exports[`TripCard renders the grid mode 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "fontFamily": "HankenGrotesk_500Medium",
             "fontSize": 12,
           }
@@ -454,14 +457,14 @@ exports[`TripCard renders the shelf mode 1`] = `
     [
       {
         "backgroundColor": "#FFFFFF",
-        "borderColor": "rgba(5,51,43,0.08)",
+        "borderColor": "#E3D6C3",
         "borderRadius": 18,
         "borderWidth": 1,
         "overflow": "hidden",
       },
       {
         "elevation": 2,
-        "shadowColor": "#05332B",
+        "shadowColor": "#2A231B",
         "shadowOffset": {
           "height": 2,
           "width": 0,
@@ -481,7 +484,7 @@ exports[`TripCard renders the shelf mode 1`] = `
       [
         {
           "alignItems": "center",
-          "backgroundColor": "#E5DFD8",
+          "backgroundColor": "#E6DCCB",
           "justifyContent": "center",
           "overflow": "hidden",
           "position": "relative",
@@ -505,7 +508,7 @@ exports[`TripCard renders the shelf mode 1`] = `
       meetOrSlice={0}
       minX={0}
       minY={0}
-      stroke="#B9AFA4"
+      stroke="#D3C4AD"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.6}
@@ -539,7 +542,7 @@ exports[`TripCard renders the shelf mode 1`] = `
         }
         stroke={
           {
-            "payload": 4290359204,
+            "payload": 4292068525,
             "type": 0,
           }
         }
@@ -595,7 +598,7 @@ exports[`TripCard renders the shelf mode 1`] = `
     <Text
       style={
         {
-          "color": "#05332B",
+          "color": "#2A231B",
           "fontFamily": "HankenGrotesk_700Bold",
           "fontSize": 15.5,
           "letterSpacing": -0.2,
@@ -627,8 +630,9 @@ exports[`TripCard renders the shelf mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -672,8 +676,9 @@ exports[`TripCard renders the shelf mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -715,8 +720,9 @@ exports[`TripCard renders the shelf mode 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -756,7 +762,7 @@ exports[`TripCard renders the shelf mode 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "flexShrink": 1,
             "fontFamily": "HankenGrotesk_400Regular",
             "fontSize": 12.5,
@@ -796,8 +802,8 @@ exports[`TripCard renders the shelf mode 1`] = `
               "paddingVertical": 4,
             },
             {
-              "backgroundColor": "#E9E7E5",
-              "borderColor": "rgba(5,51,43,0.08)",
+              "backgroundColor": "#F4EDE2",
+              "borderColor": "#E3D6C3",
             },
             undefined,
           ]
@@ -811,7 +817,7 @@ exports[`TripCard renders the shelf mode 1`] = `
                 "fontSize": 11,
               },
               {
-                "color": "#05332B",
+                "color": "#2A231B",
               },
             ]
           }
@@ -822,7 +828,7 @@ exports[`TripCard renders the shelf mode 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "fontFamily": "HankenGrotesk_500Medium",
             "fontSize": 12,
           }
@@ -871,14 +877,14 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
     [
       {
         "backgroundColor": "#FFFFFF",
-        "borderColor": "rgba(5,51,43,0.08)",
+        "borderColor": "#E3D6C3",
         "borderRadius": 18,
         "borderWidth": 1,
         "overflow": "hidden",
       },
       {
         "elevation": 2,
-        "shadowColor": "#05332B",
+        "shadowColor": "#2A231B",
         "shadowOffset": {
           "height": 2,
           "width": 0,
@@ -899,7 +905,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
       [
         {
           "alignItems": "center",
-          "backgroundColor": "#E5DFD8",
+          "backgroundColor": "#E6DCCB",
           "justifyContent": "center",
           "overflow": "hidden",
           "position": "relative",
@@ -923,7 +929,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
       meetOrSlice={0}
       minX={0}
       minY={0}
-      stroke="#B9AFA4"
+      stroke="#D3C4AD"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.6}
@@ -957,7 +963,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
         }
         stroke={
           {
-            "payload": 4290359204,
+            "payload": 4292068525,
             "type": 0,
           }
         }
@@ -1013,7 +1019,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
     <Text
       style={
         {
-          "color": "#05332B",
+          "color": "#2A231B",
           "fontFamily": "HankenGrotesk_700Bold",
           "fontSize": 15.5,
           "letterSpacing": -0.2,
@@ -1045,8 +1051,9 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -1090,8 +1097,9 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -1133,8 +1141,9 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
             [
               {
                 "alignItems": "center",
-                "backgroundColor": "#1B564B",
-                "flex": 0,
+                "backgroundColor": "#6F5F96",
+                "flexGrow": 0,
+                "flexShrink": 0,
                 "justifyContent": "center",
                 "overflow": "hidden",
               },
@@ -1174,7 +1183,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "flexShrink": 1,
             "fontFamily": "HankenGrotesk_400Regular",
             "fontSize": 12.5,
@@ -1214,8 +1223,8 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
               "paddingVertical": 4,
             },
             {
-              "backgroundColor": "#E9E7E5",
-              "borderColor": "rgba(5,51,43,0.08)",
+              "backgroundColor": "#F4EDE2",
+              "borderColor": "#E3D6C3",
             },
             undefined,
           ]
@@ -1229,7 +1238,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
                 "fontSize": 11,
               },
               {
-                "color": "#05332B",
+                "color": "#2A231B",
               },
             ]
           }
@@ -1240,7 +1249,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
       <Text
         style={
           {
-            "color": "#5E6F68",
+            "color": "#6A5D4D",
             "fontFamily": "HankenGrotesk_500Medium",
             "fontSize": 12,
           }
@@ -1304,7 +1313,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
           },
           {
             "backgroundColor": "#FFFFFF",
-            "borderColor": "rgba(5,51,43,0.16)",
+            "borderColor": "#CDBCA4",
           },
         ]
       }
@@ -1319,7 +1328,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
         meetOrSlice={0}
         minX={0}
         minY={0}
-        stroke="#05332B"
+        stroke="#2A231B"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth={2.2}
@@ -1353,7 +1362,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
           }
           stroke={
             {
-              "payload": 4278530859,
+              "payload": 4280951579,
               "type": 0,
             }
           }
@@ -1380,7 +1389,7 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
               "fontSize": 14,
             },
             {
-              "color": "#05332B",
+              "color": "#2A231B",
             },
           ]
         }
@@ -1431,8 +1440,8 @@ exports[`TripCard renders the ✓/✕ respond affordance 1`] = `
             "padding": 12,
           },
           {
-            "backgroundColor": "#F24E00",
-            "borderColor": "#F24E00",
+            "backgroundColor": "#E0703A",
+            "borderColor": "#E0703A",
           },
         ]
       }

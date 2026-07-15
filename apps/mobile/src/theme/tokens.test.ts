@@ -1,37 +1,36 @@
-// Asserts every migration-doc §2 value lands in the theme exactly. If a brand
-// hex, radius, or spacing step drifts, this fails loudly.
+// Asserts every Golden Hour brief value lands in the theme exactly (mirrored
+// from Guidlines/design-system/tokens/colors.css). If a brand hex, radius, or
+// spacing step drifts, this fails loudly.
 import { theme } from "./tokens";
 
-describe("theme §2 palette", () => {
-  it("carries the 8 locked brand colors exactly", () => {
+describe("theme Golden Hour palette", () => {
+  it("carries the 8 brand tokens exactly", () => {
     expect(theme.color).toEqual({
-      pine: "#05332B",
-      teal: "#1B564B",
-      ember: "#F24E00",
-      amber: "#F2B23C",
-      leaf: "#8BC97F",
-      canvas: "#F0EFEE",
+      pine: "#2A231B", // ink-900 — warm near-black text
+      teal: "#6F5F96", // dusk-500 — violet accent
+      ember: "#E0703A", // sun-500 — sunset coral action
+      amber: "#EF9459", // sun-400 — amber glow
+      leaf: "#7F9A5E", // meadow-500 — success
+      canvas: "#FAF6F0", // warm-50 — sunlit cream
       paper: "#FFFFFF",
-      muted: "#5E6F68",
+      muted: "#6A5D4D", // ink-700 — secondary text
     });
   });
 
-  it("keeps status pairs in-family with the §2 tints", () => {
-    expect(theme.status.success).toEqual({ fg: "#8BC97F", bg: "#EAF3E4" });
-    expect(theme.status.warning).toEqual({ fg: "#F2B23C", bg: "#FDF3E1" });
-    expect(theme.status.error).toEqual({ fg: "#C7361B", bg: "#FBEAE2" });
-    expect(theme.status.info).toEqual({ fg: "#1B564B", bg: "#E9F1EF" });
+  it("keeps status pairs on warm tints with the brief's semantic hues", () => {
+    expect(theme.status.success).toEqual({ fg: "#7F9A5E", bg: "#EDF1E1" });
+    expect(theme.status.warning).toEqual({ fg: "#C9802E", bg: "#FBEEDF" });
+    expect(theme.status.error).toEqual({ fg: "#C1503F", bg: "#F8E8E2" });
+    expect(theme.status.info).toEqual({ fg: "#5B93A8", bg: "#E9F1F4" });
   });
 
-  it("keeps status foregrounds tied to the named brand colors", () => {
+  it("keeps success tied to the named brand color", () => {
     expect(theme.status.success.fg).toBe(theme.color.leaf);
-    expect(theme.status.warning.fg).toBe(theme.color.amber);
-    expect(theme.status.info.fg).toBe(theme.color.teal);
   });
 });
 
 describe("theme radii", () => {
-  it("exposes the §2 radii 12 / 16 / 18 / pill", () => {
+  it("exposes the locked radii 12 / 16 / 18 / pill", () => {
     expect(theme.radius.md).toBe(12);
     expect(theme.radius.card).toBe(16);
     expect(theme.radius.lg).toBe(18);
@@ -44,8 +43,8 @@ describe("theme radii", () => {
   });
 });
 
-describe("theme spacing (Wireframe 0.4 4pt scale)", () => {
-  it("matches app.css --s1…--s8 exactly", () => {
+describe("theme spacing (4pt scale)", () => {
+  it("matches the 4→40 scale exactly", () => {
     expect(theme.spacing).toEqual({
       s1: 4,
       s2: 8,
@@ -60,7 +59,7 @@ describe("theme spacing (Wireframe 0.4 4pt scale)", () => {
 });
 
 describe("theme shadow", () => {
-  it("uses a warm pine-tinted shadow, never pure black", () => {
+  it("uses a warm brown-tinted shadow, never pure black", () => {
     expect(theme.shadow.card.shadowColor).toBe(theme.color.pine);
     expect(theme.shadow.soft.shadowColor).toBe(theme.color.pine);
     expect(theme.shadow.sheet.shadowColor).toBe(theme.color.pine);
@@ -77,8 +76,8 @@ describe("theme type", () => {
     expect(theme.type.body.fontFamily).toBe("HankenGrotesk_400Regular");
   });
 
-  it("never sets ember as a body/text color", () => {
-    // §2: ember is CTA/accent only, never body text.
+  it("never sets ember (coral) as a body/text color", () => {
+    // The brief: coral is the one action color, never body text.
     for (const preset of Object.values(theme.type)) {
       if ("color" in preset) {
         expect(preset.color).not.toBe(theme.color.ember);
@@ -88,8 +87,8 @@ describe("theme type", () => {
 });
 
 describe("mascot palette", () => {
-  it("re-tints the body to ember per §2", () => {
-    expect(theme.mascot.body).toBe(theme.color.ember);
-    expect(theme.mascot.ink).toBe(theme.color.pine);
+  it("tints Koa in the brief's earth/mascot rust (clay-500)", () => {
+    expect(theme.mascot.body).toBe("#B5622F");
+    expect(theme.mascot.ink).toBe("#3A2A1C");
   });
 });

@@ -2,12 +2,15 @@
 // screen header), and pageHeader() (pushed-screen back header). One small module so
 // Home / My Trips / Plan / Communities and the stack pages share identical chrome.
 // TODO: Code Connect map once Figma frame exists.
-// TODO: backend seam — badge counts + avatar come from the notifications/profile APIs.
+// TODO: backend seam — badge counts + avatar come from the notifications/profile
+// APIs (today: unreadNotifications()/unreadMessages() over the demo data).
 import React from "react";
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { useRouter } from "expo-router";
 import { theme } from "@/theme/tokens";
 import { Avatar } from "@/components/Avatar/Avatar";
 import { IconBack, IconBell, IconPlane, IconSearch } from "@/components/icons";
+import { unreadMessages, unreadNotifications } from "@/lib/demo-data";
 
 /** Fixed status-bar clearance — the app uses fixed insets (no safe-area hook),
  * matching the existing StepShell/gallery convention. Heroes reuse this for their
@@ -51,13 +54,19 @@ export type HomeHeaderProps = {
 };
 
 export function HomeHeader({
-  onAvatar = noop,
-  onBell = noop,
+  onAvatar,
+  onBell,
   onSearch = noop,
-  onMessages = noop,
-  notifications = 3,
-  messages = 3,
+  onMessages,
+  notifications = unreadNotifications(),
+  messages = unreadMessages(),
 }: HomeHeaderProps) {
+  // The chrome routes itself: profile / notifications / messages are real
+  // destinations, so every screen gets a working header with zero wiring.
+  const router = useRouter();
+  onAvatar ??= () => router.push("/profile");
+  onBell ??= () => router.push("/notifications");
+  onMessages ??= () => router.push("/messages");
   return (
     <View style={styles.homeTop}>
       <Pressable accessibilityRole="button" accessibilityLabel="Your profile" onPress={onAvatar} style={styles.avatarBtn}>
@@ -91,12 +100,16 @@ export type TabHeaderProps = {
 
 export function TabHeader({
   title,
-  onAvatar = noop,
-  onMessages = noop,
-  onBell = noop,
-  notifications = 3,
-  messages = 3,
+  onAvatar,
+  onMessages,
+  onBell,
+  notifications = unreadNotifications(),
+  messages = unreadMessages(),
 }: TabHeaderProps) {
+  const router = useRouter();
+  onAvatar ??= () => router.push("/profile");
+  onBell ??= () => router.push("/notifications");
+  onMessages ??= () => router.push("/messages");
   return (
     <View style={styles.topbar}>
       <Pressable accessibilityRole="button" accessibilityLabel="Your profile" onPress={onAvatar} style={styles.avatarBtn}>
@@ -122,7 +135,9 @@ export type PageHeaderProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export function PageHeader({ title, onBack = noop, style }: PageHeaderProps) {
+export function PageHeader({ title, onBack, style }: PageHeaderProps) {
+  const router = useRouter();
+  onBack ??= () => (router.canGoBack() ? router.back() : router.push("/home"));
   return (
     <View style={[styles.pageHeader, style]}>
       <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={onBack} style={styles.iconBtn}>

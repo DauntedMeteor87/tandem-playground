@@ -1,65 +1,69 @@
-// Source: Wireframe 0.4 (spacing/radii measured from app.css) + migration doc §2
-// (locked brand palette + type). This file is the ONE place hex / radius / shadow
+// Source: the 2026-07 "Bringing tandemclub to life" theme brief — the GOLDEN HOUR
+// palette, mirrored 1:1 from Guidlines/design-system/tokens/colors.css (the design
+// system's default mood). This file is the ONE place hex / radius / shadow
 // literals are allowed to live — every component references `theme.color.pine`,
 // `theme.radius.lg`, etc. A hardcoded hex anywhere else is a defect.
 //
-// Greyscale → brand mapping used by the components:
-//   near-black text (#1c1c1e)  → pine    (body copy & headings)
-//   white cards    (#ffffff)   → paper
-//   page bg        (#f4f4f5)   → canvas
-//   mid-grey text  (#5c5c60/#97979c) → muted
-//   black CTA fill (#262628)   → ember   (primary CTA / accent — one per view)
+// The token NAMES are kept from the first (pre-brief) palette so no component
+// changed — only the values did. Golden Hour mapping:
+//   pine   → ink-900   warm near-black text (was deep pine green)
+//   teal   → dusk-500  dusk violet accent (was teal green)
+//   ember  → sun-500   sunset coral — the one action color
+//   amber  → sun-400   amber glow highlight
+//   leaf   → meadow    success / go
+//   canvas → warm-50   sunlit cream app background
+//   muted  → ink-700   warm secondary text
 
 import type { TextStyle, ViewStyle } from "react-native";
 
-/* ---------- Color — migration doc §2 (locked palette) ---------- */
+/* ---------- Color — Golden Hour (design-system tokens/colors.css) ---------- */
 export const color = {
-  pine: "#05332B", // primary dark: all body copy & headings, deep surfaces
-  teal: "#1B564B", // secondary dark: links, info
-  ember: "#F24E00", // primary accent: CTAs, mascot — never body text
-  amber: "#F2B23C", // sunlit highlight, warning
-  leaf: "#8BC97F", // nature, success, growth
-  canvas: "#F0EFEE", // app / page background
-  paper: "#FFFFFF", // cards, raised surfaces
-  muted: "#5E6F68", // secondary text
+  pine: "#2A231B", // ink-900: all body copy & headings — warm near-black, never #000
+  teal: "#6F5F96", // dusk-500: violet accent — highlights & selected, never a second button
+  ember: "#E0703A", // sun-500: sunset coral — THE action color, one per screen
+  amber: "#EF9459", // sun-400: amber glow — sunlit highlight, warning
+  leaf: "#7F9A5E", // meadow-500: nature, success, growth
+  canvas: "#FAF6F0", // warm-50: app / page background — sunlit cream
+  paper: "#FFFFFF", // warm-0: cards, raised surfaces
+  muted: "#6A5D4D", // ink-700: secondary text (AA on canvas)
 } as const;
 
-/* ---------- Neutrals derived from the palette ----------
-   §2 names the 8 brand colors but not the structural hairlines/tracks the
-   wireframe relies on (--c-line, --c-line-2, --c-surface-2, overlays). These are
-   derived from pine so borders read warm (never pure grey/black) and live here so
-   no component carries a raw hex. */
+/* ---------- Neutrals — the warm ramp (never pure grey) ----------
+   Structural hairlines/tracks the wireframe relies on, taken from the design
+   system's warm neutral ramp so borders read sunlit. They live here so no
+   component carries a raw hex. */
 export const neutral = {
-  sunk: "#E9E7E5", // warm off-white sunk track / subtle fill (wireframe --c-surface-2)
-  hairline: "rgba(5,51,43,0.08)", // hairline divider/border (wireframe --c-line)
-  hairlineStrong: "rgba(5,51,43,0.16)", // input & dashed borders (wireframe --c-line-2)
-  overlay: "rgba(5,51,43,0.42)", // sheet / modal scrim (wireframe .sheet-overlay)
-  onDark: "rgba(255,255,255,0.72)", // muted text/icon on a dark (pine/ember) surface
-  onDarkFill: "rgba(255,255,255,0.18)", // translucent-white pill/chip over a photo hero (wireframe rgba(255,255,255,.2/.15))
-  emberSoft: "#FCE6DB", // pale ember wash — single-accent tag / highlight background
-  photo: "#E5DFD8", // warm painterly image placeholder fill (wireframe --c-ph)
-  photoInk: "#B9AFA4", // placeholder glyph tint (wireframe --c-ph-2)
-  scrim: "rgba(5,51,43,0.55)", // hero/photo protection scrim under overlaid text
+  sunk: "#F4EDE2", // warm-100: raised / sunk track / subtle fill
+  hairline: "#E3D6C3", // warm-200: hairline divider/border
+  hairlineStrong: "#CDBCA4", // warm-300: input & dashed borders
+  overlay: "rgba(42,35,27,0.42)", // sheet / modal scrim (ink-900 tinted)
+  onDark: "rgba(255,248,240,0.75)", // muted text/icon on a dark (ink/coral) surface
+  onDarkFill: "rgba(255,255,255,0.18)", // translucent-white pill/chip over a photo hero
+  emberSoft: "#F7D4B6", // sun-200: soft peach wash — single-accent tag / highlight bg
+  photo: "#E6DCCB", // photo-ph: warm painterly image placeholder fill
+  photoInk: "#D3C4AD", // photo-ph2: placeholder glyph tint
+  scrim: "rgba(42,35,27,0.55)", // hero/photo protection scrim under overlaid text
 } as const;
 
 /* ---------- Mascot illustration palette ----------
-   The orangutan re-tinted from the design-system's rust into the Ember/Pine
-   family. §2 explicitly assigns ember to the mascot. */
+   Koa in the brief's warm rust — clay-500 is named "mascot / earth" in the
+   design system. Face cream + warm ink from the original mascot art. */
 export const mascot = {
-  body: color.ember, // #a8623a rust → ember
-  face: "#F7E7D6", // #f2e4d0 → warm cream face patch
-  ink: color.pine, // #3a2a1c → pine (eyes / mouth)
-  ground: "#E7DED4", // #e6dccb → soft ground shadow
-  accent: color.amber, // #caa06a → amber (rocks, guitar, motion lines)
+  body: "#B5622F", // clay-500: the brief's earth/mascot rust
+  face: "#F2E4D0", // warm cream face patch
+  ink: "#3A2A1C", // warm dark brown (eyes / mouth)
+  ground: "#E6DCCB", // soft warm ground shadow
+  accent: color.amber, // amber glow (rocks, guitar, motion lines)
 } as const;
 
-/* ---------- Status pairs — §2 (stay in-family) ----------
-   Each pair is { fg, bg }: the in-family accent color on its pale tint. */
+/* ---------- Status pairs — Golden Hour semantics ----------
+   Each pair is { fg, bg }: the semantic hue on its pale warm tint.
+   fg hexes are the design system's --success / --info / --danger. */
 export const status = {
-  success: { fg: color.leaf, bg: "#EAF3E4" },
-  warning: { fg: color.amber, bg: "#FDF3E1" },
-  error: { fg: "#C7361B", bg: "#FBEAE2" },
-  info: { fg: color.teal, bg: "#E9F1EF" },
+  success: { fg: color.leaf, bg: "#EDF1E1" },
+  warning: { fg: "#C9802E", bg: "#FBEEDF" }, // darker amber for legible warning text
+  error: { fg: "#C1503F", bg: "#F8E8E2" }, // --danger
+  info: { fg: "#5B93A8", bg: "#E9F1F4" }, // sky-500
 } as const;
 
 /* ---------- Radius — §2 lists 12 / 16 / 18 / pill.
@@ -87,8 +91,9 @@ export const spacing = {
   s8: 40,
 } as const;
 
-/* ---------- Shadow — §2: `0 18px 40px -30px rgba(5,51,43,0.55)` — soft, warm,
-   pine-tinted, never pure black. Mapped to RN shadow* + android elevation. ---------- */
+/* ---------- Shadow — soft and warm-brown-tinted (sunlit), never pure black.
+   shadowColor rides on `pine` (now ink-900 warm near-black), so every surface
+   shadow reads brown. Mapped to RN shadow* + android elevation. ---------- */
 export const shadow = {
   // The §2 signature soft warm shadow (raised surfaces: cards, sheets).
   card: {

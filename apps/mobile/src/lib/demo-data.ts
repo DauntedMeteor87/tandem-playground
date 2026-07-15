@@ -274,6 +274,63 @@ export function crewMessages(id: string): CrewMessage[] {
   return CREW_MESSAGES[id] ?? [];
 }
 
+/* ---------- Notifications (bell hub) ----------
+   TODO: backend seam — becomes the notifications API feed. Demo items are
+   derived from the seeded trips/crews so the hub reads true to the data. */
+export type Notification = {
+  id: string;
+  /** Person id for the avatar, or null for a system notice (crew icon). */
+  from: string | null;
+  text: string;
+  when: string;
+  /** Where tapping it lands. */
+  target: { type: "trip"; id: string } | { type: "crew"; id: string } | { type: "none" };
+};
+
+export const NOTIFICATIONS: Notification[] = [
+  {
+    id: "n1",
+    from: "maya",
+    text: "Maya P. finalized the roster for Sykes Hot Springs Overnight — you're in.",
+    when: "2h ago",
+    target: { type: "trip", id: "sykes" },
+  },
+  {
+    id: "n2",
+    from: "jordan",
+    text: "Jordan R. posted a new trip: Bishop Peak Sunset Hike, Thu 5:30 PM.",
+    when: "Yesterday",
+    target: { type: "trip", id: "bishop" },
+  },
+  {
+    id: "n3",
+    from: null,
+    text: "Moonlight Crew has 4 new messages.",
+    when: "Yesterday",
+    target: { type: "crew", id: "moon" },
+  },
+];
+
+/** The bell feed. Empty when forced — that's "All quiet" (#12). */
+export function notificationsList(): Notification[] {
+  return DEV_EMPTY.notifications ? [] : NOTIFICATIONS;
+}
+
+/* ---------- Header badge counts (bell + paper plane) ----------
+   TODO: backend seam — real unread counts come with notifications + Realtime. */
+export function unreadNotifications(): number {
+  return notificationsList().length;
+}
+
+/** Crew threads where someone else had the last word — the "unread" chats. */
+export function unreadMessages(): number {
+  return heartedCrews().filter((c) => {
+    const thread = crewMessages(c.id);
+    const last = thread[thread.length - 1];
+    return last != null && !last.me;
+  }).length;
+}
+
 /* Initials for a person id (wireframe pInit). */
 export function personInitials(id: string): string {
   const p = PEOPLE[id];
@@ -308,4 +365,6 @@ export const DEV_EMPTY = {
   crews: false,
   /** #9 A brand-new crew chat with no messages yet → koa-empty-seat, "Say hi…". */
   crewChat: false,
+  /** #12 Notifications bell → koa-tea, "All quiet. We'll nudge you when something moves." */
+  notifications: false,
 };

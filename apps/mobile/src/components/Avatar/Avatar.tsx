@@ -69,7 +69,11 @@ export function AvatarStack({ people = [], size = 30, max = 4 }: AvatarStackProp
 
 const styles = StyleSheet.create({
   avatar: {
-    flex: 0,
+    // No `flex: 0` here: react-native-web compiles it to `flex-basis: 0%`,
+    // which collapses the disc to zero height inside a column flex parent
+    // (the header's Pressable) — the avatar simply vanished on web.
+    flexGrow: 0,
+    flexShrink: 0,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",

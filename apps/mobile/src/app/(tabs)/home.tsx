@@ -61,12 +61,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.screen}>
-      <HomeHeader
-        onSearch={() => {}}
-        onBell={() => {}}
-        onMessages={() => {}}
-        onAvatar={() => {}}
-      />
+      {/* Chrome routes itself: avatar → profile, bell → notifications, plane → messages. */}
+      <HomeHeader onSearch={() => {}} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Quick-tiles grid — your crews / communities / recent trips */}
         <View style={styles.qgrid}>

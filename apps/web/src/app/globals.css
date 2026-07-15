@@ -93,9 +93,128 @@ svg {
   color: var(--tc-ink-3);
 }
 .topbar__actions {
+  position: relative; /* anchors the bell / profile dropdowns */
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.topbar__iconbtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: var(--tc-radius-pill);
+  background: transparent;
+  color: var(--tc-ink);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.topbar__iconbtn:hover {
+  background: var(--tc-surface-2);
+}
+.topbar__iconbtn svg {
+  width: 20px;
+  height: 20px;
+}
+.topbar__badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: var(--tc-radius-pill);
+  background: var(--tc-ember);
+  border: 1.5px solid var(--tc-paper);
+  color: var(--tc-on-fill);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 12px;
+  text-align: center;
+}
+.topbar__avatarbtn {
+  border: 0;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+.topbar__avatarbtn:hover {
+  box-shadow: 0 0 0 2px var(--tc-border-strong);
+}
+
+/* Topbar dropdowns — notifications hub + profile menu */
+.menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  min-width: 280px;
+  max-width: 340px;
+  padding: 6px;
+  background: var(--tc-paper);
+  border: 1px solid var(--tc-border);
+  border-radius: var(--tc-radius-sm);
+  box-shadow: var(--tc-shadow-pop);
+}
+.menu--bell {
+  right: 44px;
+}
+.menu__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px 6px;
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--tc-border);
+  margin-bottom: 4px;
+}
+.menu__sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tc-ink-3);
+}
+.menu__row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--tc-ink);
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.menu__row:hover {
+  background: var(--tc-surface-2);
+}
+.menu__row svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--tc-ink-2);
+}
+.menu__text {
+  flex: 1;
+  line-height: 1.35;
+}
+.menu__when {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--tc-ink-3);
+  align-self: flex-start;
+  padding-top: 2px;
+}
+.menu__empty {
+  padding: 14px 10px;
+  font-size: 13px;
+  color: var(--tc-ink-2);
 }
 
 /* ============================================================
@@ -730,7 +849,7 @@ input[type="range"].slider::-moz-range-thumb {
   background-image: repeating-linear-gradient(
     135deg,
     transparent 0 10px,
-    rgba(5, 51, 43, 0.04) 10px 20px
+    rgba(42, 35, 27, 0.04) 10px 20px
   );
   display: flex;
   align-items: center;
@@ -829,9 +948,9 @@ input[type="range"].slider::-moz-range-thumb {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(5, 51, 43, 0.3) 0%,
+    rgba(42, 35, 27, 0.3) 0%,
     transparent 40%,
-    rgba(5, 51, 43, 0.65) 100%
+    rgba(42, 35, 27, 0.65) 100%
   );
 }
 .dhero__meta {
@@ -902,7 +1021,7 @@ input[type="range"].slider::-moz-range-thumb {
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 51, 43, 0.4);
+  background: rgba(42, 35, 27, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -180,6 +180,21 @@ export const IconCalendar = (p: IconProps) => (
   </Icon>
 );
 
+/* Topbar chrome — same glyphs as the mobile app's header set. */
+export const IconBell = (p: IconProps) => (
+  <Icon strokeWidth={1.8} {...p}>
+    <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.7 21a2 2 0 01-3.4 0" />
+  </Icon>
+);
+
+export const IconLogOut = (p: IconProps) => (
+  <Icon strokeWidth={1.8} {...p}>
+    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+    <path d="M16 17l5-5-5-5M21 12H9" />
+  </Icon>
+);
+
 /** Registry keyed by the wireframe's `I` keys, so ported data (NAV,
  *  PERMIT_SOURCES, membership cards) can resolve an icon by string. */
 export const ICONS = {
@@ -205,6 +220,8 @@ export const ICONS = {
   flag: IconFlag,
   search: IconSearch,
   cal: IconCalendar,
+  bell: IconBell,
+  logout: IconLogOut,
 } as const;
 
 export type IconKey = keyof typeof ICONS;

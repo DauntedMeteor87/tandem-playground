@@ -10,16 +10,26 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.color.pine,
+        tabBarActiveTintColor: theme.color.ember,
         tabBarInactiveTintColor: theme.color.muted,
+        // Explicit geometry: the default 49px bar clips the icon + label pair
+        // (worst on web/Android). 62px with balanced padding fits all four
+        // tabs — including the long "Communities" label — without squeezing.
         tabBarStyle: {
+          height: 62,
+          paddingTop: 6,
+          paddingBottom: 8,
           backgroundColor: theme.color.paper,
           borderTopColor: theme.neutral.hairline,
+        },
+        tabBarItemStyle: {
+          gap: 2,
         },
         tabBarLabelStyle: {
           fontFamily: theme.fontFamily.semibold,
           fontSize: 11,
         },
+        tabBarAllowFontScaling: false,
         sceneStyle: { backgroundColor: theme.color.canvas },
       }}
     >

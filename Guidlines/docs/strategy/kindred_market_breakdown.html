@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kindred — Market Breakdown & SOM by Segment</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --coral: #FA8E73;
+    --coral-light: #FFF0EC;
+    --coral-dark: #E06B50;
+    --ink: #1A1A2E;
+    --ink-mid: #3D3D5C;
+    --ink-light: #6B6B8A;
+    --border: #E8E8F0;
+    --white: #FFFFFF;
+    --bg: #F8F8FC;
+    --green: #2ECC71;
+    --blue: #3498DB;
+    --purple: #9B59B6;
+    --gold: #F39C12;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  /* NAV */
+  .nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .nav-logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--coral);
+    letter-spacing: -0.5px;
+  }
+  .nav-meta {
+    font-size: 13px;
+    color: var(--ink-light);
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--ink) 0%, #2D1B69 100%);
+    color: var(--white);
+    padding: 64px 40px 56px;
+  }
+  .hero-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 700px;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--coral);
+    letter-spacing: -0.5px;
+  }
+  .hero-stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  /* METHODOLOGY BOX */
+  .method-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--coral);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+  }
+  .method-box h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--coral);
+    margin-bottom: 12px;
+  }
+  .method-box p {
+    color: var(--ink-mid);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .method-box p + p { margin-top: 8px; }
+
+  /* PRIORITY PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .phase {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .phase-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .phase-tag.now { background: #FFF0EC; color: var(--coral-dark); }
+  .phase-tag.soon { background: #EBF5FB; color: #2471A3; }
+  .phase-tag.later { background: #EAF4F4; color: #1A8B6F; }
+  .phase h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .phase p { font-size: 13px; color: var(--ink-light); }
+  .phase ul { list-style: none; margin-top: 12px; }
+  .phase ul li {
+    font-size: 13px;
+    color: var(--ink-mid);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  .phase ul li:last-child { border-bottom: none; }
+  .phase-som {
+    margin-top: 12px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--coral);
+    letter-spacing: -0.5px;
+  }
+  .phase-som-label { font-size: 12px; color: var(--ink-light); font-weight: 400; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .section-header:first-of-type { border-top: none; margin-top: 0; }
+  .section-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .section-badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .badge-now { background: #FFF0EC; color: var(--coral-dark); border: 1px solid #FAC5B8; }
+  .badge-soon { background: #EBF5FB; color: #2471A3; border: 1px solid #AED6F1; }
+  .badge-later { background: #EAF4F4; color: #1A8B6F; border: 1px solid #A3E4D7; }
+
+  /* MARKET CARD */
+  .market-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .card-body { padding: 32px; }
+  .card-why {
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .card-why strong { color: var(--ink); }
+
+  /* METRICS ROW */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .metric {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .metric-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .metric-value.coral { color: var(--coral); }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--ink-light);
+    margin-top: 3px;
+  }
+
+  /* TARGETS TABLE */
+  .targets-section { margin-bottom: 24px; }
+  .targets-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .targets-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .target-chip {
+    background: var(--coral-light);
+    color: var(--coral-dark);
+    border: 1px solid #FAC5B8;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* SCHOOL TABLE */
+  .school-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .school-table th {
+    background: var(--bg);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-light);
+    border-bottom: 2px solid var(--border);
+  }
+  .school-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .school-table tr:last-child td { border-bottom: none; }
+  .school-table tr:hover td { background: var(--bg); }
+  .tier-1 { color: var(--coral-dark); font-weight: 700; }
+  .tier-2 { color: #2471A3; font-weight: 600; }
+  .tier-3 { color: #1A8B6F; }
+  .school-name { font-weight: 600; }
+  .enroll { color: var(--ink-light); }
+  .why-cell { color: var(--ink-mid); font-size: 12px; }
+
+  /* PITCH ANGLE BOX */
+  .pitch-box {
+    background: linear-gradient(135deg, #1A1A2E, #2D1B69);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-top: 24px;
+    color: white;
+  }
+  .pitch-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--coral);
+    margin-bottom: 10px;
+  }
+  .pitch-box p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.65;
+  }
+
+  /* SOM SUMMARY TABLE */
+  .summary-section {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 2px solid var(--border);
+  }
+  .summary-section h2 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .summary-section p {
+    color: var(--ink-light);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .summary-table th {
+    background: var(--ink);
+    color: white;
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+  }
+  .summary-table td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:hover td { background: var(--bg); }
+  .priority-1 { background: #FFF0EC !important; }
+  .priority-1 td:first-child { font-weight: 700; color: var(--coral-dark); }
+  .som-users { font-weight: 700; color: var(--coral); }
+  .timeline-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .tl-now { background: #FFF0EC; color: var(--coral-dark); }
+  .tl-y1 { background: #EBF5FB; color: #2471A3; }
+  .tl-y2 { background: #EAF4F4; color: #1A8B6F; }
+  .tl-y3 { background: #F9EBEA; color: #922B21; }
+  .tl-y4 { background: #F5EEF8; color: #6C3483; }
+
+  /* PRIORITY STACK */
+  .priority-stack {
+    margin-top: 40px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .priority-header {
+    background: var(--ink);
+    color: white;
+    padding: 20px 28px;
+  }
+  .priority-header h3 { font-size: 18px; font-weight: 700; }
+  .priority-header p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .priority-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .priority-item:last-child { border-bottom: none; }
+  .priority-rank {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .priority-rank.dim { background: var(--border); color: var(--ink-light); }
+  .priority-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .priority-content p { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+  .priority-content strong { color: var(--coral-dark); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 32px 40px;
+    font-size: 13px;
+    margin-top: 80px;
+  }
+  .footer strong { color: var(--coral); }
+
+  /* QUOTE */
+  .insight-quote {
+    background: var(--coral-light);
+    border-left: 4px solid var(--coral);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    color: var(--ink-mid);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .main { padding: 32px 20px; }
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .phases { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">kindred</div>
+  <div class="nav-meta">Market Breakdown & SOM by Segment — June 2026</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Strategic Market Analysis</div>
+  <h1>Every Market kindred Can Own — and What It's Worth</h1>
+  <p>Specific addressable pools, realistic conversion rates, SOM in users, and named targets for every segment kindred could reach. This is the complete picture.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">175.8M</div>
+      <div class="hero-stat-label">US outdoor participants (OIA 2024)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">7.7M</div>
+      <div class="hero-stat-label">first-timers in 2023 alone</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">19.6M</div>
+      <div class="hero-stat-label">US college students (kindred's core)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">30M+</div>
+      <div class="hero-stat-label">US 18–24 social discovery app users</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- METHODOLOGY -->
+<div class="method-box">
+  <h3>SOM Methodology</h3>
+  <p><strong>kindred is free.</strong> SOM = realistic user acquisition, not revenue. Format per segment: addressable pool → relevant filter → realistic conversion → SOM in users → partnership angle → specific named targets.</p>
+  <p>Revenue SOM (club SaaS at $99/club/month + future transaction fees) is noted separately where relevant. The user is always the primary metric — density per campus is what makes the app real.</p>
+</div>
+
+<!-- PHASES -->
+<div class="phases">
+  <div class="phase">
+    <span class="phase-tag now">Phase 1 — Now</span>
+    <h4>Beachhead</h4>
+    <p>Cal Poly SLO, 5 clubs. Prove the model in one place before anything else.</p>
+    <ul>
+      <li>Cal Poly Alpine Club <span>~200 members</span></li>
+      <li>Cal Poly Climbing Club <span>~300 members</span></li>
+      <li>Field Studies Club <span>~150 members</span></li>
+      <li>Surf Club <span>~250 members</span></li>
+      <li>Hiking Club <span>~100 members</span></li>
+    </ul>
+    <div class="phase-som">~1,500 <span class="phase-som-label">target users</span></div>
+  </div>
+  <div class="phase">
+    <span class="phase-tag soon">Phase 2 — Year 1–2</span>
+    <h4>Outdoorsy Schools</h4>
+    <p>15 schools with outdoor culture baked into campus identity. Cal Poly template applied at scale.</p>
+    <ul>
+      <li>CU Boulder, U of Utah, NAU <span>Year 1</span></li>
+      <li>UCSB, UC Santa Cruz <span>Year 1</span></li>
+      <li>MSU Bozeman, Appalachian State <span>Year 2</span></li>
+      <li>CSU Fort Collins, W. Washington <span>Year 2</span></li>
+      <li>Fort Lewis, Western Colorado <span>Year 2</span></li>
+    </ul>
+    <div class="phase-som">~25,000 <span class="phase-som-label">SOM users</span></div>
+  </div>
+  <div class="phase">
+    <span class="phase-tag later">Phase 3 — Year 3–5</span>
+    <h4>National + Partnerships</h4>
+    <p>150+ campuses + REI + rafting + guiding + social discovery overlap.</p>
+    <ul>
+      <li>150 campuses (outdoor club filter) <span>Y3–5</span></li>
+      <li>REI co-op members 18–24 <span>Y2–4</span></li>
+      <li>Rafting + guiding companies <span>Y2–3</span></li>
+      <li>NOLS / wilderness education <span>Y2–3</span></li>
+      <li>Climbing gyms, ski resorts <span>Y3–4</span></li>
+    </ul>
+    <div class="phase-som">~300,000+ <span class="phase-som-label">cumulative SOM</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     1. COLLEGE — OUTDOORSY SCHOOLS OVERVIEW
+════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">1</div>
+  <h2>College / University — The Core Market</h2>
+  <span class="section-badge badge-now">Start Here</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      This is where kindred lives. The B2B2C motion — pitch club leader → club brings members → members find their Evan — makes colleges the highest-leverage channel in existence. <strong>One club president says yes and you get 200 users in a week.</strong> No other channel has that conversion economics. A Google Forms replacement that also magically connects people after the trip closes the meeting.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">US College Students</div>
+        <div class="metric-value">19.6M</div>
+        <div class="metric-sub">total addressable</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Outdoorsy Filter (~15%)</div>
+        <div class="metric-value">~3.5M</div>
+        <div class="metric-sub">in outdoor clubs, hiking culture</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Phase 2 SOM (15 campuses)</div>
+        <div class="metric-value coral">~25,000</div>
+        <div class="metric-sub">Year 1–2</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Scale SOM (150 campuses)</div>
+        <div class="metric-value coral">~157,500</div>
+        <div class="metric-sub">Year 3–5</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Revenue SOM (Club SaaS)</div>
+      <p style="font-size:14px; color:var(--ink-mid); margin-bottom:8px;">
+        Club subscription at $99/club/month. Average 5 clubs/campus. 15 campuses = $89K ARR. 50 campuses = $297K ARR. 150 campuses = $891K ARR — before transaction fees or institutional licenses.
+      </p>
+    </div>
+
+    <div class="pitch-box">
+      <div class="pitch-box-label">The Close</div>
+      <p>"Right now your club uses Google Forms, GroupMe, and Instagram DMs to run trips. Your treasurer manually builds spreadsheets for carpools. Half your RSVP'd members don't show. Kindred replaces all of that in one meeting. Carpool coordination auto-builds. Attendance gets tracked. And everyone who goes on a trip finds their next crew automatically. One demo. Then your members use it."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     2. SPECIFIC OUTDOORSY SCHOOLS (TABLE)
+════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">2</div>
+  <h2>Schools With Outdoorsy People — Named Targets</h2>
+  <span class="section-badge badge-now">Year 1–2</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      These are the schools where outdoor culture isn't just a club — it's the campus identity. They convert faster because every student already self-identifies as an outdoor person. The top 20 by outdoor density, in priority order:
+    </p>
+
+    <table class="school-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>School</th>
+          <th>Location</th>
+          <th>Enrollment</th>
+          <th>Why kindred fits</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">Cal Poly SLO</td>
+          <td>San Luis Obispo, CA</td>
+          <td class="enroll">22,000</td>
+          <td class="why-cell">Ground zero — already embedded, 5 clubs, founder's school</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">University of Colorado Boulder</td>
+          <td>Boulder, CO</td>
+          <td class="enroll">37,000</td>
+          <td class="why-cell">#1 outdoor culture campus in US, Flatirons at campus edge, CU Outdoors massive rec program</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">UC Santa Barbara</td>
+          <td>Santa Barbara, CA</td>
+          <td class="enroll">26,000</td>
+          <td class="why-cell">Ocean + mountains, surf + Channel Islands + hiking, very outdoorsy culture</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">NAU — Northern Arizona University</td>
+          <td>Flagstaff, AZ</td>
+          <td class="enroll">31,000</td>
+          <td class="why-cell">Grand Canyon backyard, Humphreys Peak, 7,000ft campus, outdoor identity is the school</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">Montana State University</td>
+          <td>Bozeman, MT</td>
+          <td class="enroll">16,000</td>
+          <td class="why-cell">Gateway to Glacier + Yellowstone, ski + fishing culture, small-town density</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">University of Utah</td>
+          <td>Salt Lake City, UT</td>
+          <td class="enroll">35,000</td>
+          <td class="why-cell">"Greatest Snow on Earth," 9 world-class ski resorts within 45 min, climbing + hiking</td>
+        </tr>
+        <tr>
+          <td class="tier-1">🔥 1</td>
+          <td class="school-name">Colorado State University</td>
+          <td>Fort Collins, CO</td>
+          <td class="enroll">34,000</td>
+          <td class="why-cell">Rocky Mountain NP 45 min away, huge outdoor rec program, strong trail running + climbing scene</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">Appalachian State University</td>
+          <td>Boone, NC</td>
+          <td class="enroll">20,000</td>
+          <td class="why-cell">Blue Ridge Mountains, skiing (Beech Mtn), river tubing, very outdoorsy campus culture</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">UC Santa Cruz</td>
+          <td>Santa Cruz, CA</td>
+          <td class="enroll">19,000</td>
+          <td class="why-cell">Redwoods on campus, surf culture, coastal access, outdoorsy counter-culture identity</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">Western Washington University</td>
+          <td>Bellingham, WA</td>
+          <td class="enroll">16,000</td>
+          <td class="why-cell">Cascades gateway, kayaking Puget Sound, strong outdoor rec program, PNW ethos baked in</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">University of Oregon</td>
+          <td>Eugene, OR</td>
+          <td class="enroll">23,000</td>
+          <td class="why-cell">Pacific Northwest capital of outdoor culture, running + skiing + rafting scene</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">University of Vermont</td>
+          <td>Burlington, VT</td>
+          <td class="enroll">13,000</td>
+          <td class="why-cell">Skiing (Stowe, Sugarbush nearby), hiking, sustainability/outdoor identity, New England culture</td>
+        </tr>
+        <tr>
+          <td class="tier-2">⚡ 2</td>
+          <td class="school-name">Cal Poly Humboldt</td>
+          <td>Arcata, CA</td>
+          <td class="enroll">6,000</td>
+          <td class="why-cell">Redwoods + coast + rivers, outdoor-first campus culture, very tight community = high density</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">Fort Lewis College</td>
+          <td>Durango, CO</td>
+          <td class="enroll">3,500</td>
+          <td class="why-cell">Mountain biking capital of the world, small campus = very high density, San Juan Mountains</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">Western Colorado University</td>
+          <td>Gunnison, CO</td>
+          <td class="enroll">3,000</td>
+          <td class="why-cell">Crested Butte ski resort 30 min, extreme outdoor culture, tiny campus = massive density</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">Prescott College</td>
+          <td>Prescott, AZ</td>
+          <td class="enroll">1,200</td>
+          <td class="why-cell">Outdoor-only curriculum — every student is kindred's user. Entire campus is the target.</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">University of Wyoming</td>
+          <td>Laramie, WY</td>
+          <td class="enroll">12,000</td>
+          <td class="why-cell">Jackson Hole adjacent, state outdoor identity, strong hunting/fishing/hiking culture</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">University of Idaho</td>
+          <td>Moscow, ID</td>
+          <td class="enroll">12,000</td>
+          <td class="why-cell">Sawtooth Mountains, whitewater rivers, hunting culture, tight-knit campus</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">Chico State</td>
+          <td>Chico, CA</td>
+          <td class="enroll">17,000</td>
+          <td class="why-cell">Outdoor recreation major, gateway to Lassen, Feather River whitewater, strong rec culture</td>
+        </tr>
+        <tr>
+          <td class="tier-3">✓ 3</td>
+          <td class="school-name">Clemson University</td>
+          <td>Clemson, SC</td>
+          <td class="enroll">26,000</td>
+          <td class="why-cell">Blue Ridge foothills, Lake Hartwell, strong football-outdoor dual culture, large enrollment</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="metrics-row" style="margin-top:24px;">
+      <div class="metric">
+        <div class="metric-label">Top 20 Combined Enrollment</div>
+        <div class="metric-value">~415,000</div>
+        <div class="metric-sub">students at target schools</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Outdoor Club Members (~8%)</div>
+        <div class="metric-value">~33,200</div>
+        <div class="metric-sub">SAM — club-member filter</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (40% adoption)</div>
+        <div class="metric-value coral">~13,280</div>
+        <div class="metric-sub">at 15 schools, Year 1–2</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Revenue SOM</div>
+        <div class="metric-value coral">~$89K</div>
+        <div class="metric-sub">ARR at $99/club × 5 clubs × 15 schools</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     3. CALIFORNIA
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">3</div>
+  <h2>California Market</h2>
+  <span class="section-badge badge-soon">Year 2–3</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      California deserves its own segment. <strong>765,000 UC + CSU students</strong>, world-class outdoor access within 2 hours of every campus (Yosemite, Sierra, coast, Channel Islands, Joshua Tree), tech-forward Gen Z demographics, and the highest concentration of outdoor brands in the country. Winning California is also the most legible story for investors, press, and brand partners.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">UC + CSU Students</div>
+        <div class="metric-value">765,000</div>
+        <div class="metric-sub">across 33 campuses</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Outdoorsy Subset (20%)</div>
+        <div class="metric-value">153,000</div>
+        <div class="metric-sub">SAM across CA campuses</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Y1 SOM (5 CA campuses, 10%)</div>
+        <div class="metric-value coral">~15,300</div>
+        <div class="metric-sub">Cal Poly + 4 others</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Y3 SOM (20 CA campuses, 25%)</div>
+        <div class="metric-value coral">~38,250</div>
+        <div class="metric-sub">statewide college market</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">California Priority Clusters</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--coral-dark); margin-bottom:8px;">Central Coast</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">
+          Cal Poly SLO (ground zero)<br>
+          Cal Poly Humboldt<br>
+          Cuesta College
+        </div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--coral-dark); margin-bottom:8px;">Bay Area</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">
+          UC Berkeley (45K)<br>
+          UC Santa Cruz (19K)<br>
+          San Jose State (33K)<br>
+          SF State (30K)
+        </div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--coral-dark); margin-bottom:8px;">LA Basin</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">
+          UCLA (47K)<br>
+          USC (49K)<br>
+          UCSB (26K)<br>
+          Cal State Long Beach (37K)
+        </div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--coral-dark); margin-bottom:8px;">San Diego + Sierra</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">
+          UCSD (43K)<br>
+          SDSU (36K)<br>
+          Fresno State (25K)<br>
+          UC Merced (10K)
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-quote">
+      California users = brand partnership leverage. Patagonia (Ventura), Arc'teryx (Vancouver but CA-heavy), REI (Seattle but CA-dominant), Cotopaxi (SLC but Gen Z CA users) — every major outdoor brand tracks CA market penetration first. 38,000 active kindred users in CA is the press story that gets Patagonia on the phone.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     4. US OUTDOOR MARKET BROADLY
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">4</div>
+  <h2>US Outdoor Recreation Market — Broad</h2>
+  <span class="section-badge badge-later">Year 3–5 Frame</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      This is the TAM frame, not the operating reality for Year 1–2. The numbers exist to show kindred sits inside a massive, growing market with no dominant social layer. The macro thesis: <strong>outdoor participation is growing while social connection is collapsing</strong>. kindred sits at the exact intersection.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">US Outdoor Participants</div>
+        <div class="metric-value">175.8M</div>
+        <div class="metric-sub">OIA 2024 record — 57% of Americans</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">YoY Growth</div>
+        <div class="metric-value">+4.1%</div>
+        <div class="metric-sub">accelerating post-pandemic</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">18–24 Outdoor Participants</div>
+        <div class="metric-value">~35M</div>
+        <div class="metric-sub">20% of total</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Kindred National SOM (2%)</div>
+        <div class="metric-value coral">~200,000</div>
+        <div class="metric-sub">socially motivated 18–24 outdoor users</div>
+      </div>
+    </div>
+
+    <div class="insight-quote">
+      7.7 million Americans tried an outdoor activity for the first time in 2023. These are Maya — no crew, no gear history, no trail friends. They tried it because a TikTok made it look good or a friend dragged them. They need somewhere to find the next trip and the next people. That's kindred's exact user, at 7.7 million per year, created fresh every year.
+    </div>
+
+    <div class="targets-section" style="margin-top:16px;">
+      <div class="targets-label">Fastest-Growing Activities (Kindred's Priority Verticals)</div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">🧗 Rock Climbing</div>
+          <div style="color:var(--ink-light);">+198% gym climbing growth since 2015. Olympics boost. 9M+ US climbers.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">🏄 Surfing / Paddling</div>
+          <div style="color:var(--ink-light);">3.5M surfers. SUP + kayak fastest growing. Strong first-timer profile.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">🥾 Backpacking</div>
+          <div style="color:var(--ink-light);">+22% since 2020. Overnight trips require group safety. Inherently social.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">🚵 Mountain Biking</div>
+          <div style="color:var(--ink-light);">+46% growth. Fastest growing trail sport. High gear investment = committed users.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">🛶 Whitewater Rafting</div>
+          <div style="color:var(--ink-light);">12M+ participants/year. Naturally social, inherently group activity.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:14px; font-size:13px;">
+          <div style="font-weight:700; margin-bottom:4px;">⛷️ Skiing / Snowboarding</div>
+          <div style="color:var(--ink-light);">57.8M ski days/year. College ski clubs on every mountain campus.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     5. REI CO-OP
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">5</div>
+  <h2>REI Co-op Partnership</h2>
+  <span class="section-badge badge-soon">Year 2 Priority</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      REI is the single highest-leverage partnership move outside of campus expansion. <strong>22M+ self-selected outdoor consumers</strong>, 180+ retail stores, and a mission statement that reads like kindred's origin story: "to awaken a lifelong love of the outdoors." REI's conversion problem — people who buy gear and never go outside because they don't have a crew — is exactly what kindred solves.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">REI Co-op Members</div>
+        <div class="metric-value">22M+</div>
+        <div class="metric-sub">self-selected outdoor consumers</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Est. 18–24 Members</div>
+        <div class="metric-value">~2.2M</div>
+        <div class="metric-sub">10% of member base</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (5% conversion)</div>
+        <div class="metric-value coral">~110,000</div>
+        <div class="metric-sub">via REI partnership channels</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">REI Adventures Clients/yr</div>
+        <div class="metric-value">100,000+</div>
+        <div class="metric-sub">already trip-taking</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Specific REI Partnership Angles</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+        <div style="background:var(--bg); border-radius:8px; padding:16px; font-size:13px;">
+          <div style="font-weight:700; color:var(--coral-dark); margin-bottom:6px;">REI Co-op Classes</div>
+          <div style="color:var(--ink-mid);">Beginner kayaking, backpacking basics, rock climbing intro — kindred QR cards handed out at every class registration. "Loved the class? Find your crew for the next trip."</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:16px; font-size:13px;">
+          <div style="font-weight:700; color:var(--coral-dark); margin-bottom:6px;">REI Adventures</div>
+          <div style="color:var(--ink-mid);">Fills solo spots in group guided trips. Solo travelers join a guided trip with strangers — same as kindred's model. kindred = the free version. REI Adventures = the premium version. They're compatible, not competitive.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:16px; font-size:13px;">
+          <div style="font-weight:700; color:var(--coral-dark); margin-bottom:6px;">Gear Discount for Trip Leaders</div>
+          <div style="color:var(--ink-mid);">kindred trip leaders (Evan archetype) get 15% off at REI as a leader perk. REI gets acquisition of their highest-value customer: someone who regularly organizes outdoor trips and influences 10+ other purchases.</div>
+        </div>
+        <div style="background:var(--bg); border-radius:8px; padding:16px; font-size:13px;">
+          <div style="font-weight:700; color:var(--coral-dark); margin-bottom:6px;">In-Store QR + "First Timers" Campaign</div>
+          <div style="color:var(--ink-mid);">QR codes in beginner gear sections, at checkout, at Classes signup kiosks. Co-branded "First Timers" content series: REI gear + kindred crew = your first adventure.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pitch-box">
+      <div class="pitch-box-label">Why REI Says Yes</div>
+      <p>REI's biggest problem isn't selling gear — it's that people buy gear and stop using it. A $300 tent that sits in a closet is a failed conversion. kindred solves the utilization problem: people who have gear but no crew to go with. When someone finds their adventure crew on kindred, they buy more gear. REI's mission AND their revenue depend on people actually going outside.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     6. GUIDING COMPANIES
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">6</div>
+  <h2>Guiding Companies</h2>
+  <span class="section-badge badge-soon">Year 2–3</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      Guided outdoor experiences are kindred's highest-trust entry point. Every guide company client has already proven they'll pay to try something new with strangers — they're exactly Maya/Evan who paid a professional to make the first time safe. Post-trip, they want more. But there's no infrastructure. That's kindred.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">Total US Guided Clients/yr</div>
+        <div class="metric-value">~500,000</div>
+        <div class="metric-sub">all disciplines</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">18–24 Guided Clients/yr</div>
+        <div class="metric-value">~75,000</div>
+        <div class="metric-sub">15% of total</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (10% conversion)</div>
+        <div class="metric-value coral">~7,500</div>
+        <div class="metric-sub">per year, accumulating</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">User Quality</div>
+        <div class="metric-value">★★★★★</div>
+        <div class="metric-sub">Already paid to adventure with strangers</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Named Guiding Company Targets</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:24px;">
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">Mountain / Alpine</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          Exum Mountain Guides (Jackson Hole)<br>
+          Colorado Mountain School (Estes Park)<br>
+          RMI Expeditions (Mt. Rainier)<br>
+          Alpenglow Expeditions (Tahoe)<br>
+          Jackson Hole Mountain Guides<br>
+          American Alpine Institute (Bellingham)<br>
+          International Mountain Guides<br>
+          Timberline Mountain Guides (OR)
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">Rock Climbing</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          Red Rock Canyon Guides (Las Vegas)<br>
+          Joshua Tree Rock Climbing School<br>
+          Yosemite Mountaineering School<br>
+          Colorado Mountain School (rock)<br>
+          Stone Adventures (CO)<br>
+          Desert Rock Sports (Moab)<br>
+          Moab Cliffs &amp; Canyons<br>
+          Bishop guiding companies
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">Sea Kayak / Paddling</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          OARS (sea kayak programs)<br>
+          California Canoe &amp; Kayak<br>
+          Discovery Paddling (multiple)<br>
+          Kayak Tillamook (OR)<br>
+          Moss Landing Kayak (CA)<br>
+          Blue Moon Kayak (WA)<br>
+          Eddyline Paddling Center<br>
+          Point Reyes Outdoors (CA)
+        </div>
+      </div>
+    </div>
+
+    <div class="pitch-box">
+      <div class="pitch-box-label">"Kindred Certified Guides" Program</div>
+      <p>Guide companies list their beginner intro trips on kindred. Not for booking — for discovery. kindred users see "AMGA-certified guide, 8-person group, 2 spots left." They join. The guide gets fill rate. The user gets a trusted entry point. After the trip, they find their next crew on kindred without the guide. This is the trust signal that turns kindred from "strangers" to "vetted outdoor community."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     7. RAFTING COMPANIES
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">7</div>
+  <h2>Rafting Companies</h2>
+  <span class="section-badge badge-soon">Year 2–3 Volume</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      Commercial whitewater rafting is the largest-volume outdoor group activity where <strong>solo individuals routinely join trips with strangers</strong>. People buy single spots on multi-person rafts every summer. They're already doing what kindred enables — joining strangers for an outdoor adventure. kindred just makes it intentional, ongoing, and social before and after the trip.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">US Commercial Rafting/yr</div>
+        <div class="metric-value">12M+</div>
+        <div class="metric-sub">participants nationally</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">18–24 Year Old Rafters</div>
+        <div class="metric-value">~2.4M</div>
+        <div class="metric-sub">20% of participants</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Solo Joiners (18–24)</div>
+        <div class="metric-value">~600,000</div>
+        <div class="metric-sub">25% of 18–24 rafters</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (3–5% conversion)</div>
+        <div class="metric-value coral">18,000–30,000</div>
+        <div class="metric-sub">via rafting company partnerships</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">Colorado (Arkansas, Clear Creek, Glenwood)</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          OARS (national, 20K+/yr)<br>
+          Echo Canyon River Expeditions<br>
+          Mild to Wild Rafting<br>
+          Arkansas River Tours<br>
+          Dvorák Expeditions<br>
+          Arkansas Valley Adventures<br>
+          Royal Gorge Rafting
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">West Virginia + Tennessee</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          ACE Adventure Resort (100K+/yr)<br>
+          Adventures on the Gorge<br>
+          Class VI River Runners<br>
+          Nantahala Outdoor Center (150K+!)<br>
+          Ocoee Adventure Center<br>
+          Rapid Expeditions<br>
+          Nantahala Rafting (multiple ops)
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;">Oregon, Idaho + California</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:2;">
+          Northwest Rafting Company<br>
+          Rogue Wilderness Adventures<br>
+          ROW Adventures (multi-day)<br>
+          Momentum River Expeditions (ID)<br>
+          ARTA River Trips (CA)<br>
+          Tributary Whitewater Tours (CA)<br>
+          Beyond Limits Adventures (CA)
+        </div>
+      </div>
+    </div>
+
+    <div class="pitch-box">
+      <div class="pitch-box-label">Partnership Model</div>
+      <p>Rafting companies have one persistent problem: filling the last 1–2 spots on each raft. A 6-person raft with 4 booked slots loses margin and sometimes cancels trips. kindred provides a solution: "Meet your raft crew before the trip." Physical flyers at check-in, QR codes on the booking confirmation email, or a simple integration where solo bookings get introduced to each other on kindred before they show up at the put-in. After the trip, kindred keeps the crew together for the next river.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     8. NOLS / WILDERNESS ED
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">8</div>
+  <h2>NOLS & Wilderness Education Programs</h2>
+  <span class="section-badge badge-soon">Year 2–3 (Elite Users)</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      NOLS is kindred's most philosophically aligned institutional partner. NOLS students spend 30–90 days in the wilderness with strangers — that's Arthur Aron's scary bridge study at full scale, for a month. They come out as the most connected, most outdoor-competent, most adventurous 18–24 year olds in the country. <strong>Then they go home and have nobody to go outside with.</strong> That's where kindred lives.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">NOLS Students/yr</div>
+        <div class="metric-value">7,000+</div>
+        <div class="metric-sub">across 15+ global locations</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">NOLS Alumni Network</div>
+        <div class="metric-value">200,000+</div>
+        <div class="metric-sub">active alumni base</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM from NOLS (15–20%)</div>
+        <div class="metric-value coral">7,500–10,000</div>
+        <div class="metric-sub">18–28 yr alumni</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">User Quality</div>
+        <div class="metric-value">★★★★★</div>
+        <div class="metric-sub">Become kindred trip leaders</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Wilderness Education Programs to Target</div>
+      <div class="targets-grid">
+        <span class="target-chip">NOLS (7,000/yr students)</span>
+        <span class="target-chip">Outward Bound (75,000+/yr)</span>
+        <span class="target-chip">Student Conservation Assoc.</span>
+        <span class="target-chip">National Ability Center</span>
+        <span class="target-chip">Wilderness Education Assoc.</span>
+        <span class="target-chip">AMC (100,000+ members)</span>
+        <span class="target-chip">Sierra Club Outings</span>
+        <span class="target-chip">Wilderness Volunteers</span>
+        <span class="target-chip">BOSS (Boulder Outdoor Survival)</span>
+        <span class="target-chip">NOLS Wilderness Medicine (50K WFRs)</span>
+      </div>
+    </div>
+
+    <div class="insight-quote">
+      One NOLS graduate who becomes a kindred circle leader brings 12–15 other users. They're trusted, experienced, wilderness-first-aid certified, and they've already proven they can lead a group of strangers through hard things. They're not just users — they're the supply side of kindred's trip marketplace. You need 200 of them seeded across 15 campuses to make the network feel alive.
+    </div>
+
+    <div class="pitch-box">
+      <div class="pitch-box-label">Partnership Angle</div>
+      <p>NOLS includes kindred in post-course alumni communications: "You just spent 30 days building the closest friendships of your life. Here's how to find your next crew." NOLS gets a value-add for their alumni community (sticky, ongoing engagement). Kindred gets 7,000 elite new users per year who immediately become trip leaders — the supply side of every local kindred market they seed.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     9. TINDER / SOCIAL DISCOVERY
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">9</div>
+  <h2>Tinder / Social Discovery App Overlap</h2>
+  <span class="section-badge badge-later">Year 4+ Framing</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      This isn't a partnership target — Tinder won't co-market with kindred. This is the <strong>market framing</strong> that explains why kindred is a category-defining app, not another feature. Tinder has the mechanism (location-based matching with nearby strangers). kindred has the same mechanism with a completely different context (shared outdoor adventure instead of a date). Same dopamine, different outcome.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">Tinder US MAU (18–24)</div>
+        <div class="metric-value">~3.4M</div>
+        <div class="metric-sub">38% of 9M US users</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Bumble BFF Mode Users</div>
+        <div class="metric-value">~2M</div>
+        <div class="metric-sub">Proves non-romantic demand</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">US 18–24 Social Discovery + Outdoor</div>
+        <div class="metric-value">~12M</div>
+        <div class="metric-sub">40% of 30M social discovery users</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Long-term SOM (5% national)</div>
+        <div class="metric-value coral">~600,000</div>
+        <div class="metric-sub">Year 4–6 at national scale</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#E74C3C;">Tinder fails here:</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">Romantic subtext. Transactional swipe. No commitment mechanism. No shared activity to anchor connection. Awkward follow-through. No trust layer.</div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#F39C12;">Bumble BFF fails here:</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">"Want to hang out?" has no anchor. What do you do once you match? Coffee? Too vague. No shared challenge means no identity fusion. Low retention proven at scale.</div>
+      </div>
+      <div style="background:var(--bg); border-radius:8px; padding:16px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:8px; color:#27AE60;">kindred wins because:</div>
+        <div style="font-size:13px; color:var(--ink-mid); line-height:1.7;">Activity-anchored. No romantic subtext. Trust via .edu + attendance. Earned connection (the 🔥). Physiological arousal + shared challenge = Aron's bonding conditions. Not a match — a memory.</div>
+      </div>
+    </div>
+
+    <div class="insight-quote">
+      "kindred is what happens when you take Tinder's social matching mechanism and anchor it to something real — a first-time outdoor adventure — instead of a swipe." This is the one-sentence press frame that gets TechCrunch interested and gets investors to understand the category in 10 seconds.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     10. CLIMBING GYMS
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">10</div>
+  <h2>Climbing Gyms</h2>
+  <span class="section-badge badge-later">Year 3–4</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      Indoor climbing is the fastest-growing outdoor-adjacent sport in the US, with the sharpest 18–24 demographic of any gym category. The climbing gym member is already community-seeking, gear-investing, and looking to "take it outside." kindred is the "take it outside" platform for indoor climbers.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">US Climbing Gym Members</div>
+        <div class="metric-value">~5M+</div>
+        <div class="metric-sub">600+ gyms nationally</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">18–24 Members (~30%)</div>
+        <div class="metric-value">~1.5M</div>
+        <div class="metric-sub">SAM — age-filtered</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Outdoor-focused (40%)</div>
+        <div class="metric-value">~600,000</div>
+        <div class="metric-sub">want to climb outside</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (4% conversion)</div>
+        <div class="metric-value coral">~24,000</div>
+        <div class="metric-sub">national scale, Year 3–4</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Target Gym Chains</div>
+      <div class="targets-grid">
+        <span class="target-chip">Movement (35+ locations)</span>
+        <span class="target-chip">Planet Granite (Bay Area)</span>
+        <span class="target-chip">Brooklyn Boulders (multi-city)</span>
+        <span class="target-chip">Earth Treks (East Coast)</span>
+        <span class="target-chip">Mesa Rim (San Diego)</span>
+        <span class="target-chip">Sender One (LA)</span>
+        <span class="target-chip">SBP Seattle</span>
+        <span class="target-chip">The Pad (multiple)</span>
+        <span class="target-chip">American Alpine Club (70K members)</span>
+        <span class="target-chip">USA Climbing (collegiate circuit)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     11. SKI RESORTS / MOUNTAIN TOWNS
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">11</div>
+  <h2>Ski Resorts & Mountain Town Seasonal Workers</h2>
+  <span class="section-badge badge-later">Year 2–3 Hidden Gem</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      Seasonal mountain town workers are kindred's most extreme version of Maya. They move to Vail, Park City, Telluride, or Breckenridge knowing nobody — for 4 months, surrounded by outdoor access, with nothing to do but find a crew. <strong>The product sells itself in a ski town. The local density is already there.</strong> This is an early urban expansion move that's really just finding the campus-like density that already exists in mountain communities.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">Seasonal Mountain Workers (18–24)</div>
+        <div class="metric-value">~100,000</div>
+        <div class="metric-sub">per season nationally</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Already "know nobody"</div>
+        <div class="metric-value">~80%</div>
+        <div class="metric-sub">moved to mountain town solo</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">SOM (10% conversion)</div>
+        <div class="metric-value coral">~10,000</div>
+        <div class="metric-sub">per season</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Captive Season</div>
+        <div class="metric-value">4–6 mo.</div>
+        <div class="metric-sub">very high retention window</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Mountain Town Targets</div>
+      <div class="targets-grid">
+        <span class="target-chip">Vail, CO (1,600 seasonal workers)</span>
+        <span class="target-chip">Park City, UT</span>
+        <span class="target-chip">Telluride, CO</span>
+        <span class="target-chip">Breckenridge, CO</span>
+        <span class="target-chip">Jackson Hole, WY</span>
+        <span class="target-chip">Whistler, BC (US workers)</span>
+        <span class="target-chip">Lake Tahoe (South Shore)</span>
+        <span class="target-chip">Mammoth Lakes, CA</span>
+        <span class="target-chip">Steamboat Springs, CO</span>
+        <span class="target-chip">Asheville, NC (year-round)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     12. UNIVERSITY REC / WELLNESS
+════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">12</div>
+  <h2>University Recreation Departments & Campus Wellness</h2>
+  <span class="section-badge badge-soon">Year 2 Institutional</span>
+</div>
+
+<div class="market-card">
+  <div class="card-body">
+    <p class="card-why">
+      University rec centers and student wellness offices are looking for exactly what kindred does — a tool that drives outdoor engagement, reduces social isolation, and improves student mental health outcomes. Post-pandemic, they have budget, they have mandate, and they have zero good tech solutions. This is the institutional licensing play: sell to the rec center, they deploy to the entire student body.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">US Universities with Outdoor Rec</div>
+        <div class="metric-value">4,000+</div>
+        <div class="metric-sub">programs of varying scale</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Priority Targets (major programs)</div>
+        <div class="metric-value">500</div>
+        <div class="metric-sub">meaningful outdoor programs</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Institutional License Revenue</div>
+        <div class="metric-value coral">$500/mo</div>
+        <div class="metric-sub">per institution target price</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Revenue SOM (100 schools)</div>
+        <div class="metric-value coral">$600K</div>
+        <div class="metric-sub">ARR Year 3–4</div>
+      </div>
+    </div>
+
+    <div class="targets-section">
+      <div class="targets-label">Notable University Outdoor Rec Programs</div>
+      <div class="targets-grid">
+        <span class="target-chip">CU Boulder Outdoor Pursuits</span>
+        <span class="target-chip">U of Utah PEAK Adventures</span>
+        <span class="target-chip">Texas A&M Rec Sports</span>
+        <span class="target-chip">Michigan Rec & Outdoor Ed</span>
+        <span class="target-chip">UNC Chapel Hill Outdoor Ed</span>
+        <span class="target-chip">ASU Outdoor Education</span>
+        <span class="target-chip">OSU Outdoor Pursuits (Corvallis)</span>
+        <span class="target-chip">Florida State Outdoor Pursuits</span>
+        <span class="target-chip">UVM Outdoor Programs Office</span>
+        <span class="target-chip">Dartmouth DOC (oldest outing club)</span>
+        <span class="target-chip">Active Minds (700 campuses)</span>
+        <span class="target-chip">NAMI On Campus chapters</span>
+      </div>
+    </div>
+
+    <div class="insight-quote">
+      Jeffrey Hall (U. Kansas) quantified 50–200 hours to form close friendship. University counseling directors know this research. kindred offers them a measurable outcome: students who use kindred form meaningful outdoor friendships faster than any campus wellness program can engineer in a rec center. That's a publishable outcome. Publish it with Hall as an advisor and you have a category-defining moat.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     SUMMARY TABLE
+════════════════════════════ -->
+<div class="summary-section">
+  <h2>Full Market Summary</h2>
+  <p>Every segment, realistic SOM, and when to pursue it. Priority 1 = start now. Priority 2 = Year 1–2. Priority 3 = Year 3+.</p>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Priority</th>
+        <th>Market Segment</th>
+        <th>Addressable Pool</th>
+        <th>SOM (Users)</th>
+        <th>Revenue SOM</th>
+        <th>Timeline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="priority-1">
+        <td>⭐ 1</td>
+        <td>Cal Poly SLO — 5 clubs</td>
+        <td>~1,000 active members</td>
+        <td class="som-users">~1,500</td>
+        <td>$5,940/yr (5 clubs × $99)</td>
+        <td><span class="timeline-chip tl-now">Now</span></td>
+      </tr>
+      <tr class="priority-1">
+        <td>⭐ 1</td>
+        <td>15 Outdoorsy Campuses (Tier 1)</td>
+        <td>~46,000 club members</td>
+        <td class="som-users">~18,700</td>
+        <td>$89K ARR</td>
+        <td><span class="timeline-chip tl-y1">Year 1–2</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>California (20 UC/CSU campuses)</td>
+        <td>153,000 outdoor students</td>
+        <td class="som-users">~38,250</td>
+        <td>$119K ARR</td>
+        <td><span class="timeline-chip tl-y2">Year 2–3</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>REI Co-op (18–24 members)</td>
+        <td>2.2M self-selected</td>
+        <td class="som-users">~110,000</td>
+        <td>Brand partnership value</td>
+        <td><span class="timeline-chip tl-y2">Year 2–4</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>NOLS + Wilderness Education</td>
+        <td>~50,000 alumni 18–28</td>
+        <td class="som-users">~7,500–10,000</td>
+        <td>Institutional license</td>
+        <td><span class="timeline-chip tl-y2">Year 2–3</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Rafting Companies (solo 18–24)</td>
+        <td>600,000 solo rafters/yr</td>
+        <td class="som-users">~18,000–30,000</td>
+        <td>Partnership fees</td>
+        <td><span class="timeline-chip tl-y2">Year 2–3</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Mountain Town Seasonal Workers</td>
+        <td>~100,000 per season</td>
+        <td class="som-users">~10,000</td>
+        <td>—</td>
+        <td><span class="timeline-chip tl-y2">Year 2–3</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>University Rec / Wellness Offices</td>
+        <td>500 priority programs</td>
+        <td class="som-users">~12,500</td>
+        <td>$600K ARR at 100 schools</td>
+        <td><span class="timeline-chip tl-y2">Year 2–4</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Guiding Companies (18–24 clients)</td>
+        <td>~75,000/yr</td>
+        <td class="som-users">~7,500</td>
+        <td>"Certified Guides" feature</td>
+        <td><span class="timeline-chip tl-y3">Year 2–3</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>US College — 150 Campuses</td>
+        <td>~1M outdoor club members</td>
+        <td class="som-users">~157,500</td>
+        <td>$891K ARR</td>
+        <td><span class="timeline-chip tl-y3">Year 3–5</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Climbing Gyms (18–24, outdoor-focused)</td>
+        <td>~600,000</td>
+        <td class="som-users">~24,000</td>
+        <td>Gym partnership integrations</td>
+        <td><span class="timeline-chip tl-y3">Year 3–4</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>US Outdoor Broadly (18–24)</td>
+        <td>~35M active participants</td>
+        <td class="som-users">~200,000</td>
+        <td>Scale revenue</td>
+        <td><span class="timeline-chip tl-y3">Year 3–5</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Social Discovery / Tinder Overlap</td>
+        <td>~12M outdoor-interested 18–24</td>
+        <td class="som-users">~600,000</td>
+        <td>National brand frame</td>
+        <td><span class="timeline-chip tl-y4">Year 4–6</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PRIORITY ORDER -->
+  <div class="priority-stack" style="margin-top:40px;">
+    <div class="priority-header">
+      <h3>Priority Order — Where to Focus Next</h3>
+      <p>Highest-leverage moves, in sequence. Don't skip rungs.</p>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">1</div>
+      <div class="priority-content">
+        <h4>Cal Poly SLO — Own it completely</h4>
+        <p>Already embedded. Don't expand until this market is fully saturated. <strong>1,500 highly engaged users on one campus is worth more than 500 scattered across 10.</strong> Every campus is an island — density per island is the metric.</p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">2</div>
+      <div class="priority-content">
+        <h4>14 More Outdoorsy Campuses (Year 1–2)</h4>
+        <p>CU Boulder, UCSB, U of Utah, NAU, MSU Bozeman, CSU Fort Collins, Appalachian State, UC Santa Cruz, Western Washington, U of Oregon, UVM, Fort Lewis, Western Colorado, Cal Poly Humboldt. Same playbook. Club president demo → clubs bring members. <strong>~18,700 new users. $89K ARR.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">3</div>
+      <div class="priority-content">
+        <h4>California Statewide (Year 2)</h4>
+        <p>20 UC/CSU campuses. Density play + brand partnership territory. California users are the proof point for Patagonia, REI, and Arc'teryx. <strong>~38,000 users = first real press story.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">4</div>
+      <div class="priority-content">
+        <h4>REI Partnership (Year 2 — Single Biggest Lever)</h4>
+        <p>This is the non-campus move with the highest ceiling. 2.2M young REI members who already self-identify as outdoor people. kindred QR at every beginner class, REI Co-op Classes, and checkout. <strong>110,000 realistic users. REI's mission and kindred's mission are the same sentence.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">5</div>
+      <div class="priority-content">
+        <h4>NOLS + Guiding Companies (Year 2–3 — Quality Seeding)</h4>
+        <p>Small numbers but the highest-value users kindred can acquire. NOLS graduates become trip leaders. Guide company clients become kindred ambassadors. <strong>These users create the supply side (trip leaders) that makes the whole network real.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">6</div>
+      <div class="priority-content">
+        <h4>Rafting Companies (Year 2–3 — Volume Summer Push)</h4>
+        <p>12M commercial rafting participants/year. Summer seasonal spike. Solo joiners already doing what kindred enables. Partnership with OARS, NOC, ACE Adventure Resort. <strong>18,000–30,000 users through summer season partnerships.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">7</div>
+      <div class="priority-content">
+        <h4>University Rec + Wellness (Year 2–4 — Institutional Revenue)</h4>
+        <p>500 meaningful university outdoor rec programs. $500/month institutional license. <strong>100 schools = $600K ARR</strong>, plus the campus-wide deployment that bypasses the club-by-club pitch.</p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank">8</div>
+      <div class="priority-content">
+        <h4>Climbing Gyms (Year 3 — Adjacent Community)</h4>
+        <p>Indoor climbing's 18–24 demographic is kindred's user waiting to go outside. Movement, Planet Granite, Brooklyn Boulders — natural "take it outside" platform integration. <strong>24,000 users. Natural partner for gear discounts.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank dim">9</div>
+      <div class="priority-content">
+        <h4>National College Expansion — 150 Campuses (Year 3–5)</h4>
+        <p>Playbook proven. Hire campus reps. Scale the club-president pipeline. <strong>157,500 users + $891K ARR.</strong></p>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-rank dim">10</div>
+      <div class="priority-content">
+        <h4>Social Discovery Frame / Tinder Narrative (Year 4+ — Media &amp; Press)</h4>
+        <p>This isn't a direct acquisition channel — it's the investor and press narrative. <strong>"Tinder for outdoor adventure" is the 10-second category explanation</strong> that unlocks Series A conversations and TechCrunch coverage. 600,000 users at 5% national penetration is the long-term ceiling of this frame.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  <strong>kindred</strong> — Market Breakdown &amp; SOM Analysis &nbsp;|&nbsp; June 2026 &nbsp;|&nbsp; Internal strategy document
+  <br><br>
+  <span style="font-size:11px;">Sources: OIA 2024 Outdoor Participation Report, REI public disclosures, NOLS institutional data, US Census 2024, IPEDS enrollment data, IBISWorld outdoor recreation industry reports.</span>
+</div>
+
+</body>
+</html>

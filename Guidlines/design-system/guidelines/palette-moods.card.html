@@ -1,0 +1,33 @@
+<!-- @dsCard group="Brand" viewport="860x200" name="Palette moods" subtitle="Five directions — switch with data-palette on any ancestor" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--surface-dark);font-family:var(--font-ui);padding:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .mood{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-card)}
+  .swatches{display:flex;height:52px}
+  .swatches>div{flex:1}
+  .cap{padding:9px 11px;background:var(--surface-card)}
+  .cap b{font-size:12.5px;color:var(--text-primary)}
+  .cap span{display:block;font-size:11px;color:var(--text-tertiary);margin-top:2px}
+</style></head><body>
+  <div class="mood">
+    <div class="swatches"><div style="background:#e0703a"></div><div style="background:#6f5f96"></div><div style="background:#7f9a5e"></div><div style="background:#faf6f0"></div></div>
+    <div class="cap"><b>Golden Hour</b><span>default · warm sunset</span></div>
+  </div>
+  <div class="mood" data-palette="alpine">
+    <div class="swatches"><div style="background:var(--action)"></div><div style="background:var(--accent)"></div><div style="background:var(--success)"></div><div style="background:var(--surface-app)"></div></div>
+    <div class="cap"><b>Alpine Morning</b><span>data-palette="alpine"</span></div>
+  </div>
+  <div class="mood" data-palette="monet">
+    <div class="swatches"><div style="background:var(--action)"></div><div style="background:var(--accent)"></div><div style="background:var(--success)"></div><div style="background:var(--surface-app)"></div></div>
+    <div class="cap"><b>Monet Garden</b><span>data-palette="monet"</span></div>
+  </div>
+  <div class="mood" data-palette="trailhead">
+    <div class="swatches"><div style="background:var(--action)"></div><div style="background:var(--accent)"></div><div style="background:var(--success)"></div><div style="background:var(--surface-app)"></div></div>
+    <div class="cap"><b>Trailhead</b><span>data-palette="trailhead"</span></div>
+  </div>
+  <div class="mood" data-palette="reef">
+    <div class="swatches"><div style="background:var(--action)"></div><div style="background:var(--accent)"></div><div style="background:var(--info)"></div><div style="background:var(--surface-app)"></div></div>
+    <div class="cap"><b>Coral &amp; Teal</b><span>data-palette="reef"</span></div>
+  </div>
+</body></html>

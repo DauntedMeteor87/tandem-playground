@@ -1,0 +1,135 @@
+/* ============================================================
+   Colors — warm Impressionist palette system.
+   The greyscale wireframe ramp is preserved as WARM-tinted
+   neutrals (not pure grey), then given brand color on top.
+   Four palette MOODS are shipped; switch with a data attribute
+   on any ancestor:  <div data-palette="alpine"> … </div>
+   Default (no attribute) = "Golden Hour".
+   ============================================================ */
+
+:root {
+  /* ---- Warm neutral ramp (replaces the greyscale ramp) ---- */
+  --warm-0:    #ffffff;   /* pure surface */
+  --warm-50:   #faf6f0;   /* app screen — sunlit cream */
+  --warm-100:  #f4ede2;   /* subtle raised */
+  --warm-150:  #ede3d5;
+  --warm-200:  #e3d6c3;   /* hairline / line */
+  --warm-300:  #cdbca4;   /* stronger border */
+  --warm-400:  #b0a087;
+  --ink-900:   #2a231b;   /* primary text — warm near-black */
+  --ink-700:   #6a5d4d;   /* secondary text */
+  --ink-500:   #9b8d78;   /* tertiary / hints */
+  --photo-ph:  #e6dccb;   /* image placeholder base */
+  --photo-ph2: #d3c4ad;   /* placeholder accent */
+
+  /* ---- Brand hues: GOLDEN HOUR (default mood) ---- */
+  --sun-600:   #c6552a;   /* deep ember */
+  --sun-500:   #e0703a;   /* sunset coral — primary action */
+  --sun-400:   #ef9459;   /* amber glow */
+  --sun-200:   #f7d4b6;   /* soft peach wash */
+  --dusk-600:  #574a73;
+  --dusk-500:  #6f5f96;   /* dusk violet — accent */
+  --dusk-200:  #d9d1e6;
+  --meadow-500:#7f9a5e;   /* success / go */
+  --sky-500:   #5b93a8;   /* info */
+  --clay-500:  #b5622f;   /* mascot / earth */
+
+  /* ---- Semantic aliases (what components reference) ---- */
+  --surface-app:     var(--warm-50);
+  --surface-card:    var(--warm-0);
+  --surface-raised:  var(--warm-100);
+  --surface-sunk:    var(--warm-100);
+  --border:          var(--warm-200);
+  --border-strong:   var(--warm-300);
+
+  --text-primary:    var(--ink-900);
+  --text-secondary:  var(--ink-700);
+  --text-tertiary:   var(--ink-500);
+  --text-on-action:  #fff8f0;
+
+  /* Warm charcoal surface — for dark specimen backdrops & photo/memory views */
+  --surface-dark:    #26241f;
+  --text-on-dark:    #f0ebe3;
+  --text-on-dark-dim:#b7ab99;
+
+  --action:          var(--sun-500);
+  --action-hover:    var(--sun-600);
+  --action-soft:     var(--sun-200);
+  --accent:          var(--dusk-500);
+  --accent-soft:     var(--dusk-200);
+
+  --success:         var(--meadow-500);
+  --info:            var(--sky-500);
+  --danger:          #c1503f;
+
+  --focus-ring:      color-mix(in oklch, var(--action) 45%, transparent);
+  --photo-grade:     linear-gradient(180deg, rgba(230,140,70,.10), rgba(90,60,110,.14)); /* @kind other */
+}
+
+/* ---- Mood: ALPINE MORNING — sky blue, meadow, warm clay ---- */
+[data-palette="alpine"] {
+  --warm-50:  #f4f6f4;
+  --warm-100: #eaefec;
+  --warm-200: #d8e0da;
+  --warm-300: #b7c4bb;
+  --ink-900:  #23302b;
+  --ink-700:  #4f6158;
+  --ink-500:  #869489;
+  --photo-ph: #d7e2dc; --photo-ph2:#bcccc2;
+
+  --action:       #3e82a6;  --action-hover:#316a89; --action-soft:#cadfe9;
+  --accent:       #b4744e;  --accent-soft:#ecd8c8;
+  --success:      #5e8c5a;  --info:#3e82a6;
+  --photo-grade:  linear-gradient(180deg, rgba(62,130,166,.10), rgba(94,140,90,.12)); /* @kind other */
+}
+
+/* ---- Mood: MONET GARDEN — lilac, water-lily green, cream ---- */
+[data-palette="monet"] {
+  --warm-50:  #faf7f0;
+  --warm-100: #f3eee3;
+  --warm-200: #e7dece;
+  --warm-300: #cfc0a9;
+  --ink-900:  #302a33;
+  --ink-700:  #665e6d;
+  --ink-500:  #9c93a1;
+  --photo-ph: #e6dfd0; --photo-ph2:#d0c6b3;
+
+  --action:       #7c74b8;  --action-hover:#655da0; --action-soft:#ded9ef;
+  --accent:       #6fa07a;  --accent-soft:#d3e6d6;
+  --success:      #6fa07a;  --info:#7c74b8;
+  --photo-grade:  linear-gradient(180deg, rgba(124,116,184,.12), rgba(111,160,122,.12)); /* @kind other */
+}
+
+/* ---- Mood: TRAILHEAD — terracotta, sage, warm stone ---- */
+[data-palette="trailhead"] {
+  --warm-50:  #f5f1e9;
+  --warm-100: #efe8db;
+  --warm-200: #e2d6c2;
+  --warm-300: #c9b599;
+  --ink-900:  #2e251c;
+  --ink-700:  #6b5c48;
+  --ink-500:  #9c8b73;
+  --photo-ph: #e4d7c1; --photo-ph2:#d0bd9f;
+
+  --action:       #c25a3c;  --action-hover:#a4472d; --action-soft:#f0d3c4;
+  --accent:       #7e9271;  --accent-soft:#dce4d3;
+  --success:      #7e9271;  --info:#6e98b0;
+  --photo-grade:  linear-gradient(180deg, rgba(194,90,60,.10), rgba(126,146,113,.12)); /* @kind other */
+}
+
+/* ---- Mood: CORAL & TEAL — punchy retro pairing (from paint chips) ---- */
+[data-palette="reef"] {
+  --warm-50:  #f6f4ef;
+  --warm-100: #edf1f0;
+  --warm-200: #dae4e3;
+  --warm-300: #b2c8c7;
+  --ink-900:  #25373b;
+  --ink-700:  #4f6669;
+  --ink-500:  #8a9b9c;
+  --photo-ph: #d7e3e2; --photo-ph2:#bccccb;
+
+  --action:       #f4657a;  --action-hover:#e14f66; --action-soft:#fcd7dd;
+  --accent:       #09a1a1;  --accent-soft:#c2e8e8;
+  --success:      #09a1a1;  --info:#30525c;
+  --photo-grade:  linear-gradient(180deg, rgba(244,101,122,.10), rgba(9,161,161,.12)); /* @kind other */
+}

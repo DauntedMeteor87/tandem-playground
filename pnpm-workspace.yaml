@@ -1,0 +1,15 @@
+# Which folders are workspace packages.
+# Front-end build (deploy-phase2): mobile + web only. Backend packages
+# (apps/api, apps/workers, packages/*, db) get added back when they land here.
+packages:
+  - "apps/mobile"
+  - "apps/web"
+
+# Which dependencies may run install-time build scripts (pnpm blocks the rest for safety).
+# @scarf/scarf is install-time analytics — deliberately blocked.
+allowBuilds:
+  '@scarf/scarf': false
+  '@swc/core': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

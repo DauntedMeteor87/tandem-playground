@@ -1,0 +1,24 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Radius & elevation" subtitle="Corner radii + the soft warm shadow set" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--surface-dark);padding:20px 22px;font-family:var(--font-ui);display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+  .grp{display:flex;gap:12px;align-items:flex-end}
+  .r{width:56px;height:56px;background:var(--surface-card);border:1px solid var(--border-strong)}
+  .e{width:64px;height:56px;background:var(--surface-card);border-radius:12px}
+  .lab{font-size:10px;color:var(--text-on-dark-dim);font-family:var(--font-mono);text-align:center;margin-top:6px}
+  .col{text-align:center}
+</style></head><body>
+  <div class="grp">
+    <div class="col"><div class="r" style="border-radius:8px"></div><div class="lab">sm 8</div></div>
+    <div class="col"><div class="r" style="border-radius:12px"></div><div class="lab">md 12</div></div>
+    <div class="col"><div class="r" style="border-radius:18px"></div><div class="lab">lg 18</div></div>
+    <div class="col"><div class="r" style="border-radius:24px"></div><div class="lab">xl 24</div></div>
+    <div class="col"><div class="r" style="border-radius:999px"></div><div class="lab">pill</div></div>
+  </div>
+  <div class="grp">
+    <div class="col"><div class="e" style="box-shadow:var(--shadow-card)"></div><div class="lab">card</div></div>
+    <div class="col"><div class="e" style="box-shadow:var(--shadow-raised)"></div><div class="lab">raised</div></div>
+    <div class="col"><div class="e" style="box-shadow:var(--shadow-pop)"></div><div class="lab">pop</div></div>
+  </div>
+</body></html>

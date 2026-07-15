@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kindred — Architecture Decision Memo</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --coral: #FA8E73;
+    --coral-light: #FFF0EC;
+    --coral-dark: #E06B50;
+    --ink: #1A1A2E;
+    --ink-mid: #3D3D5C;
+    --ink-light: #6B6B8A;
+    --border: #E8E8F0;
+    --border-strong: #D6D6E4;
+    --white: #FFFFFF;
+    --bg: #F8F8FC;
+    --bg-warm: #FBFAF7;
+    --go: #1F9D6B;
+    --go-light: #E7F6EF;
+    --caution: #C98412;
+    --caution-light: #FBF1DF;
+    --stop: #C0392B;
+    --stop-light: #FBEAE7;
+    --code-bg: #14142A;
+    --code-fg: #E7E7F2;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 54px;
+  }
+  .nav-logo { font-size: 21px; font-weight: 800; color: var(--coral); letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--ink-light); font-weight: 600; font-size: 13px; margin-left: 8px; letter-spacing: 0; }
+  .nav-meta { font-size: 12.5px; color: var(--ink-light); font-family: var(--mono); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background:
+      radial-gradient(1200px 400px at 80% -10%, rgba(250,142,115,0.22), transparent 60%),
+      linear-gradient(135deg, var(--ink) 0%, #2D1B69 100%);
+    color: var(--white);
+    padding: 66px 32px 54px;
+  }
+  .hero-inner { max-width: 1180px; margin: 0 auto; }
+  .hero-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--coral); margin-bottom: 18px; font-family: var(--mono);
+  }
+  .hero h1 { font-size: 41px; font-weight: 800; line-height: 1.12; max-width: 820px; letter-spacing: -1.2px; margin-bottom: 18px; }
+  .hero .lede { font-size: 18px; color: rgba(255,255,255,0.72); max-width: 720px; line-height: 1.55; margin-bottom: 14px; }
+  .hero .principle {
+    display: inline-block; margin-top: 18px; font-family: var(--mono); font-size: 13.5px;
+    color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px; padding: 10px 16px;
+  }
+  .hero .principle b { color: var(--coral); }
+  .hero-stats { display: flex; gap: 38px; flex-wrap: wrap; margin-top: 34px; }
+  .hero-stat-num { font-size: 26px; font-weight: 800; color: var(--coral); letter-spacing: -0.5px; font-family: var(--mono); }
+  .hero-stat-label { font-size: 12.5px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.6px; }
+
+  /* ---------- LAYOUT ---------- */
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 32px; display: flex; gap: 40px; align-items: flex-start; }
+  .toc {
+    position: sticky; top: 70px; width: 240px; flex-shrink: 0; padding: 28px 0 40px;
+    max-height: calc(100vh - 80px); overflow-y: auto; font-size: 13px;
+  }
+  .toc h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-light); margin-bottom: 12px; font-weight: 700; }
+  .toc a { display: block; color: var(--ink-mid); text-decoration: none; padding: 5px 10px 5px 12px; border-left: 2px solid var(--border); line-height: 1.35; border-radius: 0 4px 4px 0; }
+  .toc a:hover { color: var(--coral-dark); border-left-color: var(--coral); background: var(--coral-light); }
+  .toc a .n { font-family: var(--mono); color: var(--ink-light); font-size: 11px; margin-right: 6px; }
+  .toc .toc-extra { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-strong); }
+
+  .main { flex: 1; min-width: 0; padding: 36px 0 90px; }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section { scroll-margin-top: 64px; margin-bottom: 14px; padding-top: 30px; }
+  .section-head { display: flex; align-items: center; gap: 15px; margin-bottom: 8px; padding-top: 26px; border-top: 1px solid var(--border); }
+  .section:first-of-type .section-head { border-top: none; padding-top: 0; }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 11px; background: var(--coral); color: #fff;
+    font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-family: var(--mono); box-shadow: 0 4px 14px rgba(250,142,115,0.35);
+  }
+  .section-head h2 { font-size: 25px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.15; }
+  .section-kicker { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px; color: var(--coral-dark); font-family: var(--mono); margin-bottom: 2px; }
+
+  .main p { margin: 0 0 15px; color: var(--ink-mid); }
+  .main h3 { font-size: 17.5px; font-weight: 800; color: var(--ink); margin: 26px 0 10px; letter-spacing: -0.3px; }
+  .main h4 { font-size: 14.5px; font-weight: 800; color: var(--ink); margin: 18px 0 7px; }
+  .main strong { color: var(--ink); font-weight: 700; }
+  .main em { color: var(--ink-mid); }
+  .main a { color: var(--coral-dark); text-decoration: none; border-bottom: 1px solid rgba(224,107,80,0.3); }
+  .main a:hover { border-bottom-color: var(--coral-dark); }
+  .main ul, .main ol { margin: 4px 0 16px; padding-left: 22px; }
+  .main li { margin-bottom: 7px; color: var(--ink-mid); }
+  .main li strong { color: var(--ink); }
+  code, .mono { font-family: var(--mono); font-size: 0.86em; }
+  p code, li code, td code { background: #EFEFF6; color: #3A2A5C; padding: 1px 6px; border-radius: 5px; border: 1px solid #E3E3EE; }
+
+  sup a { color: var(--coral-dark); font-family: var(--mono); font-size: 0.68rem; font-weight: 700; text-decoration: none; border: none; padding: 0 1px; }
+  sup a:hover { text-decoration: underline; }
+
+  /* ---------- CALLOUTS ---------- */
+  .verdict {
+    background: linear-gradient(180deg, #fff, var(--coral-light));
+    border: 1px solid #FAC5B8; border-left: 5px solid var(--coral); border-radius: 12px;
+    padding: 18px 22px; margin: 22px 0;
+  }
+  .verdict .vh { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.6px; color: var(--coral-dark); font-family: var(--mono); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .verdict .vh::before { content: "◆"; font-size: 11px; }
+  .verdict p { color: var(--ink); margin-bottom: 6px; }
+  .verdict p:last-child { margin-bottom: 0; }
+
+  .box { border-radius: 11px; padding: 16px 20px; margin: 20px 0; border: 1px solid var(--border); background: var(--white); }
+  .box .bh { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 8px; font-family: var(--mono); }
+  .box p:last-child, .box ul:last-child, .box li:last-child { margin-bottom: 0; }
+
+  .box.trap { background: var(--stop-light); border-color: #F0C4BE; }
+  .box.trap .bh { color: var(--stop); }
+  .box.trap .bh::before { content: "⚠ "; }
+
+  .box.jargon { background: #F3F1FA; border-color: #E0DCF0; }
+  .box.jargon .bh { color: #6B4FAE; }
+  .box.jargon .bh::before { content: "📖 "; }
+  .box.jargon p { font-size: 14px; color: var(--ink-mid); }
+
+  .box.note { background: var(--bg-warm); border-color: #ECE7DA; border-left: 4px solid var(--coral); }
+  .box.note .bh { color: var(--coral-dark); }
+
+  .box.evidence { background: #EEF4FB; border-color: #D3E3F2; }
+  .box.evidence .bh { color: #2563A8; }
+  .box.evidence .bh::before { content: "✓ "; }
+  .box.evidence .inf { color: #8a6d1f; }
+
+  /* ---------- TABLES ---------- */
+  .tbl-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; }
+  table.k { width: 100%; border-collapse: collapse; font-size: 13.2px; min-width: 560px; }
+  table.k th { background: var(--ink); color: #fff; text-align: left; padding: 11px 14px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; position: sticky; top: 0; }
+  table.k th:first-child { border-top-left-radius: 0; }
+  table.k td { padding: 11px 14px; border-top: 1px solid var(--border); color: var(--ink-mid); vertical-align: top; }
+  table.k tr:nth-child(even) td { background: #FCFCFE; }
+  table.k td strong, table.k td b { color: var(--ink); }
+  table.k td.num { font-family: var(--mono); white-space: nowrap; }
+  table.k .rowlabel { font-weight: 700; color: var(--ink); background: #F4F4FA !important; white-space: nowrap; }
+  .t-pick { color: var(--go); font-weight: 700; }
+  .t-warn { color: var(--caution); font-weight: 700; }
+  .t-no { color: var(--stop); font-weight: 700; }
+  .tbl-cap { font-size: 12px; color: var(--ink-light); margin: -10px 0 22px; font-style: italic; }
+
+  /* pills */
+  .pill { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; border-radius: 20px; padding: 2px 10px; font-family: var(--mono); vertical-align: middle; }
+  .pill.buy { background: var(--go-light); color: var(--go); border: 1px solid #B7E3CE; }
+  .pill.build { background: var(--coral-light); color: var(--coral-dark); border: 1px solid #FAC5B8; }
+  .pill.now { background: var(--coral-light); color: var(--coral-dark); border: 1px solid #FAC5B8; }
+  .pill.soon { background: #EBF2FB; color: #2563A8; border: 1px solid #C6DCF2; }
+  .pill.later { background: #EAF5F0; color: var(--go); border: 1px solid #BEE6D4; }
+
+  /* ---------- CODE BLOCK ---------- */
+  pre.code { background: var(--code-bg); color: var(--code-fg); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-family: var(--mono); font-size: 12.7px; line-height: 1.6; margin: 18px 0; border: 1px solid #2A2A48; }
+  pre.code .c { color: #7d7da6; }
+  pre.code .k { color: #FA8E73; }
+  pre.code .s { color: #9ED6A8; }
+  pre.code .t { color: #8FB8F0; }
+
+  /* phase columns */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0; }
+  .phase { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .phase .ptag { display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; border-radius: 5px; padding: 3px 9px; margin-bottom: 10px; font-family: var(--mono); }
+  .phase.p1 .ptag { background: var(--coral-light); color: var(--coral-dark); }
+  .phase.p2 .ptag { background: #EBF2FB; color: #2563A8; }
+  .phase.p3 .ptag { background: #EAF5F0; color: var(--go); }
+  .phase h4 { font-size: 14.5px; margin: 0 0 3px; }
+  .phase .psub { font-size: 12px; color: var(--ink-light); margin-bottom: 10px; }
+  .phase ul { list-style: none; margin: 0; padding: 0; }
+  .phase li { font-size: 12.6px; padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; color: var(--ink-mid); }
+  .phase li:last-child { border-bottom: none; }
+  .phase li b { color: var(--ink); font-weight: 700; }
+  .phase li .v { font-family: var(--mono); font-size: 11.5px; text-align: right; color: var(--ink); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* references */
+  .refs { background: #F4F4FA; border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; margin-top: 40px; }
+  .refs h3 { font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 16px; }
+  .refs ol { padding-left: 20px; font-size: 12.8px; color: var(--ink-mid); }
+  .refs li { margin-bottom: 9px; }
+  .refs a { word-break: break-word; }
+
+  .endcap { margin-top: 26px; padding: 24px 26px; background: linear-gradient(135deg, var(--ink), #2D1B69); color: #fff; border-radius: 14px; }
+  .endcap .bh { color: var(--coral); font-family: var(--mono); font-size: 11.5px; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 10px; }
+  .endcap p { color: rgba(255,255,255,0.82); margin-bottom: 8px; }
+  .endcap b { color: #fff; }
+
+  @media (max-width: 900px) {
+    .toc { display: none; }
+    .shell { padding: 0 18px; }
+    .hero { padding: 44px 18px 38px; }
+    .hero h1 { font-size: 30px; }
+    .phases { grid-template-columns: 1fr; }
+    .section-head h2 { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-logo">kindred <span>· architecture</span></div>
+  <div class="nav-meta">CTO Decision Memo · Jun 2026</div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Architecture Decision Memo · Confidential</div>
+    <h1>Building the backend for a media-heavy social + trip-planning app — as a solo founder with Claude Code</h1>
+    <p class="lede">An opinionated, end-to-end stack decision for Kindred: a mobile-first social feed with short-form video, messaging, profiles, and trip plans — beta today at ~1,000 users, aiming for ~500,000 in three years.</p>
+    <div class="principle">Operating principle: <b>build like a serious company, operate like a lean startup.</b> Scale-ready, not scale-overbuilt. Design for migration, not premature duplication.</div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num">~1k → 500k</div><div class="hero-stat-label">Users, 3-year horizon</div></div>
+      <div><div class="hero-stat-num">1 founder</div><div class="hero-stat-label">+ Claude Code &amp; AI</div></div>
+      <div><div class="hero-stat-num">Video</div><div class="hero-stat-label">The hardest, costliest part</div></div>
+      <div><div class="hero-stat-num">TypeScript</div><div class="hero-stat-label">The through-line</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc">
+    <h4>Contents</h4>
+    <a href="#s0"><span class="n">—</span>Executive summary</a>
+    <a href="#s1"><span class="n">01</span>Philosophy &amp; your 5 biggest risks</a>
+    <a href="#s2"><span class="n">02</span>The video problem</a>
+    <a href="#s3"><span class="n">03</span>Hosting / cloud</a>
+    <a href="#s4"><span class="n">04</span>Database strategy</a>
+    <a href="#s5"><span class="n">05</span>Backend language &amp; framework</a>
+    <a href="#s6"><span class="n">06</span>Frontend &amp; mobile</a>
+    <a href="#s7"><span class="n">07</span>Architecture patterns</a>
+    <a href="#s8"><span class="n">08</span>Vendor abstraction</a>
+    <a href="#s9"><span class="n">09</span>Codebase for Claude Code</a>
+    <a href="#s10"><span class="n">10</span>Analytics &amp; AI-readiness</a>
+    <a href="#s11"><span class="n">11</span>Security, trust &amp; safety</a>
+    <a href="#s12"><span class="n">12</span>Cost modeling</a>
+    <a href="#s13"><span class="n">13</span>Industry benchmarking</a>
+    <a href="#s14"><span class="n">14</span>Final phased plan</a>
+    <a href="#s15"><span class="n">15</span>Founder mistakes</a>
+    <div class="toc-extra">
+      <a href="#mac"><span class="n">+</span>Mac apps &amp; tools to master</a>
+      <a href="#refs"><span class="n">§</span>Sources</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- ===================== EXEC SUMMARY ===================== -->
+    <section class="section" id="s0">
+      <div class="section-head">
+        <div class="section-num" style="background:var(--ink);box-shadow:none;">★</div>
+        <div><div class="section-kicker">Read this first</div><h2>Executive summary — the whole memo in one screen</h2></div>
+      </div>
+
+      <p>You are one person building something with the surface area of three products (a social feed, a video app, and a messenger) plus a trip-planning layer. The winning move is not to out-engineer Meta. It is to <strong>buy the hard infrastructure, build only your product, keep everything boring and strongly typed so Claude Code stays productive, and abstract the few vendors you might one day replace.</strong> Below is the recommended stack. Every choice is defended in its section.</p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Layer</th><th>Recommendation (launch)</th><th>Why</th><th>Migrate to (at scale)</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Language</td><td><strong>TypeScript</strong>, everywhere</td><td>One language across mobile, web, and API; shared types; Claude Code's strongest ecosystem</td><td class="num">Add Go / Elixir / Rust only for hot paths</td></tr>
+            <tr><td class="rowlabel">Mobile</td><td><strong>React Native + Expo</strong></td><td>Shared types with backend; native modules for the camera/editing hot path</td><td class="num">Selective native modules</td></tr>
+            <tr><td class="rowlabel">Web</td><td><strong>Next.js</strong> on Vercel</td><td>Shared TS, huge ecosystem, zero-config deploy</td><td class="num">Stays</td></tr>
+            <tr><td class="rowlabel">Backend</td><td><strong>NestJS modular monolith</strong></td><td>Explicit module boundaries + DI = rails that stop Claude Code making a mess</td><td class="num">Extract 1–2 services</td></tr>
+            <tr><td class="rowlabel">Database</td><td><strong>PostgreSQL</strong> via Supabase</td><td>Relational core + JSONB + PostGIS-ready + pgvector; auth/storage/realtime bundled</td><td class="num">Neon or RDS/Aurora</td></tr>
+            <tr><td class="rowlabel">Video <span class="pill buy">buy</span></td><td><strong>Mux</strong> (or Cloudflare Stream)</td><td>Never build a transcoding pipeline solo; free basic encoding + analytics</td><td class="num">Cloudflare Stream / AWS</td></tr>
+            <tr><td class="rowlabel">Hosting (API)</td><td><strong>Render</strong> (or Railway)</td><td>Managed Postgres + predictable bills; graduate to AWS later</td><td class="num">AWS ECS/Fargate</td></tr>
+            <tr><td class="rowlabel">Auth <span class="pill buy">buy</span></td><td><strong>Supabase Auth</strong> (or Clerk)</td><td>Never roll your own crypto; Apple/Google sign-in built in</td><td class="num">Custom, behind interface</td></tr>
+            <tr><td class="rowlabel">Search</td><td><strong>Postgres full-text</strong> first</td><td>Free, good enough &lt;100k records</td><td class="num">Typesense / Meilisearch</td></tr>
+            <tr><td class="rowlabel">Analytics</td><td><strong>PostHog</strong> from day one</td><td>Events + session replay + flags; generous free tier; AI-ready data</td><td class="num">+ ClickHouse warehouse</td></tr>
+            <tr><td class="rowlabel">Monitoring</td><td><strong>Sentry</strong> + Cloudflare WAF</td><td>Errors + DDoS protection from launch</td><td class="num">+ Grafana / Datadog</td></tr>
+            <tr><td class="rowlabel">Repo</td><td><strong>Turborepo + pnpm monorepo</strong></td><td>Shared types, one CI, strict module boundaries, <code>CLAUDE.md</code></td><td class="num">Stays</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">The one-sentence stack</div>
+        <p>A <strong>TypeScript modular monolith</strong> (NestJS) on a managed PaaS, talking to <strong>Postgres</strong>, with <strong>video, auth, and search bought as managed services behind clean interfaces</strong>, a <strong>React Native + Next.js</strong> front end sharing types from a <strong>monorepo</strong>, and <strong>analytics instrumented from the first commit.</strong> Estimated infra cost: <span class="mono">~$150–300/mo at 1k users → ~$50k–100k/mo at 500k</span>, where video alone is the dominant line. Build for 10× your current scale, never 500×.</p>
+      </div>
+
+      <div class="box note">
+        <div class="bh">How to read confidence in this memo</div>
+        <p>Pricing and "what companies use" facts were researched against live 2026 sources and are cited. Throughout, <span style="color:#2563A8;font-weight:700;">✓ Confirmed</span> marks publicly verifiable facts and <span style="color:#8a6d1f;font-weight:700;">⊘ Inferred</span> marks my professional judgment about likely architecture. Prices change monthly — treat every dollar figure as "as of June 2026, verify before committing."</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 1 ===================== -->
+    <section class="section" id="s1">
+      <div class="section-head">
+        <div class="section-num">01</div>
+        <div><div class="section-kicker">Philosophy</div><h2>Architecture philosophy &amp; the 5 ways you're most likely to shoot yourself in the foot</h2></div>
+      </div>
+
+      <p>Your situation has three defining facts, and the architecture should bend to all three: <strong>(1)</strong> you are a solo, newer engineer learning fast, with <strong>Claude Code and other AI as your team</strong>; <strong>(2)</strong> the product is unusually media-heavy for a pre-seed app — video is a first-class feature, not a nice-to-have; and <strong>(3)</strong> your edge is product and community (per your own "Note to Self" — free, Gen-Z, novel experiences, local density), <em>not</em> infrastructure. That last point is the whole strategy: <strong>infrastructure is a cost center you want to make boring, cheap, and bought; the product is where your one pair of hands goes.</strong></p>
+
+      <h3>The philosophy in four rules</h3>
+      <ul>
+        <li><strong>Buy the hard parts, build the product.</strong> Video transcoding, auth, search, email, push, payments — these are solved commodities sold by specialists. Building them yourself is how a solo founder spends a year and ships nothing. Your code should be the social graph, the feed, the plans, the messaging UX — the things that make Kindred <em>Kindred</em>.</li>
+        <li><strong>Boring, typed, explicit tech.</strong> Claude Code is dramatically more reliable on technologies with massive training data and strong type systems (TypeScript, Postgres, React). Exotic or weakly-typed stacks force the model to guess, and a guessing AI writing most of your code is how technical debt compounds invisibly.</li>
+        <li><strong>One deployable, with clean internal seams.</strong> A <em>modular monolith</em> (one app, strict module boundaries) gives you a serious-company structure without the operational nightmare of microservices. The seams are where you'll later cut out a service — if you ever actually need to.</li>
+        <li><strong>Abstract what you might replace; couple to what's a standard.</strong> Put a thin interface in front of every vendor you could swap (video, auth, analytics). Couple freely to Postgres-the-engine and to your language — those are portable standards, not lock-in.</li>
+      </ul>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: monolith vs. modular monolith vs. microservices</div>
+        <p>A <strong>monolith</strong> is one program that does everything — simplest to build and deploy. <strong>Microservices</strong> split the app into many small programs that talk over the network — flexible at huge scale, but each one needs its own deploy, monitoring, database connection, and failure handling (operational tax a solo founder cannot pay). A <strong>modular monolith</strong> is the sweet spot: <em>one</em> program and <em>one</em> deploy, but internally divided into well-isolated modules (auth, feed, media…) that only talk through defined interfaces. You get clean boundaries now and the <em>option</em> to extract a module into its own service later, without paying the microservices tax today.</p>
+      </div>
+
+      <h3>The 5 ways you're most likely to shoot yourself in the foot</h3>
+
+      <div class="box trap">
+        <div class="bh">Trap 1 — Building video infrastructure (or a CapCut clone) yourself</div>
+        <p>Video is your hardest problem and biggest bill (Section 2). The temptation to "just use FFmpeg and S3" will cost you months and produce something worse than a $50/mo managed service. The same applies to in-app editing: a multi-layer timeline editor is a multi-year, multi-engineer product on its own. <strong>Launch with a managed video provider and basic on-device editing. Do not build either from scratch.</strong></p>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">Trap 2 — Premature microservices, Kubernetes, or multi-cloud</div>
+        <p>Every "scalable architecture" blog pushes you toward distributed systems. At 1k–100k users this is pure self-sabotage: you'll spend your time debugging service-to-service networking and YAML instead of building features. Kubernetes, service meshes, multi-region, and multi-cloud are answers to problems you do not have. <strong>A modular monolith on a PaaS will comfortably carry you past 100k users.</strong></p>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">Trap 3 — Letting Claude Code quietly accumulate architectural debt</div>
+        <p>This is the subtle one, and the most dangerous given your setup. An AI will happily add a new dependency, invent a fifth way to call the database, or smear business logic across controllers — and it all looks like progress. Without guardrails, you wake up at month six with an unmaintainable codebase you didn't consciously design. <strong>The fix is process</strong> (Section 9): a strong <code>CLAUDE.md</code>, enforced module boundaries, tests as guardrails the agent must keep green, architecture decision records, and reviewing every diff. The AI writes the code; <em>you</em> own the architecture.</p>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">Trap 4 — Coupling tightly to one vendor's proprietary APIs</div>
+        <p>If your business logic calls Mux (or Supabase, or Algolia) directly from a hundred places, switching providers later — for cost, features, or because they 10×'d their price — becomes a terrifying rewrite. <strong>One thin interface per swappable vendor</strong> (Section 8) turns a rewrite into a one-file adapter swap. This is the cheapest insurance you'll ever buy.</p>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">Trap 5 — Treating trust &amp; safety as a "later" problem</div>
+        <p>You host user-generated video, your target users are 18–24, and your product encourages them to meet strangers in person for outdoor adventures. That is a serious trust-and-safety and liability surface. A single CSAM upload, a predatory DM, or an unsafe meetup that you facilitated could be existential — legally and for the brand of trust your "Note to Self" is built on. <strong>Automated content moderation, reporting/blocking, and a safety posture are launch requirements, not v2 features</strong> (Section 11).</p>
+      </div>
+
+      <p>There is a sixth, quieter mistake worth naming: <strong>flying blind.</strong> If you don't instrument analytics from the first commit, you'll make product decisions on vibes and have no data to feed the AI features you want later. The opposite failure — over-building infra before you have product-market fit — is covered in Section 15. Both are the same disease: spending effort on the wrong layer for your stage.</p>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p>Adopt the <strong>"buy hard parts, build product, stay boring and typed, abstract the swappable"</strong> philosophy. Your three real enemies are: building infrastructure you should rent, letting an AI design your architecture by accident, and ignoring trust &amp; safety. Everything else in this memo is downstream of getting those three right.</p>
+      </div>
+    </section>
+    <!-- ===================== SECTION 2 ===================== -->
+    <section class="section" id="s2">
+      <div class="section-head">
+        <div class="section-num">02</div>
+        <div><div class="section-kicker">The hard part</div><h2>The video problem — your hardest engineering challenge and biggest bill</h2></div>
+      </div>
+
+      <p>Treat this as the most important technical decision in the memo. Video has four distinct stages — <strong>upload → transcoding → storage → adaptive delivery</strong> — and for a user-generated-content (UGC) app, <strong>storage and egress (delivery bandwidth) are the costs that quietly kill you</strong>, not the fancy encoding. Get this wrong and you either burn months building a pipeline or get a five-figure surprise bill.</p>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: the video pipeline, in plain terms</div>
+        <p><strong>Transcoding</strong> = converting one uploaded file into many versions (different resolutions/bitrates). <strong>Adaptive bitrate streaming (ABR / HLS)</strong> = the player automatically picks the right version for the viewer's network, switching on the fly so video doesn't buffer. <strong>Egress</strong> = the bandwidth cost of sending video <em>out</em> to viewers — on raw cloud (AWS) this is the single largest and most dangerous line item. <strong>Just-in-time encoding</strong> = only creating a version when someone actually watches, which saves storage (Mux pioneered this).</p>
+      </div>
+
+      <h3>Build vs. buy: this is not a close call</h3>
+      <p><span class="pill buy">buy</span> A managed video provider gives you upload, transcoding, ABR, a global CDN, a player, and analytics for cents per minute. Building the equivalent yourself means operating FFmpeg transcoding workers, an HLS packager, storage lifecycle rules, a multi-CDN delivery layer, and a player — a dedicated team's job. <strong>As a solo founder, building video infrastructure is the single fastest way to fail.</strong> You buy this until video is a top-three cost line <em>and</em> you have engineers to run a pipeline. Because you'll put it behind a <code>MediaService</code> interface (Section 8), switching providers later is a contained change, not a rewrite.</p>
+
+      <h3>The three real options, compared</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Provider</th><th>Pricing model (June 2026)</th><th>Strengths</th><th>Weaknesses</th><th>Lock-in</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="rowlabel">Mux <span class="pill build">default</span></td>
+              <td class="num">Encoding: <b>$0</b> on "basic" quality (ideal for UGC); storage ~$0.003–0.007/min/mo (auto cold-storage discount up to ~60%); delivery ~$0.0006–0.005/min by resolution, <b>first 100k delivery min/mo free</b> on paid plans <sup><a href="#r1">[1]</a></sup></td>
+              <td>Best developer experience ("Stripe for video"), excellent docs, Mux Data analytics (rebuffering, startup time, drop-off) that double as <em>product</em> analytics, Mux Player drop-in, fast upload-to-playback, instant clipping</td>
+              <td>More pricing knobs than Stream; delivery billed even for buffered-but-unwatched minutes; pricier than Stream at very high, high-resolution volume</td>
+              <td>Low–med (playback IDs; abstract it)</td>
+            </tr>
+            <tr>
+              <td class="rowlabel">Cloudflare Stream <span class="pill buy">cost pick</span></td>
+              <td class="num">Storage: <b>$5 / 1,000 min</b> ($0.005/min/mo); delivery: <b>$1 / 1,000 min</b> ($0.001/min); <b>encoding &amp; egress free</b>. No resolution discounts <sup><a href="#r2">[2]</a></sup></td>
+              <td>Dead-simple, dead-predictable pricing (two numbers, no egress surprises ever); bundles transcoding + global CDN + player; cheapest mental model</td>
+              <td>No resolution-based delivery discount (you pay the same to deliver 720p as 1080p); analytics far weaker than Mux Data; fewer media features</td>
+              <td>Low (abstract it)</td>
+            </tr>
+            <tr>
+              <td class="rowlabel">AWS (S3 + MediaConvert + CloudFront)</td>
+              <td class="num">MediaConvert ~$0.015/min ×renditions; S3 storage ~$0.023/GB/mo; CloudFront egress ~$0.085/GB (tiered down) <sup><a href="#r3">[3]</a><a href="#r4">[4]</a></sup></td>
+              <td>Maximum control and ceiling; cheapest <em>raw</em> unit economics at very large scale; everything in one cloud; AWS IVS available for live</td>
+              <td>You operate the pipeline (workers, packaging, lifecycle, player); <b>egress is the killer</b>; far more DevOps; this is the "you now have a team" option</td>
+              <td>High (deep AWS coupling)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Cloudflare R2 (S3-compatible object storage with <em>zero egress fees</em>, ~$0.015/GB/mo <sup><a href="#r2">[2]</a></sup>) is the right home for your <em>non-video</em> media (avatars, photos, audio) and a strong building block if you ever go the self-managed route.</p>
+
+      <div class="verdict">
+        <div class="vh">Verdict on the provider</div>
+        <p><strong>Launch on Mux.</strong> For a media-focused social app, the developer experience and Mux Data analytics buy you speed and product insight you can't spare engineering time to replicate, and basic-quality encoding is free for UGC. <strong>But run the Cloudflare Stream numbers in parallel</strong> — its two-number, no-egress model is the safest cost story, and many founders would (reasonably) start there for that predictability alone. Either way, <strong>wrap it in <code>MediaService</code></strong>; at 100k+ users, when video dominates your bill, benchmark Stream and AWS and migrate the implementation if the math says so. Reserve AWS for when video is your top cost line and you have the team to operate a pipeline.</p>
+      </div>
+
+      <h3>On-device vs. cloud editing, and the road to "CapCut-level"</h3>
+      <p>Editing splits into two questions: where does it run, and how good is it?</p>
+      <ul>
+        <li><strong>Launch = on-device basic editing.</strong> Trim, crop, text, filters, and music can all run on the phone using the platform's native frameworks (iOS <code>AVFoundation</code>, Android <code>Media3</code>/<code>MediaCodec</code>), exposed to your React Native app via a native module. On-device is free (no server cost), private, and instant. This matches Instagram's basic editor and is the right v1.</li>
+        <li><strong>CapCut-level is a multi-year product, not a feature.</strong> A multi-layer timeline, keyframed effects, and high-quality export is what CapCut's large team builds full-time. Do <em>not</em> attempt it in v1. The realistic path: <span class="mono">basic on-device → license a commercial video-editing SDK (e.g. Banuba, BytePlus) for richer effects → cloud rendering for heavy exports at scale.</span> Crucially, your framework choice (React Native) does <em>not</em> block this — the editing layer is native work regardless of whether you chose React Native, Flutter, or fully native.</li>
+        <li><strong>Cloud editing</strong> (server-side rendering of effects/exports) becomes worth it only when on-device can't deliver the quality you want at export — a Phase 3 concern.</li>
+      </ul>
+
+      <div class="box note">
+        <div class="bh">The music feature is a licensing problem, not a storage problem</div>
+        <p>Storing audio is trivially cheap (objects in R2/S3, metadata in Postgres) — even "Spotify-quality" local-artist uploads cost pennies. The genuinely hard part of a music library is <strong>rights and sync licensing</strong>: what can legally be played over a video, who owns it, and how creators license their uploads to you and to other users. Architect the easy part now (an <code>audio_tracks</code> table + object storage + a <code>MusicService</code> interface) and treat licensing as the legal/ops workstream it actually is. Kindred-specific + local-artist-upload is a smart wedge precisely because it sidesteps the major-label licensing minefield.</p>
+      </div>
+
+      <h3>What video actually costs at each stage</h3>
+      <p>This is the number you asked for. The model below makes <strong>explicit, adjustable assumptions</strong> — these are your real levers, so tune them to your data. Assumptions: <span class="mono">50% of users are monthly-active; each active user watches ~40 min and uploads ~3 min of video per month; stored library ≈ a 6-month rolling snapshot.</span> Watch-to-upload ratio (here ~13:1) follows the UGC power law — most uploads are barely watched.</p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Users</th><th>Delivered min/mo</th><th>Stored min (snapshot)</th><th>Mux est.</th><th>Cloudflare Stream est.</th><th>AWS (S3+CF) est. + ops</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">1,000</td><td class="num">20,000</td><td class="num">10,000</td><td class="num t-pick">~$40/mo</td><td class="num">~$70/mo</td><td class="num">~$90/mo + your time</td></tr>
+            <tr><td class="rowlabel">10,000</td><td class="num">200,000</td><td class="num">120,000</td><td class="num t-pick">~$550/mo</td><td class="num">~$800/mo</td><td class="num">~$900/mo + ops</td></tr>
+            <tr><td class="rowlabel">100,000</td><td class="num">2,000,000</td><td class="num">1,200,000</td><td class="num">~$6,100/mo</td><td class="num">~$8,000/mo</td><td class="num t-warn">~$6,000/mo + real ops</td></tr>
+            <tr><td class="rowlabel">500,000</td><td class="num">10,000,000</td><td class="num">6,000,000</td><td class="num">~$31,000/mo</td><td class="num">~$40,000/mo</td><td class="num t-warn">~$27,000/mo + a video team</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Estimates computed from each provider's June 2026 list pricing <sup><a href="#r1">[1]</a><a href="#r2">[2]</a><a href="#r3">[3]</a><a href="#r4">[4]</a></sup> against the stated assumptions. Mux figures assume basic-quality (free) encoding, blended low-resolution delivery with the 100k-min free tier, and cold-storage discounts; if your library skews to hot, high-res content, Mux storage can exceed Stream. AWS figures exclude the substantial engineering cost of building and operating the pipeline — the whole point of the "+ ops" column.</p>
+
+      <div class="verdict">
+        <div class="vh">The takeaway on video cost</div>
+        <p>Mux and Cloudflare Stream are in the same ballpark and both vastly cheaper than building it yourself once you price in your time. <strong>Video will be your single largest infrastructure line by 100k users</strong> (≈$6–8k/mo) and dominant by 500k (≈$30–40k/mo). AWS only wins on raw cost <em>after</em> you have a team to run it — and even then the saving is modest versus the operational risk. The strategic move is unchanged: <strong>buy managed now, abstract it, and let the cost tables tell you when (and whether) to move delivery/storage onto AWS.</strong></p>
+      </div>
+    </section>
+    <!-- ===================== SECTION 3 ===================== -->
+    <section class="section" id="s3">
+      <div class="section-head">
+        <div class="section-num">03</div>
+        <div><div class="section-kicker">Where it runs</div><h2>Hosting &amp; cloud — through the scale-ready lens</h2></div>
+      </div>
+
+      <p>The mistake here is choosing AWS on day one "because that's what real companies use" and then drowning in IAM policies and YAML as a solo founder. The opposite mistake is choosing a toy that you outgrow at 50k users. The scale-ready answer is a <strong>Platform-as-a-Service (PaaS) that removes server management now, on a foundation (containers + Postgres + standard runtimes) that ports cleanly to AWS later</strong> when you actually need it.</p>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: PaaS vs. IaaS, and "lock-in"</div>
+        <p><strong>IaaS</strong> (AWS, GCP, Azure) rents you raw building blocks — servers, networks, disks — and you assemble and operate everything. Maximum power, maximum DevOps. <strong>PaaS</strong> (Render, Railway, Fly.io, Vercel) takes your code and runs it for you — you push, it deploys. Less control, far less operational burden. <strong>Lock-in risk</strong> = how painful it is to leave. Running a standard Docker container + Postgres on a PaaS is <em>low</em> lock-in (it moves to AWS easily); building on a cloud's proprietary glue (Lambda + DynamoDB + 12 AWS services wired together) is <em>high</em> lock-in.</p>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Platform</th><th>Cost @ MVP → scale</th><th>Strengths</th><th>Weaknesses / ceiling</th><th>Claude Code fit</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Render <span class="pill build">API pick</span></td><td class="num">$0 free tier → $25/mo Pro + compute → $1k+ at scale <sup><a href="#r9">[9]</a></sup></td><td>Predictable per-service pricing (no surprise bills), managed Postgres with PITR + HA, background workers &amp; cron as first-class, real free tier, multi-region</td><td>Less raw flexibility than AWS; not for exotic networking</td><td class="t-pick">Excellent (standard containers)</td><td>Production from launch; you want predictable bills</td></tr>
+            <tr><td class="rowlabel">Railway</td><td class="num">$5/mo Hobby → $20/mo Pro → usage-based <sup><a href="#r9">[9]</a></sup></td><td>Best developer experience, visual project canvas, one-click Postgres/Redis, billed by the second, fastest code-to-URL</td><td>Containerized DBs lack PITR/replicas/failover (use external DB for prod); reliability wobbles reported in 2026; idle services still bill</td><td class="t-pick">Excellent</td><td>Fastest prototyping; pair with an external managed DB for prod</td></tr>
+            <tr><td class="rowlabel">Fly.io</td><td class="num">~$11/mo basic VM → scales by region <sup><a href="#r9">[9]</a></sup></td><td>Edge/multi-region by design (35+ regions), scale-to-zero, GPUs, fine-grained control, low latency</td><td>Docker + CLI heavy; more glue work; only worth it if global latency genuinely matters</td><td>Good</td><td>When users span continents and latency measurably hurts</td></tr>
+            <tr><td class="rowlabel">Vercel <span class="pill build">web pick</span></td><td class="num">$0 Hobby → $20/user Pro → usage</td><td>The Next.js home: zero-config deploys, preview URLs per PR, global edge, superb web DX</td><td>Serverless function limits; needs external DB; not for long-running backends/workers</td><td class="t-pick">Excellent (for Next.js)</td><td>Your <em>web</em> frontend — not your API server</td></tr>
+            <tr><td class="rowlabel">Supabase</td><td class="num">$0 → $25/mo Pro → compute add-ons <sup><a href="#r5">[5]</a></sup></td><td>Postgres + Auth + Storage + Realtime + pgvector bundled; massive head start for a solo founder</td><td>It's a data/back-end platform, not where you host a custom API; some coupling on auth/RLS/realtime</td><td class="t-pick">Excellent</td><td>Your data layer (Section 4), not your compute</td></tr>
+            <tr><td class="rowlabel">Cloudflare</td><td class="num">Free CDN → $20 Pro → usage (Workers, R2, Stream)</td><td>Best-in-class CDN/WAF/DDoS (free), R2 (zero-egress storage), Workers at the edge, Stream for video</td><td>Workers' serverless model is a different paradigm; not a general container host</td><td>Good</td><td>Your CDN + WAF + object storage, in front of everything</td></tr>
+            <tr><td class="rowlabel">AWS / GCP / Azure</td><td class="num">Lower raw unit cost, higher ops cost; $1k → $10k+ at scale</td><td>Unlimited ceiling, every service, what hyperscalers run on, deepest ecosystem</td><td>Enormous DevOps surface; easy to misconfigure cost &amp; security; overkill pre-100k</td><td>Good but verbose</td><td>Phase 3: when you've outgrown PaaS economics or need specialized infra</td></tr>
+            <tr><td class="rowlabel">DigitalOcean / Hetzner + VPS (Coolify)</td><td class="num">~$10–40/mo per box; cheapest raw compute <sup><a href="#r9">[9]</a></sup></td><td>Rock-bottom cost, full control, Coolify gives PaaS-like UX on your own box</td><td>You own OS patching, backups, security, uptime — real sysadmin work for a solo founder</td><td>Good</td><td>If you enjoy ops and want lowest cost; otherwise skip early</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict &amp; migration path</div>
+        <p><strong>Launch:</strong> <code>Vercel</code> (web) + <code>Render</code> (the NestJS API — pick it over Railway for production-grade managed Postgres and predictable bills; choose Railway only if its DX matters more than reliability and you keep the DB external) + <code>Supabase</code> (data/auth/storage) + <code>Cloudflare</code> (CDN/WAF/DDoS in front) + <code>Mux</code> (video). <strong>This carries you comfortably to ~100k users.</strong> <strong>Migration path:</strong> at the point where Render's economics or limits bite (Phase 3), containerize the API onto <code>AWS ECS/Fargate</code> (you're already shipping a Docker image, so this is a move, not a rewrite), keep Cloudflare in front, and move the database to <code>RDS/Aurora</code>. Add <code>Fly.io</code> regions only if latency data demands it. <strong>Do not start on AWS.</strong></p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 4 ===================== -->
+    <section class="section" id="s4">
+      <div class="section-head">
+        <div class="section-num">04</div>
+        <div><div class="section-kicker">The source of truth</div><h2>Database strategy — PostgreSQL, and when to add everything else</h2></div>
+      </div>
+
+      <p>You suspected PostgreSQL, and you're right. <strong>Postgres is the correct default and will be the spine of Kindred from 1k to 500k users and well beyond.</strong> The art is knowing what to add alongside it, and — more importantly — what <em>not</em> to add yet.</p>
+
+      <h3>Why Postgres is right for Kindred specifically</h3>
+      <ul>
+        <li><strong>Your data is deeply relational.</strong> Users follow users, posts belong to users, plans contain items, messages belong to conversations. This is a textbook relational graph, and Postgres enforces its integrity with foreign keys and transactions.</li>
+        <li><strong>It's also flexible where you need it.</strong> <code>JSONB</code> columns store schema-less metadata (video render details, flexible event props) without a separate document database. You get relational rigor <em>and</em> document flexibility in one engine.</li>
+        <li><strong>It's pre-armed for your roadmap.</strong> <code>PostGIS</code> is ready the day you add GPS (so you never "architect yourself out of it"), <code>pgvector</code> is ready for AI embeddings and recommendations, and built-in full-text search covers your search needs early — all without new infrastructure.</li>
+        <li><strong>Claude Code knows it cold,</strong> and it's the most battle-tested open-source database on earth. Boring, in the best way.</li>
+      </ul>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: SQL vs. NoSQL and the database families</div>
+        <p><strong>SQL / relational</strong> (Postgres, MySQL): data in tables with enforced relationships; best for structured, interconnected data — your default. <strong>NoSQL</strong> is an umbrella for non-relational stores: <strong>document</strong> (MongoDB — flexible JSON blobs), <strong>key-value</strong> (Redis — ultra-fast lookups by key), <strong>columnar</strong> (ClickHouse, BigQuery — analytics over billions of rows), <strong>time-series</strong> (for metrics/GPS streams). <strong>OLTP</strong> = fast small reads/writes for the live app (Postgres). <strong>OLAP</strong> = heavy analytical queries over huge history (a warehouse). You start with OLTP Postgres and add an OLAP warehouse only when analytics outgrow it.</p>
+      </div>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: the operational concepts you'll actually touch</div>
+        <p><strong>Index</strong> = a lookup structure that makes queries fast (without one, the DB scans every row). <strong>Join</strong> = combining related tables in a query. <strong>Transaction</strong> = a group of changes that all succeed or all fail together (so you never half-create a post). <strong>Replication / read replica</strong> = a copy of the DB that serves reads, spreading load. <strong>Partitioning</strong> = splitting one big table into chunks (e.g., messages by month) for performance. <strong>Sharding</strong> = splitting data across multiple <em>separate</em> databases — powerful but complex; <em>avoid until forced</em>. <strong>Backups / PITR</strong> (point-in-time recovery) = the ability to restore to any second before a disaster — non-negotiable for production.</p>
+      </div>
+
+      <h3>When to add each extra store (and not before)</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Store</th><th>What it's for</th><th>Add it when…</th><th>Phase</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Redis</td><td>Caching, sessions, rate-limiting, and the queue backing background jobs</td><td>You need to cache hot feed/profile reads, enforce rate limits, or run background jobs (video webhooks, notifications)</td><td><span class="pill soon">Phase 1.5–2</span></td></tr>
+            <tr><td class="rowlabel">Search engine<br>(Typesense / Meilisearch)</td><td>Typo-tolerant, faceted, instant search at scale</td><td>Postgres full-text can't keep up — fuzzy matching on profiles/plans feels slow or weak (≳100k searchable records)</td><td><span class="pill soon">Phase 2</span></td></tr>
+            <tr><td class="rowlabel">Analytics warehouse<br>(ClickHouse / BigQuery)</td><td>SQL-grade analysis over billions of events; the feedstock for ML</td><td>PostHog's built-in analysis isn't enough and you need custom, large-scale queries or to train models</td><td><span class="pill later">Phase 2–3</span></td></tr>
+            <tr><td class="rowlabel">Vector DB<br>(start with pgvector → Qdrant)</td><td>Semantic search, recommendations, "similar trips," AI suggestions</td><td>Embeddings volume/latency outgrows pgvector-in-Postgres — start <em>inside</em> Postgres, graduate only when forced</td><td><span class="pill later">Phase 2–3</span></td></tr>
+            <tr><td class="rowlabel">Time-series DB</td><td>High-frequency metrics or GPS tracks</td><td>You add GPS and store dense location streams (PostGIS + partitioned tables may suffice first)</td><td><span class="pill later">Future</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How media-social apps structure their data</h3>
+      <p>A proven shape for your domain, in Postgres:</p>
+      <pre class="code"><span class="c">-- Core entities</span>
+<span class="t">users</span>(id, handle, display_name, avatar_media_id, created_at, ...)
+<span class="t">follows</span>(follower_id, followee_id, created_at)        <span class="c">-- the social graph: an edge table</span>
+<span class="t">posts</span>(id, author_id, video_asset_id, caption, activity_type, created_at)
+<span class="t">video_assets</span>(id, provider, playback_id, status, duration_s, ...) <span class="c">-- provider-agnostic</span>
+<span class="t">audio_tracks</span>(id, uploader_id, storage_key, rights_status, ...)
+<span class="c">-- Engagement &amp; AI training signal</span>
+<span class="t">interactions</span>(id, user_id, post_id, kind, created_at)    <span class="c">-- view/like/save/share — keep these!</span>
+<span class="c">-- Messaging (the part that may move to Scylla/Cassandra at extreme scale)</span>
+<span class="t">conversations</span>(id, created_at) · <span class="t">conversation_members</span>(conversation_id, user_id)
+<span class="t">messages</span>(id, conversation_id, sender_id, body, created_at)   <span class="c">-- partition by time later</span>
+<span class="c">-- Trip planning</span>
+<span class="t">plans</span>(id, owner_id, title, ...) · <span class="t">plan_items</span>(id, plan_id, kind, position, payload_jsonb)</pre>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: how the feed is generated</div>
+        <p>Two strategies. <strong>Fan-out-on-read (pull)</strong>: when a user opens the app, query for recent posts from everyone they follow. Simple, always fresh, but slow for users following thousands. <strong>Fan-out-on-write (push)</strong>: when someone posts, pre-insert it into each follower's precomputed feed. Fast reads, but expensive writes for popular accounts. <strong>Start with pull + caching</strong> (it's plenty for your scale and density-focused model); add precomputed feeds and a cache layer only when read latency demands it. This is exactly where Redis earns its place.</p>
+      </div>
+
+      <h3>Managed Postgres options</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Option</th><th>Model &amp; price (June 2026)</th><th>Best for</th><th>Watch-outs</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Supabase <span class="pill build">launch</span></td><td class="num">Free → <b>$25/mo Pro</b> (8GB DB, 100GB storage, 100k MAU, $10 compute credit); compute add-ons Small $50 / Large ~$110; +$0.125/GB storage <sup><a href="#r5">[5]</a></sup></td><td>Solo founders who want Postgres + Auth + Storage + Realtime + pgvector in one bundle — the fastest path to a real backend</td><td>Always-on (no scale-to-zero); free tier pauses after 7 days idle; some coupling on Auth/RLS/Realtime; $599 Team for SOC 2</td></tr>
+            <tr><td class="rowlabel">Neon</td><td class="num">Free (0.5GB, 100 CU-hrs) → Launch <b>$0.106/CU-hr + $0.35/GB-mo</b>; scale-to-zero; growing SaaS ≈ $70/mo <sup><a href="#r6">[6]</a></sup></td><td>Pure Postgres with <em>git-like branching</em> (a fresh DB copy per PR/test) and scale-to-zero — superb for AI-driven dev workflows; Databricks-owned (2025), storage cut ~80%</td><td>No bundled auth/storage (you assemble those); no user-selectable HA on Launch; region lock-in; closed control plane</td></tr>
+            <tr><td class="rowlabel">AWS RDS</td><td class="num">~$12/mo (t4g.micro) → scales; reserved saves 30–60% <sup><a href="#r7">[7]</a></sup></td><td>Vanilla, rock-solid managed Postgres when you're already on AWS at scale</td><td>You manage more knobs; no bundled services; this is a Phase 3 destination</td></tr>
+            <tr><td class="rowlabel">AWS Aurora</td><td class="num">Higher than RDS; ~$44/mo min even on Serverless v2 (0.5 ACU floor) <sup><a href="#r6">[6]</a></sup></td><td>High-availability, high-performance Postgres at large scale</td><td>No true scale-to-zero economics for bursty/idle; pricier; overkill early</td></tr>
+            <tr><td class="rowlabel">PlanetScale</td><td class="num">No free tier (min $39/mo); MySQL, added Postgres in late 2025</td><td>Teams wanting MySQL-style branching and a mature scaling workflow</td><td>MySQL-first heritage; not your default given a Postgres strategy</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>PostgreSQL is the default, full stop.</strong> Start on <strong>Supabase</strong> for the bundled Auth + Storage + Realtime + pgvector head start (worth a great deal to a solo founder), and put your data access behind clean repositories. Add <strong>Redis</strong> the moment you need caching or background jobs, a <strong>search engine</strong> when Postgres FTS strains, and a <strong>warehouse / vector DB</strong> only when analytics and AI genuinely demand them — starting vectors <em>inside</em> Postgres with pgvector. If you'd rather decouple from a BaaS, <strong>Neon</strong> is the pure-Postgres alternative whose branching pairs beautifully with Claude-Code-driven development. Migrate to <strong>RDS/Aurora</strong> only at Phase-3 scale. <strong>Do not shard until the data physically forces you to.</strong></p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 5 ===================== -->
+    <section class="section" id="s5">
+      <div class="section-head">
+        <div class="section-num">05</div>
+        <div><div class="section-kicker">One language to rule them</div><h2>Backend language &amp; framework — TypeScript everywhere, NestJS at the core</h2></div>
+      </div>
+
+      <p>This is the decision that most shapes how productive Claude Code will be for you, so weight that heavily. The recommendation is <strong>TypeScript on Node.js across your entire stack</strong>, with a <strong>NestJS modular monolith</strong> as the backend. The reason is not that TypeScript is the "best" language in the abstract — it's that <em>one</em> language shared across mobile, web, and API gives a solo founder leverage that no polyglot stack can match.</p>
+
+      <div class="box note">
+        <div class="bh">The decisive argument: shared types</div>
+        <p>When your API, your React Native app, and your Next.js web app are all TypeScript, a single <code>packages/types</code> defines your data shapes <em>once</em>. Change the <code>Post</code> type and every consumer — mobile, web, server — fails to compile until it's fixed. That compiler is a safety net specifically tuned for the way you'll work: large AI-generated changes, reviewed quickly. In a polyglot stack (Python API + TypeScript clients) that net disappears at the most dangerous boundary.</p>
+      </div>
+
+      <h3>The realistic contenders, weighted for your situation</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Language</th><th>Claude Code fit</th><th>Real-time</th><th>Performance</th><th>Verdict for Kindred</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">TypeScript / Node</td><td class="t-pick">Excellent — largest training corpus, strongest typing story, shared across all apps</td><td>Strong (Socket.IO, native WS)</td><td>Good for I/O-bound API work (your whole workload)</td><td class="t-pick">Default. The shared-types advantage is decisive for a solo founder.</td></tr>
+            <tr><td class="rowlabel">Python</td><td class="t-pick">Excellent — but no type-sharing with your TS clients</td><td>Workable (less natural)</td><td>Fine for API; the language of ML/AI</td><td class="t-warn">Reach for it <em>only</em> for AI/ML workers later — not the core API.</td></tr>
+            <tr><td class="rowlabel">Go</td><td class="t-warn">Good — clean and explicit, but smaller idiom corpus than TS/Python</td><td class="t-pick">Excellent (goroutines)</td><td class="t-pick">Excellent — compiled, low-memory</td><td class="t-warn">A superb language for a specific later service (video workers, a realtime gateway), not your starting API.</td></tr>
+            <tr><td class="rowlabel">Elixir / Phoenix</td><td class="t-no">Weaker — smaller corpus; you'd lean on Claude Code less effectively</td><td class="t-pick">Best-in-class (this is what it's <em>for</em>)</td><td class="t-pick">Excellent for massive concurrent connections</td><td class="t-warn">The "right" tool for chat at huge scale (see Discord), but the wrong solo-founder starting point. Revisit only if messaging concurrency becomes your defining problem.</td></tr>
+            <tr><td class="rowlabel">Ruby on Rails</td><td class="t-pick">Good — mature, conventional, well-known to AI</td><td>Workable (Action Cable)</td><td>Adequate; scales with effort (Strava proves it)</td><td class="t-warn">A genuinely valid choice — <strong>Strava and AllTrails run on Rails</strong> — but you lose the shared-types superpower. TS wins <em>for you</em>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box evidence">
+        <div class="bh">Confirmed industry context</div>
+        <p>Rails is not a toy: <strong>Strava</strong> has run a Ruby on Rails monolith for over a decade, and <strong>AllTrails</strong> is widely understood to be Rails + Postgres/PostGIS. <span class="inf">(AllTrails' exact stack is inferred from job postings and conference talks, not officially published.)</span> The lesson isn't "use Rails" — it's that a <em>boring, conventional monolith in one language</em> took both companies to enormous scale. You're applying the same principle with TypeScript, chosen because it also unifies your mobile and web clients and is what Claude Code does best.</p>
+      </div>
+
+      <h3>Framework: NestJS as your "rails that constrain the AI"</h3>
+      <p>Plain Express is too unopinionated — it gives Claude Code (and you) too many ways to structure things, which is exactly how an AI-assisted codebase rots into spaghetti. <strong>NestJS</strong> imposes a clear, conventional module structure (controllers, services, modules, dependency injection) that acts as a set of guardrails. Every feature becomes a self-contained module with explicit boundaries — the structural enforcement that keeps a modular monolith modular.</p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Framework</th><th>Posture</th><th>When to choose</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">NestJS <span class="pill build">default</span></td><td>Opinionated, modular, DI-driven, batteries-included</td><td class="t-pick">Your pick. The imposed structure is a feature, not overhead — it's what stops an AI-built codebase from sprawling.</td></tr>
+            <tr><td class="rowlabel">Fastify / Hono</td><td>Lean, fast, minimal</td><td>If you find Nest too heavy and want a smaller core — viable, but you give up the guardrails. Hono is excellent if you ever go edge/serverless.</td></tr>
+            <tr><td class="rowlabel">Express</td><td>Minimal, ubiquitous</td><td>Fine for tiny services; too unstructured as your primary API with an AI writing most of the code.</td></tr>
+            <tr><td class="rowlabel">FastAPI / Django</td><td>Python; typed (FastAPI) or batteries-included (Django)</td><td>Only if you reverse the language decision. Natural homes for ML-heavy services later.</td></tr>
+            <tr><td class="rowlabel">Phoenix / Go Fiber</td><td>Specialized concurrency / raw speed</td><td>For the one extracted service that needs it (chat gateway, video workers), never the whole backend.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Where you'll legitimately break out another language later</h3>
+      <p>Staying in TypeScript does <em>not</em> mean forever. The modular monolith is designed so you can carve out a hot path into its own service in whatever language fits — <em>when metrics demand it, not before</em>:</p>
+      <ul>
+        <li><strong>Real-time messaging at scale</strong> → an <strong>Elixir/Phoenix</strong> or <strong>Go</strong> gateway, if concurrent-connection load becomes your bottleneck. This is precisely the path Discord took.</li>
+        <li><strong>Video processing workers</strong> → <strong>Go</strong> or <strong>Rust</strong> for CPU-bound orchestration around your video provider — though with Mux/Cloudflare doing the actual transcoding, you may never need this.</li>
+        <li><strong>AI / ML services</strong> → <strong>Python</strong>, the lingua franca of embeddings, recommendations, and model serving.</li>
+      </ul>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>TypeScript on Node, end to end, with a NestJS modular monolith.</strong> One language across mobile, web, and API unlocks shared types — the single highest-leverage decision for a solo founder shipping with Claude Code. NestJS's imposed module structure is the guardrail that keeps an AI-assisted codebase from sprawling into debt. Keep Python in your back pocket for AI workers, and Go/Elixir for the one realtime or video service that may one day earn its own deployment — extracted on evidence, never on speculation.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 6 ===================== -->
+    <section class="section" id="s6">
+      <div class="section-head">
+        <div class="section-num">06</div>
+        <div><div class="section-kicker">What users actually touch</div><h2>Frontend &amp; mobile — React Native + Expo, Next.js for web</h2></div>
+      </div>
+
+      <p>Your mobile app <em>is</em> the product; the web app is a lighter companion. Two recommendations, one principle (stay in the TypeScript universe): <strong>React Native + Expo</strong> for mobile, <strong>Next.js</strong> for web. This keeps your entire client surface in TypeScript, sharing types and logic with the backend.</p>
+
+      <h3>Mobile: the video-heavy decision</h3>
+      <p>The honest tension: a TikTok-grade video experience is the one place where "just use cross-platform" gets challenged, because camera capture, real-time effects, and buttery scroll-feed playback are exactly where native shines. Here's the calibrated take:</p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Option</th><th>Strengths</th><th>The catch for a video app</th><th>Fit</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">React Native + Expo <span class="pill build">pick</span></td><td>One TypeScript codebase for iOS + Android; shares types with web/API; huge ecosystem; Claude Code excels at it; Expo removes most native-build pain</td><td>The video hot path (capture, in-app editing) needs <em>native modules</em> — but RN is built for exactly this escape hatch, and you can drop to native only where needed</td><td class="t-pick">Default. Best balance of solo-founder velocity and a path to high-quality video.</td></tr>
+            <tr><td class="rowlabel">Flutter</td><td>Excellent rendering performance; beautiful, consistent UI; strong for animation-heavy apps</td><td>Dart means a <em>separate</em> language — you lose all type-sharing with your TS backend and web app, and lean on Claude Code less effectively</td><td class="t-warn">Technically strong, strategically wrong for a TS-unified solo stack.</td></tr>
+            <tr><td class="rowlabel">Native (Swift + Kotlin)</td><td>The ceiling for video quality and performance; full platform access</td><td>Two separate codebases in two languages — roughly double the work for a solo founder, no shared types anywhere</td><td class="t-no">Don't. The right answer only once you have platform teams.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box note">
+        <div class="bh">How to get native-grade video without going fully native</div>
+        <p>React Native's superpower is the <strong>native module</strong>: performance-critical pieces (camera, frame processing, the editing timeline) run in real Swift/Kotlin behind a JS interface, while the other 90% of your app stays in shared TypeScript. Lean on mature libraries — a high-performance camera library, a video-playback library tuned for feeds, and a native gesture/animation layer for that 60fps scroll. <strong>You drop to native only at the hot path, not across the whole app.</strong> This is the realistic bridge from "basic editing at launch" to "CapCut-level later" without forking into two native codebases.</p>
+      </div>
+
+      <h3>Web: Next.js on Vercel</h3>
+      <p>For the secondary web product — saved/shared itineraries, account sync, lighter trip planning — <strong>Next.js</strong> is the obvious TypeScript-native choice. It shares your types and API client, renders fast (good for shareable public trip pages and SEO), and deploys to Vercel with effectively zero DevOps. Don't overbuild it; it's a companion surface, and Next.js lets it stay lean while still feeling first-class.</p>
+
+      <h3>The monorepo / shared-types payoff</h3>
+      <p>This is where the single-language strategy compounds. In one repository:</p>
+      <ul>
+        <li><code>packages/types</code> — your data shapes, defined once, imported by mobile, web, and API.</li>
+        <li><code>packages/api-client</code> — a typed client so the apps call your backend with full autocomplete and compile-time safety.</li>
+        <li><code>packages/ui</code> — shared design-system primitives (your coral/ink system) where it makes sense to share between web and RN.</li>
+      </ul>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: how the apps talk to the API (tRPC vs. generated client)</div>
+        <p><strong>tRPC</strong> gives end-to-end type safety with zero code generation — change the server, the client types update instantly. It's magical for an all-TS monorepo and superb DX. The trade-off: it tightly couples client and server, which is awkward for <em>mobile</em>, where old app versions linger on users' phones for months. <strong>The pragmatic call: define a versioned REST/OpenAPI contract for the mobile app</strong> (stable, versionable, survives app-store update lag) and you may use tRPC for the tighter web↔API loop if you like. Generating a typed client from an OpenAPI spec keeps the shared-types benefit without the version-coupling risk on mobile.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>React Native + Expo for mobile, Next.js for web, unified in a TypeScript monorepo.</strong> You keep one language and shared types across every surface — the solo-founder force multiplier — while React Native's native-module escape hatch gives you a credible path from basic editing to high-end video without maintaining two native codebases. Drop to native Swift/Kotlin only at the video hot path. Talk to the backend over a versioned OpenAPI contract so old mobile builds never break.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 7 ===================== -->
+    <section class="section" id="s7">
+      <div class="section-head">
+        <div class="section-num">07</div>
+        <div><div class="section-kicker">How the pieces fit</div><h2>Architecture patterns — modular monolith now, extract services on evidence</h2></div>
+      </div>
+
+      <p>The headline: <strong>start as a modular monolith, evolve toward selectively extracted services, never jump to full microservices preemptively.</strong> This is the single most important structural decision, and getting it wrong in either direction is costly — a tangled monolith is painful, but premature microservices will bury a solo founder in DevOps before product-market fit.</p>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: the four structural patterns</div>
+        <p><strong>Monolith</strong> = one deployable app containing everything. Simple to build, deploy, and reason about; risks becoming tangled. <strong>Modular monolith</strong> = still one deployable, but internally divided into strict modules with explicit boundaries (your NestJS modules). The sweet spot. <strong>Microservices</strong> = many independently deployed services talking over the network. Powerful at organizational scale; enormous operational tax (service discovery, distributed tracing, network failure handling) that crushes solo founders. <strong>Serverless</strong> = functions that run on demand with no server to manage; great for spiky, isolated jobs, awkward as a whole-app model for stateful, real-time products.</p>
+      </div>
+
+      <h3>Why the modular monolith wins for you</h3>
+      <p>You get the operational simplicity of one deployable (one thing to ship, log, and debug — vital when you're the entire team) <em>and</em> clean internal boundaries that make later extraction painless. When metrics eventually prove that messaging or video processing needs to scale independently, a well-bounded module lifts out into its own service with minimal surgery. <strong>Build the seams now; cut along them only when the data says so.</strong> This is the Discord lesson in miniature — they didn't start as a sprawling microservice fleet; they extracted the hot paths (the realtime gateway, message storage) as specific bottlenecks demanded.</p>
+
+      <h3>The supporting infrastructure, and when each arrives</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Concern</th><th>Pattern / tool</th><th>Phase</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Background jobs &amp; queues</td><td>A job queue (<strong>BullMQ</strong> on Redis) for anything slow or async: handling video-provider webhooks, sending notifications, generating thumbnails, running moderation. Keeps the API responsive.</td><td><span class="pill now">Phase 1</span></td></tr>
+            <tr><td class="rowlabel">Real-time (messaging, live updates)</td><td><strong>WebSockets</strong> via Socket.IO inside the monolith to start. Extract to a dedicated gateway (Elixir/Go) only if concurrency becomes the bottleneck.</td><td><span class="pill now">Phase 1</span> → extract <span class="pill later">Phase 3</span></td></tr>
+            <tr><td class="rowlabel">Feed generation</td><td><strong>Pull (fan-out-on-read) + Redis cache</strong> first. Add precomputed feeds only when read latency demands it.</td><td><span class="pill soon">Phase 1–2</span></td></tr>
+            <tr><td class="rowlabel">Object storage</td><td>Non-video media (avatars, images) on <strong>Cloudflare R2</strong> or Supabase Storage (zero-egress R2 is a cost win). Video lives with your video provider.</td><td><span class="pill now">Phase 1</span></td></tr>
+            <tr><td class="rowlabel">CDN</td><td><strong>Cloudflare</strong> in front of everything — caching, DDoS protection, WAF. Your video provider brings its own CDN for streams.</td><td><span class="pill now">Phase 1</span></td></tr>
+            <tr><td class="rowlabel">Event-driven design</td><td>Emit domain events (<code>post.created</code>, <code>user.followed</code>) that handlers subscribe to. Start as in-process events; graduate to a real broker (e.g., a managed queue/stream) only at scale.</td><td><span class="pill soon">Phase 2</span></td></tr>
+            <tr><td class="rowlabel">Analytics pipeline</td><td>PostHog SDK from day one; pipe raw events to a warehouse (ClickHouse/BigQuery) when custom large-scale analysis or ML training is needed.</td><td><span class="pill now">Now</span> → warehouse <span class="pill later">Phase 2–3</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What each stage actually looks like</h3>
+      <div class="phases">
+        <div class="phase p1">
+          <div class="ptag">MVP</div>
+          <h4>Modular monolith</h4>
+          <div class="psub">Beta → 10k</div>
+          <ul>
+            <li><b>Shape</b><span class="v">1 NestJS app</span></li>
+            <li><b>Async</b><span class="v">BullMQ + Redis</span></li>
+            <li><b>Realtime</b><span class="v">WS in-app</span></li>
+            <li><b>Feed</b><span class="v">pull + cache</span></li>
+            <li><b>Video</b><span class="v">Mux (managed)</span></li>
+          </ul>
+        </div>
+        <div class="phase p2">
+          <div class="ptag">Series A</div>
+          <h4>Monolith + workers</h4>
+          <div class="psub">10k → 100k</div>
+          <ul>
+            <li><b>Shape</b><span class="v">API + worker tier</span></li>
+            <li><b>Cache</b><span class="v">Redis hot paths</span></li>
+            <li><b>Search</b><span class="v">Typesense</span></li>
+            <li><b>Events</b><span class="v">broker added</span></li>
+            <li><b>Observ.</b><span class="v">full tracing</span></li>
+          </ul>
+        </div>
+        <div class="phase p3">
+          <div class="ptag">Scale</div>
+          <h4>Selective services</h4>
+          <div class="psub">100k → 500k+</div>
+          <ul>
+            <li><b>Extract</b><span class="v">chat gateway</span></li>
+            <li><b>Extract</b><span class="v">video workers</span></li>
+            <li><b>Data</b><span class="v">replicas / partitions</span></li>
+            <li><b>Warehouse</b><span class="v">ClickHouse</span></li>
+            <li><b>Core</b><span class="v">still a monolith</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Modular monolith, with queues and WebSockets inside it from day one, evolving into a small set of extracted services only as metrics demand.</strong> Your MVP is one NestJS app plus a Redis-backed job queue. Your Series A adds a worker tier, caching, real search, and observability. Your 500k architecture extracts the chat gateway and video workers — and the core <em>remains a monolith</em>. At no point do you adopt microservices wholesale; you cut precisely along boundaries you designed in from the start.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 8 ===================== -->
+    <section class="section" id="s8">
+      <div class="section-head">
+        <div class="section-num">08</div>
+        <div><div class="section-kicker">Swap providers without rewrites</div><h2>Vendor abstraction — interfaces at the boundary, coupling at the core</h2></div>
+      </div>
+
+      <p>You'll start on managed services to move fast (Mux, Supabase Auth, PostHog), but you don't want those choices welded into your code so that swapping one means a rewrite. The pattern is simple and powerful: <strong>define a thin interface for each external capability, and let the rest of your app depend only on that interface — never on the vendor's SDK directly.</strong> When you outgrow a provider, you write one new implementation of the interface; nothing else changes.</p>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: the service-interface (port/adapter) pattern</div>
+        <p>You define a <strong>port</strong> — an interface describing <em>what</em> you need ("store a video and give me a playback ID"), not <em>how</em>. Each vendor gets an <strong>adapter</strong> — a concrete class implementing that interface using their SDK. Your app talks only to the port. This is the practical core of "design for migration, not premature duplication": you abstract the <em>seam</em>, but you don't build two providers up front — you build one adapter now and add another only when you actually migrate.</p>
+      </div>
+
+      <h3>What this looks like in TypeScript</h3>
+      <pre class="code"><span class="c">// The port: your app depends on THIS, not on Mux.</span>
+<span class="t">interface</span> MediaService {
+  createUploadUrl(opts: UploadOpts): <span class="t">Promise</span>&lt;{ uploadUrl: string; assetId: string }&gt;;
+  getPlayback(assetId: string): <span class="t">Promise</span>&lt;{ playbackId: string; status: AssetStatus }&gt;;
+  deleteAsset(assetId: string): <span class="t">Promise</span>&lt;void&gt;;
+}
+
+<span class="c">// Adapter #1 — today. All Mux-specific code is quarantined in here.</span>
+<span class="t">class</span> MuxMediaService <span class="t">implements</span> MediaService { <span class="c">/* ...Mux SDK calls... */</span> }
+
+<span class="c">// Adapter #2 — only written if/when you migrate. Nothing else changes.</span>
+<span class="t">class</span> CloudflareStreamMediaService <span class="t">implements</span> MediaService { <span class="c">/* ... */</span> }
+
+<span class="c">// Your feature code stays vendor-agnostic forever:</span>
+<span class="t">class</span> PostsService {
+  <span class="t">constructor</span>(<span class="t">private</span> media: MediaService) {}   <span class="c">// injected — doesn't know or care which vendor</span>
+}</pre>
+
+      <h3>What to abstract vs. what to couple to</h3>
+      <p>Over-abstraction is its own trap — wrapping <em>everything</em> creates needless indirection that slows you and confuses Claude Code. The rule: <strong>abstract behind an interface where lock-in is high and switching is plausible; couple freely where the dependency is a stable, portable foundation.</strong></p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Capability</th><th>Decision</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Video (MediaService)</td><td class="t-pick">Abstract</td><td>Highest cost center, real chance you'll migrate Mux→Cloudflare→own pipeline. Non-negotiable seam.</td></tr>
+            <tr><td class="rowlabel">Auth (AuthService)</td><td class="t-pick">Abstract</td><td>You may move off Supabase Auth → Clerk → custom. Wrap "who is this user?" behind your own interface.</td></tr>
+            <tr><td class="rowlabel">Analytics (AnalyticsService)</td><td class="t-pick">Abstract</td><td>A trivial <code>track(event, props)</code> interface lets you swap or dual-write PostHog → warehouse without touching call sites.</td></tr>
+            <tr><td class="rowlabel">Search / Queue / Storage / Notifications / Payments</td><td class="t-pick">Abstract (thin)</td><td>Each is a plausible future swap (Postgres FTS→Typesense, R2→S3, provider→provider). Keep the interfaces minimal.</td></tr>
+            <tr><td class="rowlabel">PostgreSQL (the engine)</td><td class="t-no">Couple</td><td>Postgres <em>is</em> your foundation and is portable across hosts (Supabase→Neon→RDS all speak Postgres). Don't hide it behind a generic "database" abstraction.</td></tr>
+            <tr><td class="rowlabel">Your language / framework</td><td class="t-no">Couple</td><td>TypeScript and NestJS are the bedrock. Abstracting "in case you switch languages" is pure waste.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">Don't over-abstract the database</div>
+        <p>A tempting mistake is wrapping Postgres behind a generic repository "so you could swap to MongoDB later." Don't. You chose Postgres precisely because you won't swap the <em>engine</em> — and migrating hosts (Supabase→Neon→RDS) needs no abstraction because they all speak the same Postgres. A thin data-access layer for testability is good; a vendor-neutral "any database" abstraction throws away Postgres' best features (JSONB, PostGIS, pgvector) for a swap you'll never make.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Put a thin interface in front of every high-lock-in external vendor — video, auth, analytics, search, queue, storage, notifications, payments — and couple directly to the foundations you won't replace (Postgres, TypeScript, NestJS).</strong> Write <em>one</em> adapter per capability now; add a second only when you actually migrate. This is "design for migration, not premature duplication" expressed in code: the seams exist, but you don't pay to maintain two of everything before you need to.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 9 ===================== -->
+    <section class="section" id="s9">
+      <div class="section-head">
+        <div class="section-num">09</div>
+        <div><div class="section-kicker">The most important section for you</div><h2>Codebase design for Claude Code — structure that keeps the AI productive and honest</h2></div>
+      </div>
+
+      <p>Since Claude Code (plus other AI) will write most of your code, the structure of your repository is not a detail — it's the difference between an AI that compounds your velocity and one that quietly accumulates debt you can't see. The goal: <strong>a layout so explicit and well-documented that the AI has one obvious place to put things and strong rails preventing it from making a mess.</strong></p>
+
+      <h3>Monorepo, not polyrepo</h3>
+      <p>One repository holding all apps and shared packages. For a solo founder this is decisively right: shared types work seamlessly, one place to search, atomic commits across mobile/web/API, and Claude Code sees the <em>whole</em> system at once instead of guessing across repos. Use <strong>Turborepo + pnpm</strong> to manage the workspace.</p>
+
+      <h3>The recommended folder structure</h3>
+      <pre class="code">kindred/
+├─ <span class="t">apps/</span>
+│  ├─ mobile/          <span class="c"># React Native + Expo — the core product</span>
+│  ├─ web/             <span class="c"># Next.js — companion trip planner</span>
+│  ├─ api/             <span class="c"># NestJS modular monolith</span>
+│  └─ workers/         <span class="c"># BullMQ background jobs (video webhooks, notifications, moderation)</span>
+├─ <span class="t">packages/</span>
+│  ├─ types/           <span class="c"># shared domain types — the single source of truth</span>
+│  ├─ api-client/      <span class="c"># typed client generated from the API contract</span>
+│  ├─ ui/              <span class="c"># shared design-system primitives (coral/ink)</span>
+│  └─ config/          <span class="c"># shared ESLint/TS/Biome config</span>
+├─ <span class="t">db/</span>
+│  ├─ schema/          <span class="c"># Drizzle schema — tables defined in code</span>
+│  ├─ migrations/      <span class="c"># versioned, reviewable migration files</span>
+│  └─ seed.ts          <span class="c"># deterministic seed data for local dev &amp; tests</span>
+├─ <span class="t">docs/</span>
+│  ├─ CLAUDE.md        <span class="c"># the AI's rulebook (see below)</span>
+│  └─ adr/             <span class="c"># Architecture Decision Records — one file per major choice</span>
+├─ docker-compose.yml  <span class="c"># local Postgres + Redis with one command</span>
+└─ turbo.json          <span class="c"># task pipeline (build, test, lint, typecheck)</span></pre>
+
+      <div class="box note">
+        <div class="bh"><code>CLAUDE.md</code> — the highest-leverage file in your repo</div>
+        <p>This is the instruction file Claude Code reads to understand your project. Invest in it heavily. It should state: the architecture in two paragraphs, the non-negotiable rules ("all DB access goes through repositories," "never call a vendor SDK outside its adapter," "every new feature is a NestJS module"), where things live, your testing and commit conventions, and the commands to build/test/lint. <strong>A strong <code>CLAUDE.md</code> is what converts Claude Code from a fast intern into a fast intern who follows your architecture.</strong> Update it whenever a pattern changes.</p>
+      </div>
+
+      <h3>The supporting practices that keep AI-written code trustworthy</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Practice</th><th>What &amp; why</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Types as contract</td><td><code>packages/types</code> defines every shape once. The compiler catches mismatches the instant AI-generated code drifts from your model.</td></tr>
+            <tr><td class="rowlabel">Schema &amp; migrations</td><td><strong>Drizzle</strong> (TypeScript-native, lightweight, transparent SQL — excellent AI legibility) or <strong>Prisma</strong> (more mature ecosystem). Either way: schema in code, every change a reviewable migration. Never hand-edit production tables.</td></tr>
+            <tr><td class="rowlabel">Tests as guardrails</td><td><strong>Vitest</strong> for unit/integration, <strong>Playwright</strong> for end-to-end. Tests are how you trust large AI diffs: if the suite passes, the change is probably safe. This is not optional when an AI writes the code.</td></tr>
+            <tr><td class="rowlabel">Lint &amp; format</td><td><strong>Biome</strong> (fast, all-in-one) or ESLint + Prettier. Enforce import boundaries between modules so the AI literally cannot wire modules together in forbidden ways.</td></tr>
+            <tr><td class="rowlabel">CI/CD</td><td><strong>GitHub Actions</strong>: on every PR, run typecheck + lint + tests; block merge on failure. Your automated reviewer. Deploy on merge to main (Render/Vercel auto-deploy).</td></tr>
+            <tr><td class="rowlabel">Local dev</td><td><strong>Docker Compose</strong> brings up Postgres + Redis with one command, so any machine (or a fresh Claude Code session) has a working environment instantly.</td></tr>
+            <tr><td class="rowlabel">Env &amp; secrets</td><td>Validate environment variables at startup with <strong>Zod</strong> (fail fast on misconfig). Never commit secrets — use the host's secrets manager and a <code>.env.example</code> template.</td></tr>
+            <tr><td class="rowlabel">Design system</td><td>Codify your coral/ink tokens in <code>packages/ui</code> so the AI builds new screens from your components, not ad-hoc styles.</td></tr>
+            <tr><td class="rowlabel">ADRs</td><td>One short markdown file per major decision (why Postgres, why Mux, why modular monolith). Gives the AI — and future-you — the <em>reasoning</em>, not just the result.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">How an AI-assisted codebase actually rots — and the antidotes</div>
+        <p>The failure mode isn't dramatic; it's quiet drift. The AI duplicates logic because it didn't find the existing helper, bypasses a vendor adapter for a "quick" direct call, or invents a fifth way to fetch data. <strong>The antidotes are structural, not vigilance-based:</strong> enforced module boundaries (lint rules), a strong <code>CLAUDE.md</code>, tests that fail on regressions, small reviewed diffs (never merge a 2,000-line change you didn't read), and a strict bias toward boring, conventional patterns the AI knows well. Architecture rails do the work so you don't have to police every line.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>One Turborepo + pnpm monorepo with explicit <code>apps/</code>, <code>packages/</code>, <code>db/</code>, and <code>docs/</code> directories, governed by a strong <code>CLAUDE.md</code> and enforced by types, tests, lint boundaries, and CI.</strong> The structure gives Claude Code one obvious place for everything; the guardrails make architectural drift fail loudly instead of accumulating silently. Keep diffs small and reviewed, keep the patterns boring, and the AI compounds your output instead of your debt.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 10 ===================== -->
+    <section class="section" id="s10">
+      <div class="section-head">
+        <div class="section-num">10</div>
+        <div><div class="section-kicker">Instrument now, personalize later</div><h2>Analytics &amp; AI-readiness — capture everything from day one</h2></div>
+      </div>
+
+      <p>You explicitly want product analytics and AI-readiness baked in from the start, and you're right to — this is cheap to do early and nearly impossible to backfill. The principle: <strong>the events you don't capture today are gone forever, so instrument generously now, and structure the data so AI features become an addition later, not a rebuild.</strong></p>
+
+      <h3>What to instrument from day one</h3>
+      <p>Adopt <strong>PostHog</strong> on day one (generous free tier — 1M events/month, session replay, feature flags, no credit card; open-source and self-hostable later, so no lock-in). <sup><a href="#r8">[8]</a></sup> Define a <strong>typed event schema</strong> in your shared types so every event is consistent and Claude Code can't emit malformed analytics:</p>
+      <ul>
+        <li><strong>Engagement signals</strong> — time on each screen, video watch time and completion rate, scroll depth, what's viewed vs. skipped. (These double as AI training data — keep them.)</li>
+        <li><strong>Interaction events</strong> — every meaningful tap: likes, saves, shares, follows, plan creations, button presses. Include the <em>misclicks</em> and rage-taps you mentioned — they're how you find broken UX.</li>
+        <li><strong>Funnels &amp; retention</strong> — signup → first post → first follow → first trip plan; D1/D7/D30 retention; the conversion steps that tell you what's working.</li>
+        <li><strong>Performance</strong> — load times, error rates, video start/buffer events (slow video kills a video app).</li>
+      </ul>
+
+      <div class="box note">
+        <div class="bh">The admin dashboard you asked for</div>
+        <p>PostHog gives you funnels, retention cohorts, session replays, and dashboards out of the box — your admin login can watch exactly how users move through the app, where they drop off, how long they linger on a video, and which buttons get pressed (and mis-pressed). You get the "make the app feel better" analytics immediately, without building a dashboard yourself. Build a custom internal admin only once your needs outgrow PostHog's UI.</p>
+      </div>
+
+      <h3>Structuring data so AI is addable later</h3>
+      <p>This is the part that matters most for your roadmap (AI recommendations, AI trip suggestions, AI-assisted editing). You don't build the AI now — you make sure the data it will need is being captured and shaped correctly from the beginning:</p>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Do now</th><th>Why it enables AI later</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Keep every interaction (view/like/save/share/skip) with user, item, and timestamp</td><td>This <em>is</em> the training data for recommendations. Discard it and you can never build a "for you" feed or "trips you'll love." The single most important AI-readiness move.</td></tr>
+            <tr><td class="rowlabel">Store rich content metadata</td><td>Tag posts and plans with activity type, location placeholders (GPS-ready), and attributes. Structured metadata is what recommendations and search rank on.</td></tr>
+            <tr><td class="rowlabel">Add a <code>pgvector</code> column when you start embedding</td><td>Semantic search and "similar trips" live <em>inside</em> Postgres at first — no new infrastructure. You're ready the day you want it.</td></tr>
+            <tr><td class="rowlabel">Put AI behind an <code>AIService</code> interface</td><td>Swap models/providers (or move from a hosted model to your own) without touching feature code — the same abstraction discipline as every other vendor.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: embeddings &amp; when a vector DB is worth it</div>
+        <p>An <strong>embedding</strong> turns text/images/behavior into a list of numbers capturing meaning, so "similar" things sit near each other mathematically — the engine behind semantic search and recommendations. You store and query these in a <strong>vector database</strong>. <strong>Start with <code>pgvector</code> inside Postgres</strong> (zero new infrastructure, handles a great deal). Graduate to a dedicated vector DB like <strong>Qdrant</strong> only when embedding volume or query latency outgrows Postgres — a Phase 2–3 concern, not a launch one. Don't stand up a vector DB before you have the data or the feature; it's a classic premature-scale trap.</p>
+      </div>
+
+      <h3>The warehouse: later, not now</h3>
+      <p>PostHog's built-in analysis covers you for a long time. When you eventually need custom large-scale queries across billions of events, or to train models on raw behavioral data, pipe events into a columnar warehouse — <strong>ClickHouse</strong> (what PostHog itself runs on) or <strong>BigQuery</strong>. That's a Phase 2–3 step triggered by real analytical need, not a day-one build.</p>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>PostHog from day one with a typed event schema; capture every interaction, screen-time, and watch-time signal; and shape your data — rich content metadata plus a pgvector-ready model — so AI is an addition, not a rewrite.</strong> You get your admin analytics dashboard immediately and for free, and you accumulate the behavioral dataset that recommendations and AI trip suggestions will one day require. Add a vector DB and a warehouse only when the data volume and the features genuinely demand them.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11 ===================== -->
+    <section class="section" id="s11">
+      <div class="section-head">
+        <div class="section-num">11</div>
+        <div><div class="section-kicker">Don't get hacked. Protect your users.</div><h2>Security, reliability &amp; trust &amp; safety — including UGC video moderation</h2></div>
+      </div>
+
+      <p>You said it plainly: you don't want to get hacked, and you're hosting user video. Two distinct obligations sit here. <strong>Security</strong> protects your system and data; <strong>trust &amp; safety</strong> protects your users from each other and from harmful content. For an app whose <em>entire premise</em> is 18–24-year-olds meeting strangers for real-world adventures, T&amp;S is not a compliance checkbox — it is core product safety with real liability, and parts of it are launch-blocking.</p>
+
+      <h3>Security foundations — what's needed now vs. at scale</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Area</th><th>Now (launch)</th><th>At scale</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Authentication</td><td><strong>Managed auth</strong> (Supabase Auth or Clerk) with social login (Apple + Google) and JWTs. <em>Never roll your own.</em></td><td>SSO, MFA enforcement, session-anomaly detection</td></tr>
+            <tr><td class="rowlabel">Authorization (RBAC)</td><td>Role-based checks (user / admin / moderator) enforced server-side on every endpoint</td><td>Fine-grained permissions; audit logging of privileged actions</td></tr>
+            <tr><td class="rowlabel">Secrets</td><td>Host secrets manager + Zod-validated env; <strong>nothing in code</strong></td><td>Rotation policies, scoped service credentials</td></tr>
+            <tr><td class="rowlabel">Encryption</td><td>TLS everywhere; Postgres encrypted at rest (managed default)</td><td>Field-level encryption for anything sensitive; key management</td></tr>
+            <tr><td class="rowlabel">Backups &amp; DR</td><td><strong>Automated backups + point-in-time recovery</strong> from day one (managed Postgres gives this). Test a restore.</td><td>Cross-region backups; documented RPO/RTO; periodic DR drills</td></tr>
+            <tr><td class="rowlabel">Rate limiting &amp; DDoS</td><td>Redis-backed rate limits on sensitive endpoints; <strong>Cloudflare</strong> in front for DDoS + WAF</td><td>Tuned WAF rules, bot management, abuse heuristics</td></tr>
+            <tr><td class="rowlabel">Monitoring &amp; errors</td><td><strong>Sentry</strong> for error tracking from commit one; uptime/health checks; alerting</td><td>Full tracing, on-call rotation, SLOs, incident runbooks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box jargon">
+        <div class="bh">Jargon: the reliability acronyms</div>
+        <p><strong>PITR</strong> (point-in-time recovery) = restore the DB to any second before a bad event. <strong>RPO</strong> (recovery point objective) = how much data you can afford to lose, measured in time. <strong>RTO</strong> (recovery time objective) = how fast you must be back up. <strong>DR</strong> (disaster recovery) = the plan for when something major fails. <strong>WAF</strong> (web application firewall) = filters malicious traffic before it hits your app. <strong>RBAC</strong> (role-based access control) = permissions granted by role rather than per-user.</p>
+      </div>
+
+      <h3>Trust &amp; safety: the launch-blocking parts</h3>
+      <p>Because you host user-generated images and video and connect strangers, the following are <strong>not optional and not "later"</strong> — they are required before real users upload content:</p>
+
+      <div class="box trap">
+        <div class="bh">CSAM detection is legally non-negotiable</div>
+        <p>Any platform hosting user-uploaded images/video <strong>must</strong> screen for child sexual abuse material using hash-matching (e.g., PhotoDNA-class tooling) and have a clear reporting pathway to <strong>NCMEC</strong> (the National Center for Missing &amp; Exploited Children), as US law requires of providers. This is the first T&amp;S system you build, before launch. Treat it as a hard gate, not a feature.</p>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>T&amp;S capability</th><th>How</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">CSAM hash-matching + NCMEC reporting</td><td>PhotoDNA-class hashing on every image/video upload; automated reporting pipeline</td><td><span class="pill now">Launch — required</span></td></tr>
+            <tr><td class="rowlabel">Automated content moderation</td><td>Run uploads through a moderation API (<strong>AWS Rekognition</strong>, <strong>Hive</strong>, or <strong>Google Vision SafeSearch</strong>) to flag nudity, violence, and other policy violations before they go live</td><td><span class="pill now">Launch</span></td></tr>
+            <tr><td class="rowlabel">In-app reporting &amp; blocking</td><td>Every user can report content/profiles and block other users — table-stakes safety for a stranger-meeting app</td><td><span class="pill now">Launch</span></td></tr>
+            <tr><td class="rowlabel">Human review queue</td><td>Flagged content lands in a moderation queue for human decision (you, then a small team). Automation flags; humans judge edge cases.</td><td><span class="pill now">Launch (lightweight)</span> → scale later</td></tr>
+            <tr><td class="rowlabel">Safety for real-world meetups</td><td>Product-level guardrails: profile verification signals, safety guidance, reputation. Your brand is <em>trust</em> — design for it.</td><td><span class="pill soon">Phase 1–2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box note">
+        <div class="bh">Why this is a brand asset, not just a cost</div>
+        <p>Your strategy notes stake Kindred on <em>trust</em> with a lonely, vulnerable 18–24 demographic, and on publishing proof that the platform builds real friendships. A single serious safety failure — predatory behavior, harmful content reaching a minor — would destroy exactly the trust the brand is built on. Robust T&amp;S isn't overhead working against your lean-startup principle; it's the foundation the entire moat sits on. Build it like a serious company from day one.</p>
+      </div>
+
+      <h3>Compliance posture</h3>
+      <p><strong>GDPR/CCPA readiness from day one</strong> is cheap if designed in (data export, account deletion, clear consent) and expensive to retrofit. <strong>SOC 2</strong> is a Phase 2–3 concern — pursue it when enterprise/partnership deals or investors require it (Supabase's $599 Team tier and similar help when that day comes), not before. Keep a basic <strong>incident-response</strong> plan written down even as a solo founder: what you do if there's a breach or a serious safety report.</p>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Treat security foundations (managed auth, secrets discipline, encryption, backups+PITR, Cloudflare WAF, Sentry) as launch baseline — and treat CSAM detection, automated moderation, and in-app report/block as hard launch gates, not roadmap items.</strong> For an app connecting vulnerable young strangers in the real world, trust &amp; safety <em>is</em> the product. Build GDPR-readiness in now; pursue SOC 2 only when a deal demands it. This is the clearest place in the whole stack where "build like a serious company" overrides "operate lean."</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 12 ===================== -->
+    <section class="section" id="s12">
+      <div class="section-head">
+        <div class="section-num">12</div>
+        <div><div class="section-kicker">What it actually costs to run</div><h2>Cost modeling — line-item infrastructure spend at 1k, 10k, 100k, 500k</h2></div>
+      </div>
+
+      <p>Here is the recommended stack costed across your four scale points. Two cost types matter and people conflate them: <strong>infrastructure cost</strong> (the bills below) and <strong>engineering-complexity cost</strong> (the time and risk a choice adds). A "cheaper" option that doubles your DevOps burden is more expensive for a solo founder. The stack below optimizes the second cost as hard as the first.</p>
+
+      <div class="box note">
+        <div class="bh">Read these as directional ranges, not quotes</div>
+        <p>All figures are <strong>monthly USD, as of June 2026</strong>, and depend heavily on real usage patterns. The dominant variable by far is <strong>video</strong> (storage + delivery), modeled on the same assumptions as Section 2: roughly half of registered users active monthly, each watching ~40 min and uploading ~3 min per month. <strong>Verify current pricing with each provider before committing</strong> — pricing pages move.</p>
+      </div>
+
+      <h3>Line-item monthly cost (recommended stack)</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Line item</th><th>Stack choice</th><th>1k</th><th>10k</th><th>100k</th><th>500k</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">App hosting</td><td>Render (API + workers)</td><td class="num">$0–25</td><td class="num">$50–120</td><td class="num">$400–900</td><td class="num">$2k–4k</td></tr>
+            <tr><td class="rowlabel">Database</td><td>Supabase → Neon/RDS</td><td class="num">$25</td><td class="num">$75–150</td><td class="num">$700–1.5k</td><td class="num">$3k–6k</td></tr>
+            <tr><td class="rowlabel" style="color:var(--coral-dark)"><strong>Video</strong> (storage+delivery)</td><td>Mux (or Cloudflare Stream)</td><td class="num">$40–90</td><td class="num">$550–900</td><td class="num">$6k–8k</td><td class="num">$27k–40k</td></tr>
+            <tr><td class="rowlabel">Other media storage</td><td>Cloudflare R2 (zero egress)</td><td class="num">~$2</td><td class="num">$10–25</td><td class="num">$80–200</td><td class="num">$400–900</td></tr>
+            <tr><td class="rowlabel">CDN / WAF</td><td>Cloudflare</td><td class="num">$0–20</td><td class="num">$20–60</td><td class="num">$200–500</td><td class="num">$1k–2k</td></tr>
+            <tr><td class="rowlabel">Cache / queue</td><td>Redis (managed)</td><td class="num">$0–10</td><td class="num">$15–40</td><td class="num">$150–400</td><td class="num">$800–1.5k</td></tr>
+            <tr><td class="rowlabel">Auth</td><td>Supabase Auth / Clerk</td><td class="num">$0</td><td class="num">$0–25</td><td class="num">$100–550</td><td class="num">$550–1.5k</td></tr>
+            <tr><td class="rowlabel">Search</td><td>Postgres FTS → Typesense</td><td class="num">$0</td><td class="num">$0–30</td><td class="num">$30–200</td><td class="num">$300–800</td></tr>
+            <tr><td class="rowlabel">Transactional email</td><td>Resend / SES</td><td class="num">$0</td><td class="num">$0–20</td><td class="num">$50–150</td><td class="num">$300–700</td></tr>
+            <tr><td class="rowlabel">Analytics</td><td>PostHog</td><td class="num">$0</td><td class="num">$0–50</td><td class="num">$200–800</td><td class="num">$1k–3k</td></tr>
+            <tr><td class="rowlabel">Error / monitoring</td><td>Sentry</td><td class="num">$0–26</td><td class="num">$26–80</td><td class="num">$80–300</td><td class="num">$300–800</td></tr>
+            <tr><td class="rowlabel">Content moderation</td><td>Rekognition / Hive / Vision</td><td class="num">$0–20</td><td class="num">$30–100</td><td class="num">$300–1k</td><td class="num">$1.5k–4k</td></tr>
+            <tr><td class="rowlabel">AI features (later)</td><td>Model APIs + pgvector</td><td class="num">—</td><td class="num">$0–50</td><td class="num">$200–1k</td><td class="num">$1k–5k</td></tr>
+            <tr style="background:var(--coral-light)"><td class="rowlabel"><strong>Approx. total / mo</strong></td><td><strong>Recommended stack</strong></td><td class="num"><strong>$150–300</strong></td><td class="num"><strong>$1.2k–2.5k</strong></td><td class="num"><strong>$10k–20k</strong></td><td class="num"><strong>$50k–100k</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Ranges reflect usage variance and the low/high ends of provider pricing. Video dominates from 100k onward — which is exactly why the <code>MediaService</code> abstraction (Section 8) and the build-vs-buy reckoning (Section 2) matter most.</p>
+
+      <h3>What these numbers tell you to do</h3>
+      <ul>
+        <li><strong>At 1k–10k, infrastructure is nearly free</strong> — a few hundred dollars a month. Optimizing cost here is a waste of your scarcest resource (time). Spend that time shipping. The free tiers (PostHog, Supabase, Cloudflare, Sentry) carry you a long way.</li>
+        <li><strong>Video is the cost story.</strong> By 100k it's the majority of the bill and by 500k it dwarfs everything else. This is where vendor choice (Mux vs. Cloudflare Stream), encoding settings, and eventually a partial in-house pipeline move real money — and the reason the seam must exist from day one.</li>
+        <li><strong>Engineering-complexity cost is the hidden line item.</strong> Choosing AWS-everything at 1k users wouldn't show on this table, but it would cost you weeks of DevOps you don't have. The recommended stack keeps that invisible cost near zero early and lets you trade money for time precisely when you can afford to.</li>
+        <li><strong>These are infra costs only.</strong> They exclude your Mac apps and dev tools (Section "Tooling"), Apple's $99/yr developer program, Google Play's one-time $25, domains, and any contractors. Those are immaterial next to video at scale but real at the very start.</li>
+      </ul>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Running Kindred costs a few hundred dollars a month through 10k users, low-thousands at 100k, and tens-of-thousands at 500k — with video as the dominant and fastest-growing line every step of the way.</strong> Don't optimize infrastructure cost early; optimize your time. Do architect the video seam early, because that's the bill that eventually decides your margins. And always weigh the invisible engineering-complexity cost — for a solo founder it's often larger than the dollar figure.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 13 ===================== -->
+    <section class="section" id="s13">
+      <div class="section-head">
+        <div class="section-num">13</div>
+        <div><div class="section-kicker">What the giants actually run</div><h2>Industry benchmarking — confirmed vs. inferred, and what they'd build today</h2></div>
+      </div>
+
+      <p>Useful to ground your decisions against how comparable apps were actually built — but with an honest line between what's <strong>publicly confirmed</strong> (engineering blogs, conference talks, official posts) and what's <strong>reasonably inferred</strong> (job postings, community knowledge, educated guesses). Treat the inferred rows as directional, not gospel.</p>
+
+      <div class="box evidence">
+        <div class="bh">How to read the confidence markers</div>
+        <p><span style="color:#2563A8;font-weight:700">✓ Confirmed</span> = documented by the company itself or widely corroborated. <span class="inf">⊘ Inferred = pieced together from indirect signals; directionally right, details uncertain.</span> The deeper lesson is the same across all of them: <strong>they started simpler than you'd think and added complexity only when scale forced it.</strong></p>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Company</th><th>Stack (high level)</th><th>Confidence</th><th>The takeaway for Kindred</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Instagram</td><td>Python/<strong>Django</strong>, <strong>PostgreSQL</strong> (heavily sharded), Cassandra, Redis; famously ran lean for a long time on a small team</td><td style="color:#2563A8;font-weight:700">✓ Confirmed</td><td>A Postgres-anchored monolith scaled to enormous size before exotic infrastructure. Validates Postgres + monolith as a starting point.</td></tr>
+            <tr><td class="rowlabel">Discord</td><td><strong>Elixir/Erlang</strong> realtime gateway + <strong>Rust</strong> hot paths + Python API; message store migrated MongoDB → Cassandra → <strong>ScyllaDB</strong>; on Google Cloud</td><td style="color:#2563A8;font-weight:700">✓ Confirmed</td><td>The model for messaging at scale — and proof you <em>extract</em> the realtime/storage hot paths when forced, rather than starting as microservices. Your chat path may follow this someday.</td></tr>
+            <tr><td class="rowlabel">Strava</td><td>Ruby on <strong>Rails</strong> monolith, native mobile apps, on AWS; PostGIS-style geospatial for activities</td><td style="color:#2563A8;font-weight:700">✓ Confirmed</td><td>The closest analog to your "social + activity + geo" shape — and a single-language monolith took it to tens of millions of users. Strong precedent for boring + monolithic.</td></tr>
+            <tr><td class="rowlabel">Airbnb</td><td>Rails "Monorail" monolith → service-oriented architecture (Java/Kotlin services), React on web, MySQL, AWS</td><td style="color:#2563A8;font-weight:700">✓ Confirmed</td><td>The canonical "monolith first, extract services later" journey — exactly the migration path this memo prescribes. They didn't start distributed.</td></tr>
+            <tr><td class="rowlabel">AllTrails</td><td>Likely <strong>Rails + Postgres/PostGIS</strong>, native mobile, cloud-hosted; geospatial trail data at the core</td><td><span class="inf">⊘ Inferred</span></td><td>Your nearest product cousin (outdoors + maps + social). Reinforces Postgres + PostGIS as the right geo foundation when GPS arrives. <span class="inf">Exact stack not officially published.</span></td></tr>
+            <tr><td class="rowlabel">TikTok / ByteDance</td><td><strong>Go</strong> microservices, very heavy ML recommendation infrastructure, global CDN, massive custom video pipeline</td><td><span class="inf">⊘ Inferred</span></td><td>The aspirational video/recommendation ceiling — and a warning: that complexity is the product of thousands of engineers. <strong>Do not pattern-match your seed-stage app to it.</strong> <span class="inf">Internal details largely unpublished.</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What a competent team would build for Kindred <em>today</em> (1k → 500k)</h3>
+      <p>Strip away the legacy. Most of these companies are on stacks shaped by choices from the 2010s; if a sharp team started <em>your</em> app in 2026 — solo founder, AI-assisted, video-first, this scale trajectory — they would land almost exactly on the recommendation in this memo:</p>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Layer</th><th>What they'd choose in 2026</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Language</td><td><strong>TypeScript</strong> end-to-end (shared types across mobile/web/API; best AI-tooling support)</td></tr>
+            <tr><td class="rowlabel">Backend</td><td><strong>NestJS modular monolith</strong>, extracting services only on evidence</td></tr>
+            <tr><td class="rowlabel">Mobile / Web</td><td><strong>React Native + Expo</strong> / <strong>Next.js</strong>, one monorepo</td></tr>
+            <tr><td class="rowlabel">Database</td><td><strong>PostgreSQL</strong> (managed: Supabase → Neon/RDS), + Redis, + a search engine later</td></tr>
+            <tr><td class="rowlabel">Video</td><td><strong>Buy it</strong> — Mux or Cloudflare Stream behind an abstraction; never build the pipeline first</td></tr>
+            <tr><td class="rowlabel">Hosting</td><td><strong>Render + Vercel + Cloudflare</strong> early; AWS/GCP only at Phase 3</td></tr>
+            <tr><td class="rowlabel">Analytics / AI</td><td><strong>PostHog</strong> from day one; pgvector-ready data model; warehouse + vector DB when justified</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box note">
+        <div class="bh">The single most important benchmarking lesson</div>
+        <p>Every one of these companies <strong>started simpler than their current architecture</strong> and earned each piece of complexity by hitting a real wall. Instagram on a Postgres monolith, Airbnb on Rails, Discord extracting hot paths only when concurrency demanded it. The mistake isn't being too simple early — it's copying a giant's <em>end state</em> at your beginning. Build for your next 10x, not someone else's 500x.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>The companies most like Kindred — Strava, AllTrails, Instagram, Airbnb — were built on boring, single-language monoliths anchored on Postgres, and extracted complexity only under real scale pressure.</strong> A team starting your app fresh in 2026 would choose the TypeScript + Postgres + managed-services stack this memo recommends. Learn the <em>trajectory</em> (simple → selectively extracted), not the current end-state, and never benchmark a seed-stage app against TikTok's thousand-engineer machine.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 14 ===================== -->
+    <section class="section" id="s14">
+      <div class="section-head">
+        <div class="section-num">14</div>
+        <div><div class="section-kicker">The actual build plan</div><h2>The phased roadmap — what to build at each scale, and when to graduate</h2></div>
+      </div>
+
+      <p>This is the memo's payoff: a concrete, phase-by-phase plan that embodies the whole philosophy — <strong>build like a serious company (clean seams, real safety, instrumented from day one), operate like a lean startup (managed services, one deployable, no premature scale).</strong> Each phase lists what to run; the callouts between them are the <em>triggers</em> that tell you it's time to move — measured thresholds, never vibes.</p>
+
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Dimension</th><th>Phase 1 · Beta → 10k</th><th>Phase 2 · 10k → 100k</th><th>Phase 3 · 100k → 500k+</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Architecture</td><td>Modular monolith (NestJS) + worker process</td><td>Monolith + dedicated worker tier; in-process events → broker</td><td>Extract chat gateway &amp; video workers; core stays monolithic</td></tr>
+            <tr><td class="rowlabel">Hosting</td><td>Render (API+workers) + Vercel (web)</td><td>Same, scaled up; tuned autoscaling</td><td>Consider AWS/GCP (Fargate) for extracted services; keep managed where possible</td></tr>
+            <tr><td class="rowlabel">Database</td><td>Supabase Postgres (Pro)</td><td>Scale compute; add read replica; Neon if decoupling</td><td>RDS/Aurora; replicas, partition messages, PITR + cross-region</td></tr>
+            <tr><td class="rowlabel">Backend / Frontend / Mobile</td><td>TypeScript everywhere; RN+Expo; Next.js</td><td>Same; native modules for video hot path</td><td>Same core; possibly Go/Elixir for the one extracted service</td></tr>
+            <tr><td class="rowlabel">Auth</td><td>Supabase Auth / Clerk (Apple+Google)</td><td>Add MFA options; harden sessions</td><td>Enterprise-grade; anomaly detection; audit logs</td></tr>
+            <tr><td class="rowlabel">Video &amp; storage</td><td>Mux (or Cloudflare Stream) behind <code>MediaService</code>; R2 for other media</td><td>Tune encoding/delivery for cost; evaluate provider economics</td><td>Renegotiate/possible partial in-house pipeline; CDN optimization</td></tr>
+            <tr><td class="rowlabel">Search</td><td>Postgres full-text</td><td>Typesense / Meilisearch</td><td>Scaled search cluster (HA)</td></tr>
+            <tr><td class="rowlabel">Cache / queue</td><td>Redis (cache + BullMQ jobs)</td><td>Redis for hot feed/profile reads; precomputed feeds if needed</td><td>Clustered Redis; mature event streaming</td></tr>
+            <tr><td class="rowlabel">Analytics / AI</td><td>PostHog from commit one; pgvector-ready model</td><td>Warehouse (ClickHouse/BigQuery) if needed; first AI features via pgvector</td><td>Full data pipeline; Qdrant if embeddings outgrow Postgres; recommendations</td></tr>
+            <tr><td class="rowlabel">Monitoring</td><td>Sentry + uptime checks + Cloudflare WAF</td><td>Add tracing, dashboards, alerting</td><td>Full observability, SLOs, on-call, runbooks</td></tr>
+            <tr><td class="rowlabel">CI/CD &amp; DevOps</td><td>GitHub Actions (typecheck+lint+test); auto-deploy; Docker Compose local</td><td>Staging env; preview deploys; DB branching (Neon)</td><td>Hardened pipelines; IaC (Terraform); blue-green deploys</td></tr>
+            <tr><td class="rowlabel">Trust &amp; safety</td><td><strong>CSAM hashing+NCMEC, auto-moderation, report/block — at launch</strong></td><td>Human review queue scales; refined policies</td><td>Dedicated T&amp;S tooling/team; proactive detection</td></tr>
+            <tr><td class="rowlabel">Claude Code workflow</td><td>Strong <code>CLAUDE.md</code>+ADRs; small reviewed diffs; tests as guardrails</td><td>Module-scoped agents; richer test suite; enforced boundaries</td><td>Service-scoped contexts; codified conventions across services</td></tr>
+            <tr style="background:var(--coral-light)"><td class="rowlabel"><strong>Est. cost / mo</strong></td><td class="num"><strong>$150–2.5k</strong></td><td class="num"><strong>$2.5k–20k</strong></td><td class="num"><strong>$20k–100k+</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Migration triggers — graduate on these numbers, not nerves</h3>
+      <div class="phases">
+        <div class="phase p1">
+          <div class="ptag">Leave Phase 1 when…</div>
+          <h4>Signals to scale up</h4>
+          <div class="psub">Around 10k users</div>
+          <ul>
+            <li><b>DB</b><span class="v">CPU &gt;70% sustained</span></li>
+            <li><b>Reads</b><span class="v">feed/profile slow</span></li>
+            <li><b>Search</b><span class="v">FTS feels weak</span></li>
+            <li><b>Jobs</b><span class="v">queue backing up</span></li>
+            <li><b>Errors</b><span class="v">rising p95 latency</span></li>
+          </ul>
+        </div>
+        <div class="phase p2">
+          <div class="ptag">Leave Phase 2 when…</div>
+          <h4>Signals to extract</h4>
+          <div class="psub">Around 100k users</div>
+          <ul>
+            <li><b>Chat</b><span class="v">WS concurrency caps</span></li>
+            <li><b>Video</b><span class="v">cost needs control</span></li>
+            <li><b>Analytics</b><span class="v">PostHog UI outgrown</span></li>
+            <li><b>Deploys</b><span class="v">monolith risk rising</span></li>
+            <li><b>Data</b><span class="v">tables need partitions</span></li>
+          </ul>
+        </div>
+        <div class="phase p3">
+          <div class="ptag">In Phase 3…</div>
+          <h4>Operate at scale</h4>
+          <div class="psub">100k → 500k+</div>
+          <ul>
+            <li><b>Services</b><span class="v">chat + video out</span></li>
+            <li><b>DB</b><span class="v">replicas/partitions</span></li>
+            <li><b>Cost</b><span class="v">video renegotiated</span></li>
+            <li><b>Team</b><span class="v">first hires likely</span></li>
+            <li><b>Shard</b><span class="v">only if forced</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box note">
+        <div class="bh">The one-line operating rule</div>
+        <p>At every phase, the question is the same: <em>"Is a real metric telling me this current piece is failing?"</em> If yes, graduate that one piece. If no, keep shipping product. You never advance the whole stack at once, and you never advance on anticipation alone. That discipline — react to evidence, resist speculation — is what keeps a solo founder solvent and sane.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Phase 1 is one TypeScript monolith on managed services with safety and analytics built in — and it carries you to 10k users on a few hundred dollars a month. Phase 2 adds a worker tier, caching, real search, and a warehouse as metrics demand. Phase 3 extracts only the chat gateway and video workers while the core stays a monolith.</strong> Move between phases on measured triggers — DB CPU, latency, queue depth, concurrency ceilings — never on speculation. This <em>is</em> "serious company, lean startup" as an executable plan.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 15 ===================== -->
+    <section class="section" id="s15">
+      <div class="section-head">
+        <div class="section-num">15</div>
+        <div><div class="section-kicker">The two ways founders hurt themselves</div><h2>Mistakes to avoid — overkill on one side, genuine risk on the other</h2></div>
+      </div>
+
+      <p>Technical-founder failure splits cleanly into two buckets, and they pull in opposite directions. One is <strong>overkill</strong>: building for a scale you don't have, which burns the time and money that actually kill early startups. The other is <strong>genuine risk</strong>: skipping the few things that are cheap now and catastrophic later. The skill is telling them apart — being lean on the first list and uncompromising on the second.</p>
+
+      <div class="divider"></div>
+
+      <h3>Overkill for your stage — resist these</h3>
+      <p>Every item here is a <em>real</em> best practice at large scale and a <em>waste</em> (or active harm) at yours. Doing them now signals diligence but actually delays your product and drains resources.</p>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>The temptation</th><th>Why it's overkill now</th><th>When it's actually right</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Kubernetes</td><td>Enormous operational complexity for a solo founder; you'd spend weeks on YAML instead of features. A managed PaaS does the job.</td><td>Large team, many services, real orchestration needs (Phase 3+)</td></tr>
+            <tr><td class="rowlabel">Microservices from day one</td><td>Distributed-systems tax (network failures, tracing, deploys) with none of the benefit at your scale</td><td>Specific bottlenecks proven by metrics — extract one at a time</td></tr>
+            <tr><td class="rowlabel">Multi-region / global infra</td><td>Massive complexity to serve users you can reach fine from one region; your own strategy says start in <em>one city</em></td><td>Genuine global user base with latency/compliance needs</td></tr>
+            <tr><td class="rowlabel">Warehouse + vector DB on day one</td><td>You have no data volume to justify either; PostHog + pgvector cover you</td><td>Analytics/embeddings outgrow Postgres (Phase 2–3)</td></tr>
+            <tr><td class="rowlabel">SOC 2 now</td><td>Months of effort and cost before any customer requires it</td><td>Enterprise deals, partnerships, or investors demand it</td></tr>
+            <tr><td class="rowlabel">Database sharding</td><td>Premature sharding is a classic self-inflicted wound; Postgres scales vertically + replicas for ages (Instagram sharded <em>late</em>)</td><td>You physically cannot fit/serve the data otherwise</td></tr>
+            <tr><td class="rowlabel">Building auth / video / search yourself</td><td>Each is a product-sized engineering effort that isn't your product; buying them is the highest-leverage decision you'll make</td><td>Almost never for auth; for video only at extreme scale with a team</td></tr>
+            <tr><td class="rowlabel">Over-abstracting everything</td><td>Indirection "just in case" slows you and confuses the AI; abstract the real seams, not all of them</td><td>Where lock-in is high and a swap is genuinely plausible</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Genuinely risky — never skip these</h3>
+      <p>The mirror image: each is cheap or free to do now and ranges from expensive to existential if neglected. This is where "build like a serious company" is non-negotiable.</p>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>The shortcut</th><th>Why it's dangerous</th><th>The cheap fix now</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">No backups / no PITR</td><td>One bad migration or bug can erase user data permanently — unrecoverable and fatal to trust</td><td class="t-pick">Use managed Postgres with automated backups + PITR; test a restore once</td></tr>
+            <tr><td class="rowlabel">No content moderation / CSAM screening</td><td>Legal liability and catastrophic harm; for a stranger-meeting app with young users, an existential failure</td><td class="t-pick">Moderation API + CSAM hashing + report/block at launch (Section 11)</td></tr>
+            <tr><td class="rowlabel">Secrets in code</td><td>A leaked repo hands attackers your database and providers</td><td class="t-pick">Secrets manager + Zod-validated env + <code>.env.example</code>; never commit keys</td></tr>
+            <tr><td class="rowlabel">No error tracking</td><td>You're blind to crashes users hit; you find out from churn, not data</td><td class="t-pick">Sentry from commit one (free tier)</td></tr>
+            <tr><td class="rowlabel">Tight vendor coupling</td><td>A provider's price hike or outage becomes a multi-week rewrite</td><td class="t-pick">Thin service interfaces at high-lock-in seams (Section 8)</td></tr>
+            <tr><td class="rowlabel">No tests with AI writing code</td><td>You can't safely trust large AI diffs; regressions slip in silently</td><td class="t-pick">Vitest + Playwright; CI blocks merges on failure</td></tr>
+            <tr><td class="rowlabel">No analytics early</td><td>The behavioral data you don't capture now is gone — no retroactive AI training set, no funnel history</td><td class="t-pick">PostHog from day one with a typed event schema</td></tr>
+            <tr><td class="rowlabel">Rolling your own auth</td><td>Security-critical, easy to get subtly wrong, with severe consequences</td><td class="t-pick">Managed auth (Supabase/Clerk) — always</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box trap">
+        <div class="bh">The single most common technical-founder mistake</div>
+        <p>Above every specific item sits one meta-mistake: <strong>choosing infrastructure for the scale you dream of instead of the scale you have.</strong> Founders read about how TikTok or Discord operate and build a fraction of that machine before they have a thousand engaged users — and the complexity buries them before they ever find product-market fit. The correct mental model is <strong>"build for your next 10x, not for 500x."</strong> Solve 1k→10k now; design clean seams so 10k→100k is an evolution, not a rewrite; and trust that you'll have the users, money, and possibly a team to handle 100k→500k when you actually get there.</p>
+      </div>
+
+      <div class="verdict">
+        <div class="vh">Verdict</div>
+        <p><strong>Be ruthlessly lean on the overkill list — no Kubernetes, no microservices, no sharding, no warehouse, no SOC 2, no DIY auth/video/search until something real forces it — and absolutely uncompromising on the risk list: backups, moderation, secrets hygiene, error tracking, loose coupling, tests, and analytics, all from day one.</strong> The meta-rule beneath both: build for your next 10x, never someone else's 500x. That one sentence prevents the majority of technical-founder failures.</p>
+      </div>
+    </section>
+
+    <!-- ===================== MAC TOOLS ===================== -->
+    <section class="section" id="mac">
+      <div class="section-head">
+        <div class="section-num">★</div>
+        <div><div class="section-kicker">Your workbench</div><h2>Mac apps &amp; tools to learn — in priority order</h2></div>
+      </div>
+
+      <p>You asked which tools to put on your Mac and learn. Below is the full kit, sorted into <strong>learn deeply</strong> (your daily drivers — invest real time) and <strong>learn just enough</strong> (reach for them when needed). The ordering of the deep list is also the order to learn them in: each builds on the last.</p>
+
+      <h3>Learn deeply — your daily drivers</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>#</th><th>Tool</th><th>What it's for &amp; why it's worth real time</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td class="rowlabel">Terminal + zsh</td><td>The command line is the floor everything else stands on — running your app, git, package managers, Docker. Get comfortable navigating, running commands, and reading output. A week of deliberate practice pays off forever. (Optional upgrade: <strong>Warp</strong>, a modern AI-aware terminal.)</td></tr>
+            <tr><td class="num">2</td><td class="rowlabel">Git + GitHub</td><td>Version control is your safety net and your collaboration layer with Claude Code. Learn branches, commits, pull requests, and how to read a diff <em>well</em> — reviewing diffs is how you stay in control of AI-written code. Non-negotiable fluency.</td></tr>
+            <tr><td class="num">3</td><td class="rowlabel">VS Code / Cursor + Claude Code</td><td>Your editor and AI cockpit. <strong>Cursor</strong> is a VS Code fork with superb inline AI (its Tab autocomplete is best-in-class); <strong>Claude Code</strong> runs in the terminal, in VS Code, on desktop, and in a browser IDE for larger agentic work. <sup><a href="#r11">[11]</a></sup> Many builders use both — Cursor for fast in-line edits, Claude Code for multi-file features. This is where you'll live; learn their keyboard flows cold.</td></tr>
+            <tr><td class="num">4</td><td class="rowlabel">Claude (claude.ai)</td><td>Your architecture and strategy partner (this memo's home). Use it for planning, debugging reasoning, reviewing approaches, and writing the <code>CLAUDE.md</code>/ADRs that steer Claude Code. The thinking layer above the coding layer.</td></tr>
+            <tr><td class="num">5</td><td class="rowlabel">Figma + FigJam</td><td><strong>Figma</strong> for UI design (screens, components, your coral/ink design system); <strong>FigJam</strong> for whiteboarding flows and architecture. Designing screens before building them saves enormous rework — and Claude Code builds far better from a clear design than from a vague description.</td></tr>
+            <tr><td class="num">6</td><td class="rowlabel">TablePlus / Postico</td><td>A GUI for your Postgres database — browse tables, run queries, inspect data visually. Indispensable for understanding what your app is actually storing. (Postico is Mac-native and Postgres-focused; TablePlus handles many databases.)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Learn just enough — reach for these as needed</h3>
+      <div class="tbl-wrap">
+        <table class="k">
+          <thead><tr><th>Tool</th><th>What it's for</th><th>Depth</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Adobe Illustrator</td><td>Vector design for your logo, app icon, and scalable brand marks. Learn enough to produce and tweak SVG assets.</td><td><span class="pill soon">Just enough</span></td></tr>
+            <tr><td class="rowlabel">Adobe After Effects</td><td>Motion graphics and UI animations. Key trick: export animations as <strong>Lottie</strong> (via the Bodymovin plugin) for lightweight, crisp in-app motion. Learn the export path, not the whole tool.</td><td><span class="pill soon">Just enough</span></td></tr>
+            <tr><td class="rowlabel">Xcode + Android Studio</td><td>Required to build, run, and submit your React Native app to the App Store / Play Store (simulators, signing, native builds). You won't code in them daily, but you need them working.</td><td><span class="pill soon">Operational</span></td></tr>
+            <tr><td class="rowlabel">Docker Desktop</td><td>Runs your local Postgres + Redis via Docker Compose with one command. Mostly "install it and let Compose do the work."</td><td><span class="pill soon">Just enough</span></td></tr>
+            <tr><td class="rowlabel">Postman / Insomnia</td><td>Manually test your API endpoints while building. Quick to pick up; saves debugging time.</td><td><span class="pill soon">Just enough</span></td></tr>
+            <tr><td class="rowlabel">Photoshop / Lightroom</td><td>Optional — raster image editing and photo color/grading if your content workflow needs it.</td><td><span class="pill later">Optional</span></td></tr>
+            <tr><td class="rowlabel">Premiere Pro</td><td>Optional — heavier video editing for marketing material or your own content (not needed for the app itself).</td><td><span class="pill later">Optional</span></td></tr>
+            <tr><td class="rowlabel">Raycast</td><td>A Spotlight replacement that speeds up everything on macOS — launching, clipboard history, snippets. Quality-of-life, not essential.</td><td><span class="pill later">Optional</span></td></tr>
+            <tr><td class="rowlabel">Notion / Obsidian + Linear</td><td><strong>Notion/Obsidian</strong> for notes and product docs; <strong>Linear</strong> for tracking issues and roadmap (excellent even for solo founders). Lightweight project memory.</td><td><span class="pill later">Optional</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box note">
+        <div class="bh">A sane learning order</div>
+        <p>Don't try to learn all of this at once. Go in this sequence: <strong>(1)</strong> get fluent in Terminal + Git, <strong>(2)</strong> set up VS Code/Cursor + Claude Code and build something tiny end-to-end, <strong>(3)</strong> add TablePlus so you can see your data, <strong>(4)</strong> bring in Figma to design before you build, <strong>(5)</strong> layer in Illustrator/After Effects for brand and motion when you need polish, and <strong>(6)</strong> treat Xcode/Android Studio/Docker as "install and configure once, revisit when required." Depth on the first four; familiarity on the rest.</p>
+      </div>
+    </section>
+
+    <!-- ===================== REFERENCES ===================== -->
+    <section class="section" id="refs">
+      <div class="section-head">
+        <div class="section-num">§</div>
+        <div><div class="section-kicker">Sources &amp; further reading</div><h2>References</h2></div>
+      </div>
+      <p>Pricing and product details below were gathered in <strong>June 2026</strong> and change frequently — always confirm against the provider's live pricing page before committing. Primary/official sources are listed first where available; comparison write-ups are included for context.</p>
+      <ol class="refs">
+        <li id="r1"><strong>Mux — video streaming pricing &amp; cost estimation.</strong> Official: <a href="https://www.mux.com/pricing">mux.com/pricing</a>, <a href="https://www.mux.com/docs/pricing/estimating-video-costs">estimating video costs</a>, <a href="https://www.mux.com/pricing/calculator">cost calculator</a>. Context: <a href="https://apiscout.dev/guides/how-to-add-video-streaming-mux-2026">apiscout.dev guide (2026)</a>.</li>
+        <li id="r2"><strong>Cloudflare Stream — pricing.</strong> Official: <a href="https://developers.cloudflare.com/stream/pricing/">developers.cloudflare.com/stream/pricing</a>. Developer-platform &amp; R2 pricing: <a href="https://www.cloudflare.com/plans/developer-platform-pricing/">cloudflare.com/plans/developer-platform-pricing</a>. Context: <a href="https://community.cloudflare.com/t/how-much-does-video-storage-and-streaming-cost-cloudflare-stream-and-r2/718992">Cloudflare community thread</a>.</li>
+        <li id="r3"><strong>Mux vs. S3 — cost comparison.</strong> <a href="https://www.mux.com/blog/mux-is-cheaper-than-s3">mux.com/blog/mux-is-cheaper-than-s3</a> (vendor analysis of self-hosting video on S3/CloudFront vs. managed).</li>
+        <li id="r4"><strong>AWS — S3, CloudFront &amp; MediaConvert pricing.</strong> Official: <a href="https://aws.amazon.com/s3/pricing/">aws.amazon.com/s3/pricing</a>, <a href="https://aws.amazon.com/cloudfront/pricing/">cloudfront/pricing</a>, <a href="https://aws.amazon.com/mediaconvert/pricing/">mediaconvert/pricing</a> (egress is the dominant variable cost).</li>
+        <li id="r5"><strong>Supabase — pricing &amp; plans.</strong> Official: <a href="https://supabase.com/pricing">supabase.com/pricing</a>. Context: <a href="https://www.bytebase.com/blog/supabase-vs-aws-database-pricing/">Bytebase Supabase-vs-AWS</a>, <a href="https://cotera.co/articles/supabase-pricing-guide">Cotera guide</a>.</li>
+        <li id="r6"><strong>Neon — serverless Postgres pricing.</strong> Official: <a href="https://neon.com/pricing">neon.com/pricing</a>, <a href="https://neon.com/blog/new-usage-based-pricing">usage-based pricing (post-Databricks)</a>. Context: <a href="https://www.buildmvpfast.com/blog/neon-serverless-postgres-databricks-comparison-pricing-2026">BuildMVPFast 2026</a>, <a href="https://vela.simplyblock.io/articles/neon-serverless-postgres-pricing-2026/">simplyblock analysis</a>.</li>
+        <li id="r7"><strong>Managed Postgres comparison (Supabase / RDS / Aurora).</strong> <a href="https://www.bytebase.com/blog/supabase-vs-aws-database-pricing/">bytebase.com/blog/supabase-vs-aws-database-pricing</a>; Neon vs. Supabase: <a href="https://www.closefuture.io/blogs/neon-vs-supabase">closefuture.io</a>.</li>
+        <li id="r8"><strong>PostHog — product analytics pricing.</strong> Official: <a href="https://posthog.com/pricing">posthog.com/pricing</a>. Context: <a href="https://schematichq.com/blog/posthog-pricing">SchematicHQ</a>, <a href="https://cubeapm.com/blog/posthog-pricing-and-review/">CubeAPM review</a>.</li>
+        <li id="r9"><strong>Hosting platform comparisons — Render / Railway / Fly.io.</strong> <a href="https://devtoolpicks.com/blog/railway-vs-render-vs-fly-io-solo-developers-2026">DevToolPicks (solo devs, 2026)</a>, <a href="https://northflank.com/blog/railway-vs-render">Northflank Railway-vs-Render</a>, <a href="https://thesoftwarescout.com/railway-vs-render-2026-best-platform-for-deploying-apps/">The Software Scout (2026)</a>.</li>
+        <li id="r10"><strong>Search engine comparisons — Algolia / Typesense / Meilisearch.</strong> <a href="https://typesense.org/typesense-vs-algolia-vs-elasticsearch-vs-meilisearch/">Typesense comparison</a>, <a href="https://blog.elest.io/meilisearch-vs-typesense-vs-algolia-which-search-engine-fits-your-stack/">elest.io</a>, <a href="https://www.buildmvpfast.com/alternatives/algolia">BuildMVPFast (Algolia alternatives)</a>.</li>
+        <li id="r11"><strong>AI coding tools — Claude Code vs. Cursor.</strong> <a href="https://northflank.com/blog/claude-code-vs-cursor-comparison">Northflank comparison</a>, <a href="https://www.builder.io/blog/cursor-vs-claude-code">Builder.io</a>, <a href="https://claudefa.st/blog/tools/extensions/claude-code-vs-cursor">claudefa.st</a>. (For Anthropic product specifics — models, limits, pricing — verify at <a href="https://docs.claude.com">docs.claude.com</a>.)</li>
+        <li id="r12"><strong>Company engineering references (benchmarking).</strong> Instagram Engineering, Discord Engineering blog (Elixir/Rust/ScyllaDB messaging posts), and Airbnb Engineering (Monorail → SOA) — public engineering blogs. Confirmed items in Section 13 draw on these; inferred items (AllTrails, ByteDance internals) are flagged as such and not officially published.</li>
+      </ol>
+    </section>
+
+    <!-- ===================== ENDCAP ===================== -->
+    <section class="endcap">
+      <div class="bh">The through-line</div>
+      <h2 style="color:#fff;border:none;margin-top:0">Build like a serious company. Operate like a lean startup.</h2>
+      <p>Every recommendation in this memo resolves to one idea: earn complexity, don't assume it. Choose one boring, typed language so a solo founder plus Claude Code can move fast and safely. Buy the genuinely hard parts — video, auth, search — and put thin seams around them so you're never trapped. Run a modular monolith on managed services that costs a few hundred dollars a month, and extract pieces only when a real metric proves you must. Instrument everything from day one, because the data you skip is gone forever. And treat the few existential things — backups, moderation, secrets, safety for the vulnerable young people you're connecting — as non-negotiable from the very first commit.</p>
+      <p>You don't need TikTok's architecture. You need the architecture that gets <em>Kindred</em> from a thousand believers to its first hundred thousand without a rewrite and without going broke — designed so the next 10x is always an evolution, never a teardown. That's what this is. Now go build it.</p>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

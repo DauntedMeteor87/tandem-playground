@@ -1,0 +1,64 @@
+<!-- @dsCard group="Components" viewport="700x400" name="Core" subtitle="Buttons, chips, tags, cards, list rows, avatars" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  body { margin: 0; background: var(--surface-app); font-family: var(--font-ui); padding: 22px; }
+  .grid { display: grid; gap: 22px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .lbl { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 9px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button, Chip, Tag, Card, ListRow, Avatar, AvatarStack } = window.TandemclubDesignSystem_d44a9e;
+function Demo() {
+  return (
+    <div className="grid">
+      <div>
+        <div className="lbl">Buttons</div>
+        <div className="row">
+          <Button full={false}>Join now</Button>
+          <Button full={false} variant="ghost">Enter for a spot</Button>
+          <Button full={false} variant="subtle">Maybe later</Button>
+          <Button full={false} variant="accent">Message lead</Button>
+          <Button full={false} variant="apple">Pay</Button>
+          <Button full={false} size="sm">See more</Button>
+          <Button full={false} disabled>Disabled</Button>
+        </div>
+      </div>
+      <div className="row" style={{ gap: 40, alignItems: "flex-start" }}>
+        <div>
+          <div className="lbl">Chips</div>
+          <div className="row"><Chip on>All</Chip><Chip>Hikes</Chip><Chip>Camping</Chip><Chip>Surf</Chip></div>
+        </div>
+        <div>
+          <div className="lbl">Tags</div>
+          <div className="row"><Tag tone="accent">Adventure</Tag><Tag tone="action">Activity</Tag><Tag>Moderate</Tag><Tag tone="success">Free</Tag></div>
+        </div>
+        <div>
+          <div className="lbl">Avatars</div>
+          <div className="row"><Avatar name="Maya P" /><Avatar name="Jordan R" /><AvatarStack people={["MP","JR","AL","DT","KM"]} /></div>
+        </div>
+      </div>
+      <div style={{ maxWidth: 360 }}>
+        <div className="lbl">Card + list rows</div>
+        <Card>
+          <ListRow leading={<Avatar name="Maya P" size={36} />} title="Maya P." subtitle="Trip lead · Field Studies" trailing={<span style={{color:"var(--text-tertiary)"}}>›</span>} />
+          <ListRow leading={<Avatar name="Jordan R" size={36} />} title="Jordan R." subtitle="2 mutual friends" last trailing={<span style={{color:"var(--text-tertiary)"}}>›</span>} />
+        </Card>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WizardShell > matches the snapshot at a middle step (one done, one current, one ahead) 1`] = `
+<div>
+  <div
+    class="wiz"
+  >
+    <div
+      class="wiz__rail wiz__rail--steps"
+    >
+      <div
+        class="wiz__railhead"
+      >
+        <div
+          class="wiz__railtitle"
+        >
+          Sykes Hot Springs Overnight
+        </div>
+        <div
+          class="wiz__railsub"
+        >
+          Fill in the details, then publish.
+        </div>
+      </div>
+      <button
+        class="railstep done"
+        type="button"
+      >
+        <span
+          class="railstep__n"
+        >
+          <svg
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.4"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 12l5 5 9-11"
+            />
+          </svg>
+        </span>
+        Basics
+      </button>
+      <button
+        class="railstep current"
+        type="button"
+      >
+        <span
+          class="railstep__n"
+        >
+          2
+        </span>
+        Write-up
+      </button>
+      <button
+        class="railstep "
+        type="button"
+      >
+        <span
+          class="railstep__n"
+        >
+          3
+        </span>
+        Itinerary
+      </button>
+    </div>
+    <div
+      class="wiz__main"
+    >
+      <div
+        class="wiz__body"
+      >
+        <p>
+          Step body
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="wiz__foot"
+  >
+    <div
+      class="side"
+    >
+      <button
+        class="btn btn--ghost"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M15 18l-6-6 6-6"
+          />
+        </svg>
+         
+        Back
+      </button>
+    </div>
+    <div
+      class="side"
+    >
+      <button
+        class="btn"
+        type="button"
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</div>
+`;

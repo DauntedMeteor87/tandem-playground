@@ -1,0 +1,165 @@
+<!-- @dsCard group="Mobile App" viewport="402x720" name="Mobile app — Home & Trip" subtitle="Interactive: browse sign-ups, open a trip, RSVP" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tandemclub — mobile</title>
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  body{margin:0;background:#d9d2c8;font-family:var(--font-ui);display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+  .device{width:402px;height:720px;background:#000;border-radius:44px;padding:10px;box-shadow:var(--shadow-device);margin:0 auto}
+  .screen{width:100%;height:100%;background:var(--surface-app);border-radius:36px;overflow:hidden;display:flex;flex-direction:column;position:relative;color:var(--text-primary)}
+  .status{height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 5px;font-size:13px;font-weight:700}
+  .scroll{flex:1;overflow-y:auto}
+  .scroll::-webkit-scrollbar{width:0}
+  .pad{padding:0 16px}
+  .header{display:flex;align-items:center;gap:9px;padding:6px 16px 10px}
+  .brand{font-size:17px;font-weight:800;letter-spacing:-.02em;font-family:var(--font-display);font-weight:600}
+  .search{flex:1;height:34px;border-radius:999px;background:var(--surface-card);border:1px solid var(--border-strong);display:flex;align-items:center;padding:0 13px;color:var(--text-tertiary);font-size:13px;gap:7px}
+  .sech{display:flex;align-items:baseline;justify-content:space-between;padding:16px 16px 10px}
+  .sech h3{margin:0;font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .sech .more{font-size:13px;color:var(--text-tertiary);font-weight:600}
+  .shelf{display:flex;gap:12px;overflow-x:auto;padding:0 16px 8px}
+  .shelf::-webkit-scrollbar{display:none}
+  .pills{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 8px}
+  .pills::-webkit-scrollbar{display:none}
+  .tabbar{flex:none;display:flex;border-top:1px solid var(--border);background:color-mix(in oklch,var(--surface-app) 88%,transparent);backdrop-filter:blur(12px)}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 14px;color:var(--text-tertiary);font-size:10px;font-weight:600;cursor:pointer;border:none;background:none}
+  .tab.on{color:var(--action)}
+  .backbar{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--border)}
+  .iconbtn{width:34px;height:34px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--surface-card);border:1px solid var(--border);cursor:pointer;color:var(--text-primary)}
+  .svg{width:22px;height:22px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const DS = window.TandemclubDesignSystem_d44a9e;
+const { Button, Chip, Tag, Card, ListRow, Avatar, AvatarStack, Segment, TripCard, StreakBar, PhotoFrame } = DS;
+const { useState } = React;
+
+const I = {
+  home:`<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>`,
+  trips:`<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>`,
+  plan:`<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>`,
+  comm:`<circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M15.5 20c0-2 .8-3.2 2-3.7"/>`,
+  back:`<path d="M15 18l-6-6 6-6"/>`, search:`<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/>`,
+  pin:`<path d="M12 21s-6-5.7-6-10a6 6 0 1112 0c0 4.3-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>`,
+  cal:`<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>`,
+};
+function Ic({d,s=22,stroke=2}){return <svg className="svg" style={{width:s,height:s}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML={{__html:d}}/>;}
+
+const TRIPS = [
+  {id:1,title:"Sykes Hot Springs Overnight",club:"Field Studies",kind:"Adventure",when:"Mar 8",cost:"$18",diff:"Moderate",place:"Big Sur, CA",going:["MP","JR","AL","DT"],goingN:8,
+   desc:"Two-hour hike in to natural hot springs. Camp riverside, cook over the fire, hike out Sunday. We handle permits + group gear.",lead:"Maya P."},
+  {id:2,title:"Bishop Peak Sunset Hike",club:"Cal Poly Hiking",kind:"Activity",when:"Thu 5:30",cost:"Free",diff:"Easy",place:"San Luis Obispo",going:["KM","RS","JL"],goingN:12,
+   desc:"Chill after-class hike up Bishop. Great first trip if you don't know anyone yet — we go slow and grab tacos after.",lead:"Jordan R."},
+  {id:3,title:"Montaña de Oro Tidepools",club:"Field Studies",kind:"Activity",when:"Sat 9:00",cost:"Free",diff:"Easy",place:"Los Osos",going:["AL","DT"],goingN:5,
+   desc:"Low-tide tidepooling and a slow coast walk. Bring water shoes. We carpool from the dorms.",lead:"Alex L."},
+  {id:4,title:"Palisades Tahoe Ski Weekend",club:"Snow Club",kind:"Adventure",when:"Mar 21",cost:"$95",diff:"All levels",place:"Olympic Valley",going:["JR","KM","MP","RS"],goingN:14,
+   desc:"Two nights, one cabin, all the runs. Rentals sorted. First-timers welcome — half of us started here.",lead:"Riley T."},
+];
+
+function Home({go}){
+  const [pill,setPill]=useState("For you");
+  return (
+    <>
+      <div className="header">
+        <span className="brand">tandemclub</span>
+        <div className="search"><Ic d={I.search} s={17} stroke={1.9}/> Find your people</div>
+        <Avatar name="Sam K" size={30}/>
+      </div>
+      <div className="scroll">
+        <div className="pills">
+          {["For you","Hikes","Camping","Surf","Ski"].map(p=>(
+            <Chip key={p} on={p===pill} onClick={()=>setPill(p)}>{p}</Chip>
+          ))}
+        </div>
+        <StreakBar weeks={3} style={{margin:"6px 16px 0"}} message="Three weeks out in a row — nice." />
+        <div className="sech"><h3>Sign ups for you</h3><span className="more">See more</span></div>
+        <div className="shelf">
+          {TRIPS.map(t=><TripCard key={t.id} trip={t} onClick={()=>go(t)} />)}
+        </div>
+        <div className="sech"><h3>Happening this week</h3></div>
+        <div className="pad" style={{display:"grid",gap:12}}>
+          {TRIPS.slice(1,3).map(t=><TripCard key={t.id} trip={t} grid onClick={()=>go(t)} />)}
+        </div>
+        <div style={{height:20}}/>
+      </div>
+    </>
+  );
+}
+
+function Trip({trip,back}){
+  const [going,setGoing]=useState(false);
+  return (
+    <>
+      <div className="scroll">
+        <PhotoFrame height={260} protect
+          overlay={<>
+            <div style={{display:"flex",gap:6,marginBottom:8}}>
+              <Tag tone={trip.kind==="Adventure"?"accent":"action"}>{trip.kind}</Tag>
+              <span style={{background:"rgba(255,255,255,.22)",backdropFilter:"blur(4px)",padding:"4px 8px",borderRadius:6,fontSize:11,fontWeight:600}}>{trip.diff}</span>
+            </div>
+            <div style={{fontFamily:"var(--font-display)",fontWeight:600,fontSize:26,lineHeight:1.1}}>{trip.title}</div>
+          </>}>
+          <div style={{position:"absolute",top:8,left:12,zIndex:3}}>
+            <button className="iconbtn" style={{background:"rgba(0,0,0,.35)",color:"#fff",border:"none"}} onClick={back}><Ic d={I.back} s={22}/></button>
+          </div>
+        </PhotoFrame>
+        <div className="pad" style={{paddingTop:16}}>
+          <div style={{display:"flex",gap:18,marginBottom:16}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,fontSize:13,color:"var(--text-secondary)"}}><Ic d={I.cal} s={17} stroke={1.7}/> {trip.when}</div>
+            <div style={{display:"flex",alignItems:"center",gap:8,fontSize:13,color:"var(--text-secondary)"}}><Ic d={I.pin} s={17} stroke={1.7}/> {trip.place}</div>
+          </div>
+          <p style={{margin:"0 0 18px",fontSize:15,lineHeight:1.5,color:"var(--text-primary)"}}>{trip.desc}</p>
+          <Card pad style={{marginBottom:16,display:"flex",alignItems:"center",gap:12}}>
+            <Avatar name={trip.lead} size={42}/>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:700}}>{trip.lead}</div>
+              <div style={{fontSize:12.5,color:"var(--text-tertiary)"}}>Trip lead · {trip.club}</div>
+            </div>
+            <Button full={false} size="sm" variant="ghost">Message</Button>
+          </Card>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
+            <AvatarStack people={trip.going} size={34}/>
+            <span style={{fontSize:14,color:"var(--text-secondary)"}}><b>{trip.goingN} going</b> · 2 mutuals</span>
+          </div>
+        </div>
+      </div>
+      <div className="pad" style={{padding:"10px 16px 16px",borderTop:"1px solid var(--border)",background:"var(--surface-app)"}}>
+        <Button onClick={()=>setGoing(!going)} variant={going?"subtle":"primary"}>
+          {going ? "You're in — see the crew chat" : (trip.cost==="Free" ? "Join now" : `Join now · ${trip.cost}`)}
+        </Button>
+      </div>
+    </>
+  );
+}
+
+function App(){
+  const [screen,setScreen]=useState({name:"home"});
+  const [tab,setTab]=useState("home");
+  return (
+    <div className="device"><div className="screen">
+      <div className="status"><span>9:41</span><span>􀙇 􀛨 􀋦</span></div>
+      {screen.name==="home" && <Home go={t=>setScreen({name:"trip",trip:t})} />}
+      {screen.name==="trip" && <Trip trip={screen.trip} back={()=>setScreen({name:"home"})} />}
+      <div className="tabbar">
+        {[["home","Home",I.home],["trips","My Trips",I.trips],["plan","Plan",I.plan],["comm","Crews",I.comm]].map(([k,label,d])=>(
+          <button key={k} className={"tab"+(tab===k?" on":"")} onClick={()=>{setTab(k);setScreen({name:"home"});}}>
+            <Ic d={d} s={24} stroke={1.8}/>{label}
+          </button>
+        ))}
+      </div>
+    </div></div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

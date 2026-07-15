@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+build/
+.next/
+.turbo/
+.expo/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# typescript / test artifacts
+*.tsbuildinfo
+coverage/
+
+# design source archives (contents live extracted in Guidlines/design-system/)
+Guidlines/*.zip

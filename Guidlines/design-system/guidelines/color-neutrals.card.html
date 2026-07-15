@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Warm neutrals" subtitle="The greyscale ramp, re-tinted warm — never pure grey" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--surface-dark);font-family:var(--font-ui);padding:18px}
+  .ramp{display:flex;border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card);border:1px solid var(--border)}
+  .ramp>div{flex:1;height:64px}
+  .row{display:flex;gap:22px;margin-top:12px}
+  .k{font-size:11px;font-family:var(--font-mono)}
+  .k b{display:block;font-family:var(--font-ui);font-size:12px;color:var(--text-on-dark)}
+  .k span{color:var(--text-on-dark-dim)}
+</style></head><body>
+  <div class="ramp">
+    <div style="background:var(--warm-0)"></div>
+    <div style="background:var(--warm-50)"></div>
+    <div style="background:var(--warm-100)"></div>
+    <div style="background:var(--warm-200)"></div>
+    <div style="background:var(--warm-300)"></div>
+    <div style="background:var(--ink-500)"></div>
+    <div style="background:var(--ink-700)"></div>
+    <div style="background:var(--ink-900)"></div>
+  </div>
+  <div class="row">
+    <div class="k"><b>Surfaces</b><span>--warm-0 · 50 · 100</span></div>
+    <div class="k"><b>Borders</b><span>--warm-200 · 300</span></div>
+    <div class="k"><b>Text</b><span>--ink-500 · 700 · 900</span></div>
+  </div>
+</body></html>

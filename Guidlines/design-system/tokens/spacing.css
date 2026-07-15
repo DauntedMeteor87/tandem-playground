@@ -1,0 +1,17 @@
+/* ============================================================
+   Spacing, radius, sizing — preserved exactly from the wireframe
+   (4pt scale). "Keep the same, just tighter to fit" per founder.
+   ============================================================ */
+:root {
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px;
+
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  18px;
+  --r-xl:  24px;
+  --r-pill: 999px;
+
+  /* touch targets — never below 44px on mobile */
+  --tap-min: 44px;
+}

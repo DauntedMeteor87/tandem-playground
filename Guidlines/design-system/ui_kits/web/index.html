@@ -1,0 +1,136 @@
+<!-- @dsCard group="Web Portal" viewport="1040x660" name="Web portal — plan a trip" subtitle="Desktop wizard: leaders name, schedule, and publish a trip" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>tandemclub — web portal</title>
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  body{margin:0;background:#d9d2c8;font-family:var(--font-ui);color:var(--text-primary);display:flex;justify-content:center;padding:20px}
+  .win{width:1040px;height:660px;background:var(--surface-app);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-device);display:flex;flex-direction:column}
+  .bar{height:40px;background:var(--warm-150);display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid var(--border)}
+  .dot{width:12px;height:12px;border-radius:50%;background:var(--warm-300)}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;background:var(--surface-card);border-bottom:1px solid var(--border)}
+  .brand{font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.02em}
+  .meta{font-size:13px;color:var(--text-tertiary)}
+  .wiz{flex:1;display:flex;min-height:0}
+  .rail{width:276px;flex:none;border-right:1px solid var(--border);background:var(--surface-card);padding:22px 16px;overflow-y:auto}
+  .rt{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0 8px 4px}
+  .rs{font-size:13px;color:var(--text-tertiary);padding:0 8px 16px;line-height:1.4}
+  .step{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 8px;border-radius:12px;font-size:14px;font-weight:600;color:var(--text-secondary);border:none;background:none;cursor:pointer}
+  .step.on{background:var(--action-soft);color:var(--action-hover)}
+  .step.done{color:var(--text-primary)}
+  .num{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--surface-sunk);color:var(--text-tertiary);border:1px solid var(--border)}
+  .step.on .num{background:var(--action);color:#fff;border-color:var(--action)}
+  .step.done .num{background:var(--success);color:#fff;border-color:var(--success)}
+  .main{flex:1;overflow-y:auto;padding:32px 40px}
+  .h1{font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:-.02em;margin:0 0 6px}
+  .sub{font-size:15px;color:var(--text-secondary);margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 22px;max-width:640px}
+  .full{grid-column:1/-1}
+  .foot{display:flex;justify-content:space-between;padding:16px 40px;border-top:1px solid var(--border);background:var(--surface-card)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const DS = window.TandemclubDesignSystem_d44a9e;
+const { Button, Input, Segment, Toggle, Stepper, Card, Tag } = DS;
+const { useState } = React;
+
+const STEPS = ["Name it","When","Itinerary","Money & rides","Publish"];
+
+function StepBody({i}){
+  if(i===0) return (
+    <div className="grid">
+      <div className="full"><Input label="Trip name" defaultValue="Sykes Hot Springs Overnight" /></div>
+      <div className="full"><Input label="Describe it" multiline maxLength={250} defaultValue="Two-hour hike in to natural hot springs. Camp riverside, cook over the fire, hike out Sunday. We handle permits + group gear." /></div>
+    </div>
+  );
+  if(i===1) return (
+    <div className="grid">
+      <Input label="Date" defaultValue="Sat–Sun · Mar 8" />
+      <Input label="A note on timing" defaultValue="Out the door by 7 AM" />
+      <div className="full"><Input label="General location" defaultValue="Big Sur, CA" /></div>
+    </div>
+  );
+  if(i===2) return (
+    <div className="grid">
+      <div className="full"><Input label="Itinerary" multiline defaultValue={"7:00  Leave from dorms\n9:30  Trailhead, gear check\n12:00 Reach the springs, lunch\n7:00  Fireside dinner"} /></div>
+    </div>
+  );
+  if(i===3) return (
+    <div style={{maxWidth:640,display:"grid",gap:16}}>
+      <Card pad>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+          <b style={{fontSize:15.5}}>Split a budget</b><Toggle defaultOn/>
+        </div>
+        {[["Gas",4],["Permits",2],["Food",3]].map(([l,n])=>(
+          <div key={l} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid var(--border)"}}>
+            <span style={{flex:1,fontSize:14}}>{l}</span><Stepper defaultValue={n}/>
+          </div>
+        ))}
+        <div style={{marginTop:14,padding:14,borderRadius:12,background:"var(--surface-sunk)",border:"1px solid var(--border)"}}>
+          <span style={{fontSize:26,fontWeight:800,letterSpacing:"-.02em"}}>$15<span style={{fontSize:14,fontWeight:600,color:"var(--text-tertiary)"}}> / person</span></span>
+        </div>
+      </Card>
+      <Card pad>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <b style={{fontSize:15.5}}>Ride share — your car</b><Toggle/>
+        </div>
+      </Card>
+    </div>
+  );
+  return (
+    <div style={{maxWidth:640,display:"grid",gap:12}}>
+      {[["Post to a crew","Moonlight Crew · 12 members",true],["Draft a crew for this","Add friends one by one",false],["Public","Anyone at Cal Poly SLO can see it",false]].map(([t,s,sel])=>(
+        <div key={t} style={{display:"flex",alignItems:"center",gap:12,padding:16,borderRadius:16,border:`1px solid ${sel?"var(--action)":"var(--border-strong)"}`,background:sel?"var(--action)":"var(--surface-card)",color:sel?"#fff":"var(--text-primary)"}}>
+          <div style={{flex:1}}>
+            <div style={{fontSize:15,fontWeight:700}}>{t}</div>
+            <div style={{fontSize:12.5,color:sel?"rgba(255,255,255,.75)":"var(--text-tertiary)",marginTop:2}}>{s}</div>
+          </div>
+          <div style={{width:22,height:22,borderRadius:"50%",border:`2px solid ${sel?"#fff":"var(--border-strong)"}`}}/>
+        </div>
+      ))}
+      <div style={{display:"flex",alignItems:"center",gap:10,marginTop:4}}><Toggle/><span style={{fontSize:14}}>Repeat weekly</span></div>
+    </div>
+  );
+}
+
+function App(){
+  const [step,setStep]=useState(0);
+  return (
+    <div className="win">
+      <div className="bar"><span className="dot"/><span className="dot"/><span className="dot"/></div>
+      <div className="top"><span className="brand">tandemclub <span style={{color:"var(--text-tertiary)",fontFamily:"var(--font-ui)",fontWeight:600,fontSize:13}}>· leaders</span></span><span className="meta">Field Studies · Maya P.</span></div>
+      <div className="wiz">
+        <div className="rail">
+          <div className="rt">Plan a trip</div>
+          <div className="rs">Publish an adventure your club can sign up for.</div>
+          {STEPS.map((s,i)=>(
+            <button key={s} className={"step"+(i===step?" on":i<step?" done":"")} onClick={()=>setStep(i)}>
+              <span className="num">{i<step?"✓":i+1}</span>{s}
+            </button>
+          ))}
+        </div>
+        <div className="main">
+          <h1 className="h1">{["Name your trip","When is it?","Itinerary","Money & rides","Who can see it?"][step]}</h1>
+          <p className="sub">{["Give it a name people will remember.","A date, and a note on the timing.","Rough plan for the day.","Optional — split costs and offer seats.","Pick who this trip is for."][step]}</p>
+          <StepBody i={step}/>
+        </div>
+      </div>
+      <div className="foot">
+        <Button full={false} variant="ghost" onClick={()=>setStep(Math.max(0,step-1))} disabled={step===0}>Back</Button>
+        <Button full={false} onClick={()=>setStep(Math.min(STEPS.length-1,step+1))}>{step===STEPS.length-1?"Publish trip":"Continue"}</Button>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

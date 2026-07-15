@@ -1,0 +1,70 @@
+<!-- @dsCard group="Brand" viewport="960x460" name="Get a feel — one screen, five moods" subtitle="The same Home screen re-skinned across every palette" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: letter; margin: 0; }
+  body{margin:0;background:var(--surface-dark);padding:0.5in 0.6in;font-family:var(--font-ui);display:flex;gap:16px;justify-content:center;flex-wrap:wrap;align-content:flex-start}
+  .phone{width:168px;background:var(--surface-app);border-radius:26px;padding:14px 12px 16px;box-shadow:var(--shadow-device);color:var(--text-primary);overflow:hidden;break-inside:avoid}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .brand{font-size:14px;font-weight:800;letter-spacing:-.02em}
+  .av{width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,var(--sun-400),var(--clay-500))}
+  .h{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:2px 0 9px}
+  .card{background:var(--surface-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card)}
+  .ph{height:78px;background:var(--photo-ph);position:relative}
+  .ph::after{content:"";position:absolute;inset:0;background:var(--photo-grade);mix-blend-mode:multiply}
+  .meta{padding:9px 10px 11px}
+  .tags{display:flex;gap:5px;margin-bottom:6px}
+  .tg{font-size:9px;font-weight:700;padding:3px 6px;border-radius:5px;background:var(--action-soft);color:var(--action-hover)}
+  .tg.a{background:var(--accent-soft);color:var(--accent)}
+  .tt{font-size:12.5px;font-weight:750;line-height:1.2}
+  .sub{font-size:10px;color:var(--text-tertiary);margin-top:5px}
+  .btn{margin-top:11px;text-align:center;padding:10px;border-radius:11px;background:var(--action);color:var(--text-on-action);font-size:12.5px;font-weight:700}
+  .name{font-size:10px;font-weight:700;color:var(--text-on-dark-dim);text-align:center;margin-top:9px;letter-spacing:.03em;text-transform:uppercase}
+  .title{width:100%;text-align:center;color:var(--text-on-dark);margin:0 0 6px;font-family:var(--font-display);font-weight:500;font-size:26px;letter-spacing:-.02em}
+  .titlesub{width:100%;text-align:center;color:var(--text-on-dark-dim);margin:0 0 22px;font-size:12px}
+</style>
+<template id="scr">
+  <div class="phone">
+    <div class="top"><span class="brand">tandemclub</span><span class="av"></span></div>
+    <div class="h">Sign ups for you</div>
+    <div class="card">
+      <div class="ph"></div>
+      <div class="meta">
+        <div class="tags"><span class="tg a">Adventure</span><span class="tg">$18</span></div>
+        <div class="tt">Sykes Hot Springs Overnight</div>
+        <div class="sub">Field Studies · 6 spots left</div>
+      </div>
+    </div>
+    <div class="btn">Join now</div>
+  </div>
+</template>
+</head><body>
+<h1 class="title">Get a feel — five moods</h1>
+<p class="titlesub">The same Home screen re-skinned across every palette</p>
+<script>
+  const moods=[["","Golden Hour"],["alpine","Alpine"],["monet","Monet"],["trailhead","Trailhead"],["reef","Coral & Teal"]];
+  const tpl=document.getElementById('scr').content;
+  for(const [p,label] of moods){
+    const wrap=document.createElement('div');
+    if(p) wrap.dataset.palette=p;
+    wrap.appendChild(tpl.cloneNode(true));
+    const cap=document.createElement('div');cap.className='name';cap.textContent=label;
+    wrap.appendChild(cap);
+    document.body.appendChild(wrap);
+  }
+</script>
+<script>
+addEventListener('load', () => {
+  (async () => {
+    try { await document.fonts.ready; } catch (e) {}
+    const imgs = Array.from(document.images).filter((i) => !i.complete);
+    await Promise.race([
+      Promise.allSettled(imgs.map((i) => i.decode())),
+      new Promise((r) => setTimeout(r, 8000)),
+    ]);
+    setTimeout(() => window.print(), 500);
+  })();
+});
+</script>
+</body></html>

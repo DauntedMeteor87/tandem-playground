@@ -1,0 +1,41 @@
+/* ============================================================
+   Typography — warm painterly headings + friendly UI sans.
+   Sizes/weights mirror the wireframe scale (dense, small-first).
+   ============================================================ */
+:root {
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-ui:      "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:    "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Type scale (px) — pulled from the wireframe usage */
+  --fs-2xs:  11px;
+  --fs-xs:   12.5px;
+  --fs-sm:   13.5px;
+  --fs-md:   15px;
+  --fs-lg:   17px;
+  --fs-xl:   19px;
+  --fs-2xl:  22px;
+  --fs-3xl:  27px;   /* onboarding question */
+  --fs-4xl:  34px;   /* hero / display */
+
+  --fw-regular: 400; /* @kind other */
+  --fw-medium:  500; /* @kind other */
+  --fw-semi:    600; /* @kind other */
+  --fw-bold:    700; /* @kind other */
+  --fw-black:   800; /* @kind other */
+
+  --lh-tight:   1.15; /* @kind other */
+  --lh-snug:    1.3;  /* @kind other */
+  --lh-body:    1.5;  /* @kind other */
+
+  --tracking-tight: -0.02em;   /* headings */
+  --tracking-normal: 0;
+
+  /* Semantic text roles */
+  --text-display:   var(--fw-medium) var(--fs-4xl)/var(--lh-tight) var(--font-display);
+  --text-title:     var(--fw-black) var(--fs-2xl)/var(--lh-tight) var(--font-ui);
+  --text-heading:   var(--fw-black) var(--fs-xl)/var(--lh-snug) var(--font-ui);
+  --text-body:      var(--fw-regular) var(--fs-md)/var(--lh-body) var(--font-ui);
+  --text-label:     var(--fw-bold) var(--fs-sm)/1.2 var(--font-ui);
+  --text-meta:      var(--fw-semi) var(--fs-xs)/1.3 var(--font-ui);
+}

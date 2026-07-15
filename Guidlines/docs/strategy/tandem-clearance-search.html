@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tandem Clearance Search</title>
+<style>
+  :root{
+    --ink:#1b1b1b;
+    --ink-soft:#3d3d3d;
+    --muted:#6b6b6b;
+    --faint:#8a8a8a;
+    --line:#e3e3e3;
+    --line-strong:#cfcfcf;
+    --bg:#ffffff;
+    --panel:#fafafa;
+    --panel-2:#f4f4f4;
+
+    --g-bg:#e7f4ec; --g-tx:#1a6b3a; --g-bd:#bfe2cc;
+    --a-bg:#fdf4e3; --a-tx:#8a5a00; --a-bd:#f0dcae;
+    --o-bg:#fceede; --o-tx:#9a4a00; --o-bd:#f2cfa4;
+    --r-bg:#fbe9e9; --r-tx:#a02121; --r-bd:#eec4c4;
+    --u-bg:#f0f0f0; --u-tx:#575757; --u-bd:#d9d9d9;
+
+    --maxw:860px;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:56px 28px 120px}
+
+  /* ---------- Typography ---------- */
+  .kicker{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);font-weight:600;margin:0 0 14px;
+  }
+  h1{
+    font-size:40px;line-height:1.1;margin:0 0 10px;font-weight:700;letter-spacing:-.01em;
+  }
+  .subtitle{
+    font-size:18px;color:var(--ink-soft);margin:0 0 6px;font-style:italic;
+  }
+  .disclaimer-lead{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13.5px;color:var(--muted);margin:14px 0 0;line-height:1.5;
+  }
+  h2{
+    font-size:23px;margin:52px 0 6px;padding-top:22px;border-top:1px solid var(--line);
+    font-weight:700;letter-spacing:-.005em;scroll-margin-top:16px;
+  }
+  h2 .num{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px;color:var(--faint);font-weight:600;margin-right:10px;vertical-align:2px;
+  }
+  h3{font-size:17px;margin:26px 0 4px;font-weight:700}
+  p{margin:12px 0}
+  a{color:#0b4f8a;text-decoration:underline;text-underline-offset:2px}
+  a:hover{color:#083a66}
+  strong{font-weight:700}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  .lead{font-size:18px;color:var(--ink-soft)}
+  .small{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;color:var(--muted);
+  }
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13.5px;background:var(--panel-2);padding:1px 5px;border-radius:3px;
+  }
+
+  /* ---------- Top summary box ---------- */
+  .summary{
+    border:1.5px solid var(--ink);border-radius:8px;margin:34px 0 8px;overflow:hidden;
+  }
+  .summary .head{
+    background:var(--ink);color:#fff;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    padding:9px 18px;
+  }
+  .summary .grid{display:grid;grid-template-columns:repeat(2,1fr)}
+  .summary .cell{padding:15px 18px;border-top:1px solid var(--line);border-right:1px solid var(--line)}
+  .summary .cell:nth-child(2n){border-right:none}
+  .summary .cell .lbl{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    font-weight:600;margin:0 0 5px;
+  }
+  .summary .cell .val{font-size:15.5px;line-height:1.45;margin:0}
+  .summary .cell.full{grid-column:1 / -1;border-right:none}
+
+  /* ---------- Badges ---------- */
+  .badge{
+    display:inline-block;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:11.5px;font-weight:700;letter-spacing:.02em;
+    padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap;line-height:1.5;
+  }
+  .b-low{background:var(--g-bg);color:var(--g-tx);border-color:var(--g-bd)}
+  .b-med{background:var(--a-bg);color:var(--a-tx);border-color:var(--a-bd)}
+  .b-medhigh{background:var(--o-bg);color:var(--o-tx);border-color:var(--o-bd)}
+  .b-high{background:var(--r-bg);color:var(--r-tx);border-color:var(--r-bd)}
+  .b-unk{background:var(--u-bg);color:var(--u-tx);border-color:var(--u-bd)}
+
+  .tag{
+    display:inline-block;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:5px;
+    border:1px solid var(--line-strong);background:var(--panel);color:var(--ink-soft);
+    white-space:nowrap;line-height:1.6;
+  }
+  .verdict{
+    display:inline-block;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:12px;font-weight:700;padding:3px 10px;border-radius:5px;border:1px solid;line-height:1.6;
+  }
+  .v-discuss{background:var(--g-bg);color:var(--g-tx);border-color:var(--g-bd)}
+  .v-clear{background:var(--a-bg);color:var(--a-tx);border-color:var(--a-bd)}
+  .v-defensible{background:var(--o-bg);color:var(--o-tx);border-color:var(--o-bd)}
+  .v-avoid{background:var(--r-bg);color:var(--r-tx);border-color:var(--r-bd)}
+  .v-unclear{background:var(--u-bg);color:var(--u-tx);border-color:var(--u-bd)}
+
+  /* ---------- Tables ---------- */
+  .tablewrap{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:8px}
+  table{border-collapse:collapse;width:100%;font-size:14px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+  thead th{
+    background:var(--panel-2);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:700;border-bottom:1px solid var(--line-strong);position:sticky;top:0;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fcfcfc}
+  td.mark{font-weight:700;color:var(--ink);white-space:nowrap}
+  .matrix td,.matrix th{text-align:center}
+  .matrix td:first-child,.matrix th:first-child{text-align:left}
+  .matrix td.mark{position:sticky;left:0;background:#fff;z-index:1}
+  .matrix tbody tr:nth-child(even) td.mark{background:#fcfcfc}
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    border:1px solid var(--line);border-left-width:4px;border-radius:6px;
+    padding:14px 16px 14px 18px;margin:18px 0;background:var(--panel);
+  }
+  .callout .ct{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin:0 0 6px;
+  }
+  .callout p{margin:6px 0;font-size:15px}
+  .co-concern{border-left-color:#a02121;background:#fdf6f6}
+  .co-concern .ct{color:#a02121}
+  .co-verify{border-left-color:#0b4f8a;background:#f4f8fc}
+  .co-verify .ct{color:#0b4f8a}
+  .co-takeaway{border-left-color:#1a6b3a;background:#f4fbf6}
+  .co-takeaway .ct{color:#1a6b3a}
+  .co-overclaim{border-left-color:#8a5a00;background:#fdf9f0}
+  .co-overclaim .ct{color:#8a5a00}
+
+  /* ---------- TOC ---------- */
+  .toc{
+    border:1px solid var(--line);border-radius:8px;padding:18px 22px;margin:30px 0 8px;background:var(--panel);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .toc h4{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .toc ol{columns:2;column-gap:32px;margin:0;padding-left:20px;font-size:13.5px}
+  .toc li{margin:4px 0;break-inside:avoid}
+  .toc a{color:var(--ink-soft);text-decoration:none}
+  .toc a:hover{color:#0b4f8a;text-decoration:underline}
+
+  hr.soft{border:none;border-top:1px solid var(--line);margin:26px 0}
+
+  .legend{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;font-size:12px;align-items:center;
+  }
+  .footer{
+    margin-top:60px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:12.5px;color:var(--muted);line-height:1.6;
+  }
+
+  @media (max-width:640px){
+    body{font-size:16px}
+    .wrap{padding:36px 18px 90px}
+    h1{font-size:31px}
+    .summary .grid{grid-template-columns:1fr}
+    .summary .cell{border-right:none}
+    .toc ol{columns:1}
+  }
+  @media print{
+    a{color:#000;text-decoration:none}
+    .wrap{max-width:100%;padding:0}
+    h2{break-after:avoid}
+    .tablewrap,.callout,.summary{break-inside:avoid}
+    thead th{position:static}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Preliminary Clearance Memo &middot; Confidential Working Draft</p>
+  <h1>Tandem Clearance Search</h1>
+  <p class="subtitle">Preliminary trademark, brand-collision, and market-confusion memo for tandemclub / Tandem&nbsp;Club / Tandem</p>
+  <p class="disclaimer-lead">
+    This is a preliminary clearance search and pre-attorney issue-spotting memo — <strong>not legal advice and not a final legal opinion.</strong>
+    It was assembled from a prior research pass. Exact record identifiers (serial numbers, registration numbers, filing/registration dates),
+    live domain/handle availability, and source URLs must be pulled from the full research record and independently verified by a licensed
+    trademark attorney before any decision. Where a fact is not verified here, it is labeled <span class="badge b-unk">Unclear / verify</span>.
+  </p>
+
+  <!-- ===== TOP SUMMARY BOX ===== -->
+  <div class="summary">
+    <div class="head">At a Glance — Preliminary</div>
+    <div class="grid">
+      <div class="cell">
+        <p class="lbl">Overall preliminary risk</p>
+        <p class="val"><span class="badge b-medhigh">Medium–High</span> for the Tandem naming family as a whole. Crowded field plus a live, senior social-app registrant in the exact lane.</p>
+      </div>
+      <div class="cell">
+        <p class="lbl">Strongest conflict</p>
+        <p class="val"><strong>TANDEM</strong> (language-exchange / social app) — <strong>Tripod Technology GmbH</strong>, Berlin. Reported live U.S. registrations in the app / social-networking classes, with a history of TTAB enforcement. <span class="badge b-unk">Identifiers: verify</span></p>
+      </div>
+      <div class="cell">
+        <p class="lbl">Safest candidate <span class="small">(within the family)</span></p>
+        <p class="val"><strong>tandemclub</strong> / <strong>Tandem&nbsp;Club</strong> — better than bare "Tandem," but still <span class="verdict v-clear">needs attorney clearance before use</span>. No candidate here is "cleared."</p>
+      </div>
+      <div class="cell">
+        <p class="lbl">Riskiest candidate</p>
+        <p class="val"><strong>bare TANDEM</strong> — especially for a social app and on merch. <span class="verdict v-avoid">Avoid without full clearance</span></p>
+      </div>
+      <div class="cell full">
+        <p class="lbl">Recommended next step</p>
+        <p class="val">Engage a trademark attorney for a full clearance opinion on the compound marks <strong>before</strong> filing, forming the C-Corp around the name, or ordering merch — <em>and</em> seriously price out a distinctive coined alternative outside the Tandem family as a parallel track. Do not build anything irreversible around bare "Tandem" yet.</p>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:8px">Risk legend:
+    <span class="badge b-low">Low</span>
+    <span class="badge b-med">Medium</span>
+    <span class="badge b-medhigh">Medium–High</span>
+    <span class="badge b-high">High</span>
+    <span class="badge b-unk">Unclear / verify</span>
+  </p>
+
+  <!-- ===== TOC ===== -->
+  <nav class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#s1">Executive Summary</a></li>
+      <li><a href="#s2">Bottom-Line Recommendation</a></li>
+      <li><a href="#s3">Candidate Marks Reviewed</a></li>
+      <li><a href="#s4">Most Concerning Findings</a></li>
+      <li><a href="#s5">Product and Category Framing</a></li>
+      <li><a href="#s6">USPTO / Federal Trademark Findings</a></li>
+      <li><a href="#s7">Tandem Language-App Conflict Analysis</a></li>
+      <li><a href="#s8">App Store / Google Play Findings</a></li>
+      <li><a href="#s9">Common-Law and Web Findings</a></li>
+      <li><a href="#s10">Competitor-Brand Collision Findings</a></li>
+      <li><a href="#s11">Domain and Social Handle Findings</a></li>
+      <li><a href="#s12">Business Entity Findings</a></li>
+      <li><a href="#s13">International Findings</a></li>
+      <li><a href="#s14">Foreign-Language / Semantic Findings</a></li>
+      <li><a href="#s15">Slogan and Tagline Findings</a></li>
+      <li><a href="#s16">Merch / Apparel / Sticker Risk Analysis</a></li>
+      <li><a href="#s17">Legal-Risk Analysis</a></li>
+      <li><a href="#s18">Brand-Risk Analysis</a></li>
+      <li><a href="#s19">Risk Matrix</a></li>
+      <li><a href="#s20">Recommended Filing Strategy</a></li>
+      <li><a href="#s21">Draft Goods / Services Language</a></li>
+      <li><a href="#s22">Immediate Founder Next Steps</a></li>
+      <li><a href="#s23">Questions for Trademark Attorney</a></li>
+      <li><a href="#s24">Final Recommendation</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <h2 id="s1"><span class="num">01</span>Executive Summary</h2>
+  <p class="lead">The Tandem naming family is <strong>usable but weak and legally crowded</strong>, and it collides — in the exact product lane — with a senior, live, enforcement-active registrant.</p>
+  <p>"Tandem" is a common English word already registered and used heavily across many industries (diabetes devices, banking, tandem bikes/kayaks/skydiving, and — most relevant here — a well-known <strong>language-exchange / social mobile app</strong>). That crowding cuts two ways: it makes the mark hard to <em>own and enforce</em>, and it puts a senior social-app registrant directly across the user's path.</p>
+  <p>The compound forms (<strong>tandemclub</strong>, <strong>Tandem&nbsp;Club</strong>, <strong>Tandem Adventures</strong>) add distance from bare "Tandem," but the user's stated intent to use <strong>bare "Tandem"</strong> as the app nickname and the dominant word on merch pulls the real-world mark back toward the most conflicted term. The taglines "Find Your People Outside / Outdoors" sit inside crowded, largely descriptive category language used by multiple IRL-social competitors and are weak candidates for protection.</p>
+  <p>None of the candidate names can be called "cleared" on this record. The realistic options are to (a) proceed on a compound mark only after a full attorney clearance and a deliberate ITU filing strategy, accepting a diluted/hard-to-enforce brand, or (b) invest the naming energy in a distinctive coined mark that the user could actually own.</p>
+
+  <!-- 2 -->
+  <h2 id="s2"><span class="num">02</span>Bottom-Line Recommendation</h2>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway</p>
+    <p>Do not lock the company, C-Corp name, logo, domains, or merch to <strong>bare "Tandem."</strong> If you stay in this family, the least-bad path is <strong>tandemclub / Tandem&nbsp;Club</strong> — treated as <span class="verdict v-clear">needs attorney clearance before use</span>, filed intent-to-use on the compound (never bare "Tandem" alone), and never reduced to just "Tandem" in commerce. In parallel, seriously evaluate a <strong>distinctive coined name</strong> you could actually own and enforce. The single biggest risk to resolve first is the <strong>Tripod Technology / TANDEM</strong> social-app registration.</p>
+  </div>
+  <p><strong>Plain-English verdicts by candidate</strong> (full matrix in §19):</p>
+  <ul>
+    <li><strong>TANDEM</strong> (bare) — <span class="verdict v-avoid">avoid / not worth building around</span> as a standalone social-app mark.</li>
+    <li><strong>tandemclub</strong> / <strong>Tandem&nbsp;Club</strong> — <span class="verdict v-clear">needs attorney clearance before use</span>; the most defensible option in the family.</li>
+    <li><strong>Tandem Adventures</strong> — <span class="verdict v-defensible">risky but potentially defensible</span>; "adventures" is descriptive/crowded and there are existing outdoor operators using it. <span class="badge b-unk">Verify</span></li>
+    <li><strong>Find Your People Outside / Outdoors</strong> — <span class="verdict v-clear">needs attorney clearance before use</span> and likely <strong>weak/descriptive</strong>; treat as brand copy, not a core registrable asset, unless counsel says otherwise.</li>
+  </ul>
+
+  <!-- 3 -->
+  <h2 id="s3"><span class="num">03</span>Candidate Marks Reviewed</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Candidate</th><th>Intended use</th><th>Preliminary posture</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">TANDEM</td><td>App nickname; dominant word on merch</td><td><span class="verdict v-avoid">Avoid (standalone)</span></td></tr>
+        <tr><td class="mark">tandemclub</td><td>Build name / one-word brand</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">Tandem Club</td><td>Public-facing app name</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">Tandem Adventures</td><td>Alt brand / entity name</td><td><span class="verdict v-defensible">Risky but defensible</span></td></tr>
+        <tr><td class="mark">Tandem — Find Your People Outside</td><td>App + branding lockup</td><td><span class="verdict v-avoid">Avoid (bare Tandem dominant)</span></td></tr>
+        <tr><td class="mark">Tandem Club — Find Your People Outside</td><td>Full lockup</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">Find Your People Outside</td><td>Tagline / merch</td><td><span class="verdict v-clear">Needs clearance (likely weak)</span></td></tr>
+        <tr><td class="mark">Find Your People Outdoors</td><td>Tagline alt</td><td><span class="verdict v-clear">Needs clearance (likely weak)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small">Entity-name candidates also reviewed: <code>Tandem Ad, Inc.</code>, <code>Tandem Adventures, Inc.</code>, <code>Tandem Club, Inc.</code> — see §12.</p>
+
+  <!-- 4 -->
+  <h2 id="s4"><span class="num">04</span>Most Concerning Findings</h2>
+  <div class="callout co-concern">
+    <p class="ct">Main concern</p>
+    <p><strong>A senior social/messaging app already owns "TANDEM" in the app lane.</strong> Tripod Technology GmbH's TANDEM language-exchange app is a live, established, consumer social product with U.S. registration(s) covering downloadable app software and social-networking-type services, plus a reported enforcement track record at the TTAB. A youth-focused social app called "Tandem" (or "Tandem Club" nicknamed "Tandem") is squarely in the zone where a likelihood-of-confusion refusal or opposition is a live risk. Do not discount this because one app is "language" and one is "outdoors."</p>
+  </div>
+  <ol>
+    <li><strong>Senior social-app registrant (Tripod / TANDEM).</strong> Highest-priority conflict. Identifiers to be verified in §7.</li>
+    <li><strong>Crowded "Tandem" field.</strong> Multiple strong senior owners across classes make bare "Tandem" hard to own and enforce, and raise opposition odds if you file it bare.</li>
+    <li><strong>Bare-Tandem-on-merch problem.</strong> Putting "Tandem" (not "Tandem Club") on shirts, stickers, and hats makes <em>Tandem</em> the mark you're actually using in commerce — undercutting any argument that your brand is "really Tandem Club," and amplifying overlap with the senior app. See §16.</li>
+    <li><strong>Descriptive/crowded taglines.</strong> "Find Your People (Outside/Outdoors)" overlaps heavily with competitor category language and is a weak registrable asset.</li>
+    <li><strong>Adjacent common-law users.</strong> Bicycle "Tandem Clubs" and outdoor "Tandem Adventures" operators exist and could complicate the specific compound you choose. <span class="badge b-unk">Verify scope</span></li>
+  </ol>
+
+  <!-- 5 -->
+  <h2 id="s5"><span class="num">05</span>Product and Category Framing</h2>
+  <p>This must be analyzed as a <strong>youth / student / IRL-social app</strong> that uses outdoor activity as the mechanism — <em>not</em> as a niche trail utility. That framing <em>increases</em> overlap with the senior TANDEM social app, because both are consumer mobile apps with profiles, messaging, social discovery, community, and "find people" positioning aimed at young adults.</p>
+  <p>Trademark classes implicated by the product and its roadmap (consumer app + club SaaS + future monetization):</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Class</th><th>Why it's implicated</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">9</td><td>Downloadable mobile app software</td><td><span class="tag">Core / file first</span></td></tr>
+        <tr><td class="mark">41</td><td>Organizing outdoor recreational events; club/community activities; entertainment</td><td><span class="tag">Core</span></td></tr>
+        <tr><td class="mark">42</td><td>SaaS / non-downloadable web portal for club leaders</td><td><span class="tag">Core</span></td></tr>
+        <tr><td class="mark">45</td><td>Online social networking / social-introduction services</td><td><span class="tag">Core (and where TANDEM app sits)</span></td></tr>
+        <tr><td class="mark">35</td><td>Brand partnerships, promotion, marketplace-style discovery, merch retail</td><td><span class="tag">Later / conditional</span></td></tr>
+        <tr><td class="mark">39</td><td>Carpool / trip coordination / travel arrangement (roadmap)</td><td><span class="tag">Later / conditional</span></td></tr>
+        <tr><td class="mark">25 / 16 / 18 / 21</td><td>Merch: apparel, stickers/print, bags, drinkware</td><td><span class="tag">See §16</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6 -->
+  <h2 id="s6"><span class="num">06</span>USPTO / Federal Trademark Findings</h2>
+  <div class="callout co-overclaim">
+    <p class="ct">Do not overclaim</p>
+    <p>The exact serial numbers, registration numbers, filing/registration dates, and Section&nbsp;8/15/9 maintenance status for each record below must be pulled from the full research record and confirmed on <a href="https://tmsearch.uspto.gov/">USPTO Trademark Search</a> / <a href="https://tsdr.uspto.gov/">TSDR</a> before relying on them. They are shown here as <span class="badge b-unk">verify</span> because they were not carried into this working draft. Nothing below establishes that any mark is available.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>Mark (searched)</th><th>Owner (reported)</th><th>Class / lane</th><th>Status</th><th>Relevance to us</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mark">TANDEM<br><span class="small">(language/social app)</span></td>
+          <td>Tripod Technology GmbH (Berlin)</td>
+          <td>App software + social-networking-type services (Cl. 9 and related; see §7)</td>
+          <td><span class="badge b-high">Live — senior</span><br><span class="badge b-unk">Reg # / dates: verify</span></td>
+          <td>Direct-lane conflict; top priority. Detailed in §7.</td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM<br><span class="small">(other industries)</span></td>
+          <td>Multiple (e.g. diabetes-care, banking, and other unrelated owners)</td>
+          <td>Various (medical devices, financial, etc.)</td>
+          <td><span class="badge b-medhigh">Live — crowded</span><br><span class="badge b-unk">verify each</span></td>
+          <td>Field-crowding evidence: makes bare "Tandem" hard to own; raises opposition odds if filed bare. Individually lower <em>confusion</em> risk due to unrelated goods.</td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM CLUB</td>
+          <td><span class="badge b-unk">Verify</span></td>
+          <td>Check Cl. 9 / 41 / 42 / 45 and any bicycle-club use</td>
+          <td><span class="badge b-unk">Unclear / verify</span></td>
+          <td>Your preferred compound — must be searched directly, not assumed clear.</td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEMCLUB</td>
+          <td><span class="badge b-unk">Verify</span></td>
+          <td>Cl. 9 / 41 / 42 / 45</td>
+          <td><span class="badge b-unk">Unclear / verify</span></td>
+          <td>One-word form; search separately (see §11 on one-word vs two-word).</td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM ADVENTURES</td>
+          <td>Possible outdoor/adventure operator(s) — <span class="badge b-unk">verify</span></td>
+          <td>Cl. 39 / 41 travel & recreation</td>
+          <td><span class="badge b-unk">Unclear / verify</span></td>
+          <td>"Adventures" is descriptive and crowded in recreation; common-law users likely (see §9).</td>
+        </tr>
+        <tr>
+          <td class="mark">FIND YOUR PEOPLE<br>(+ OUTSIDE / OUTDOORS)</td>
+          <td>Multiple / crowded — <span class="badge b-unk">verify</span></td>
+          <td>Cl. 45 / 41 social &amp; events</td>
+          <td><span class="badge b-medhigh">Descriptive / crowded</span></td>
+          <td>Likely weak; risk of "fails to function as a mark" / merely informational refusal. See §15.</td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM OUTSIDE / OUTDOORS / TRAIL / TRIPS · IN TANDEM · LIFE IN TANDEM</td>
+          <td><span class="badge b-unk">Verify</span></td>
+          <td>Mixed</td>
+          <td><span class="badge b-unk">Unclear / verify</span></td>
+          <td>Searched as near-variants; results to be confirmed in the full record.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small">Sources to confirm each row: USPTO Trademark Search (<a href="https://tmsearch.uspto.gov/">tmsearch.uspto.gov</a>), TSDR (<a href="https://tsdr.uspto.gov/">tsdr.uspto.gov</a>), Justia Trademarks, Trademarkia, uspto.report. Coordinated/related classes the USPTO commonly considers together for this profile: 9, 41, 42, 45 (and 35/38 depending on the recitation).</p>
+
+  <!-- 7 -->
+  <h2 id="s7"><span class="num">07</span>Tandem Language-App Conflict Analysis</h2>
+  <p><strong>What we have:</strong> the TANDEM language-exchange app is owned by <strong>Tripod Technology GmbH</strong> (Berlin), is a live and established consumer social/messaging product, and holds U.S. trademark rights in the app / social-networking classes, with reported TTAB enforcement activity. It is globally visible via the app stores.</p>
+  <p><strong>What must be verified</strong> (from the full record / TSDR) before relying on any of it:</p>
+  <div class="callout co-verify">
+    <p class="ct">What a lawyer should verify</p>
+    <p>Exact mark(s) and whether standard-character or stylized · serial number(s) · registration number(s) · filing date(s) · registration date(s) · live/dead status · Section 8 / 15 / 9 maintenance and whether <strong>incontestable status is confirmed vs merely eligible</strong> · exact class list and full goods/services recitations as filed · related EU/UK/WIPO/Madrid filings · documented enforcement history (oppositions, cancellations, C&amp;Ds) · current product activity, user base, funding, and app-store footprint.</p>
+  </div>
+  <p><strong>Likelihood-of-confusion read (preliminary).</strong> The two products share the medium (consumer mobile app), the audience (young adults/students), and core features (profiles, messaging, social discovery, "find people," meetups, in-person connection). Under the standard <em>DuPont</em>-type factors, the mark identity ("Tandem") and the relatedness of the services are the two factors most likely to drive a refusal or opposition. The subject-matter difference (language vs outdoors) is <strong>not</strong> dispositive — consumers could reasonably assume "Tandem Club" or "Tandem Outdoor/Outside" is a new vertical, community feature, campus edition, or product line from the existing Tandem app. That "sponsorship/affiliation confusion" theory is exactly what a senior registrant argues.</p>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway</p>
+    <p>Assume the Tripod/TANDEM registration is the mark most likely to (a) draw a USPTO refusal if you file "Tandem" in Class 9/45, and (b) generate an opposition or C&amp;D if you launch a "Tandem" social app. The compound "Tandem Club" reduces but does not eliminate this; bare "Tandem" maximizes it.</p>
+  </div>
+
+  <!-- 8 -->
+  <h2 id="s8"><span class="num">08</span>App Store / Google Play Findings</h2>
+  <div class="callout co-overclaim">
+    <p class="ct">Do not overclaim</p>
+    <p>Specific developer names, download counts, ratings, and store URLs should be confirmed live on the App Store and Google Play. Store listings change frequently; treat the table as a map of the lane, not a verified registry. <span class="badge b-unk">Verify listings live.</span></p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>App (searched)</th><th>Lane</th><th>Same lane as us?</th><th>Confusion note</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">Tandem (language exchange)</td><td>Social / language / messaging</td><td><span class="badge b-high">Yes — direct</span></td><td>Established; shares the exact "Tandem" app name and social/messaging feature set. Primary app-store confusion source.</td></tr>
+        <tr><td class="mark">Sweatpals</td><td>IRL fitness/social community</td><td><span class="badge b-medhigh">Adjacent</span></td><td>"Movement / belonging" positioning; business competitor more than TM threat. See §10.</td></tr>
+        <tr><td class="mark">Timeleft</td><td>IRL social / stranger dinners</td><td><span class="badge b-medhigh">Adjacent</span></td><td>"Meet your people" language overlaps our tagline space.</td></tr>
+        <tr><td class="mark">Adventurist</td><td>Outdoor friends / social</td><td><span class="badge b-medhigh">Adjacent</span></td><td>"Find Adventure Friends" — near-neighbor to "Find Your People Outside."</td></tr>
+        <tr><td class="mark">AllTrails / Strava / Gaia GPS</td><td>Outdoor / trails / fitness-social</td><td><span class="badge b-med">Partial</span></td><td>Category neighbors; different names, so business-competition rather than naming conflict.</td></tr>
+        <tr><td class="mark">Tandem [other]</td><td>Various (finance, etc.)</td><td><span class="badge b-med">Name-only</span></td><td>Share the word "Tandem" in-store → dilutes search distinctiveness even where goods differ.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>App-store search reality:</strong> searching "Tandem" surfaces the senior language app (and other "Tandem" products) first. A new "Tandem"/"Tandem Club" app would fight for that term and risk user confusion with the established app — a practical marketing problem independent of the legal question.</p>
+
+  <!-- 9 -->
+  <h2 id="s9"><span class="num">09</span>Common-Law and Web Findings</h2>
+  <p>Unregistered ("common-law") users can still block or contest a mark in their geography/field. From the research pass, the meaningful adjacent uses are:</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Use (reported)</th><th>Field</th><th>Overlap with us</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">"Tandem Club" (bicycle clubs)</td><td>Cycling clubs/associations</td><td>Shares the exact compound; different activity</td><td><span class="badge b-med">Medium</span> · <span class="badge b-unk">verify scope/geography</span></td></tr>
+        <tr><td class="mark">"Tandem Adventures" (outdoor operators)</td><td>Outdoor / adventure / tours</td><td>Same outdoor lane; same compound</td><td><span class="badge b-medhigh">Medium–High</span> · <span class="badge b-unk">verify</span></td></tr>
+        <tr><td class="mark">Tandem kayak / bike / skydive businesses</td><td>Recreation / equipment / experiences</td><td>Reinforces "two-person" meaning of "tandem"; some outdoor overlap</td><td><span class="badge b-med">Medium</span></td></tr>
+        <tr><td class="mark">"Find Your People" (social/wellness/outdoor marketing)</td><td>Marketing copy across many brands</td><td>Directly overlaps the tagline</td><td><span class="badge b-medhigh">Crowded</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout co-verify">
+    <p class="ct">What a lawyer should verify</p>
+    <p>For each adjacent user: legal name/operator, geography of use, date of first use, whether use is active, whether any federal or state registration exists, and whether the geographic/goods overlap is close enough to create priority problems for the specific compound you adopt. Common-law rights are fact- and territory-specific.</p>
+  </div>
+
+  <!-- 10 -->
+  <h2 id="s10"><span class="num">10</span>Competitor-Brand Collision Findings</h2>
+  <p>The IRL-social/outdoor category shares a <strong>common vocabulary</strong> — "movement," "belonging," "your people," "adventure friends," "real connection." This is mostly a <strong>business-competition and brand-differentiation</strong> issue, not necessarily a trademark block — but it means "Find Your People Outside" is <em>not</em> distinctive within the category.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Competitor</th><th>Category language (reported)</th><th>Primary risk type</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">Sweatpals</td><td>"Be the movement" / "Where movement meets belonging"</td><td><span class="tag">Business competition</span></td></tr>
+        <tr><td class="mark">Clyx</td><td>"Go out. Meet people. Feel like you belong."</td><td><span class="tag">Tagline crowding</span></td></tr>
+        <tr><td class="mark">Timeleft</td><td>"Meet your people" / stranger dinners</td><td><span class="tag">Tagline crowding</span></td></tr>
+        <tr><td class="mark">Troov</td><td>"Find Real Connection"</td><td><span class="tag">Tagline crowding</span></td></tr>
+        <tr><td class="mark">Adventurist</td><td>"Find Adventure Friends"</td><td><span class="tag">Closest tagline neighbor</span></td></tr>
+        <tr><td class="mark">WeRoad / WeMeet</td><td>Group adventure travel / local events</td><td><span class="tag">Business competition</span></td></tr>
+        <tr><td class="mark">Strava</td><td>Social hiking clubs; Gen-Z fitness-to-meet</td><td><span class="tag">Business competition</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Assessment:</strong> these companies are more likely to appear as <em>business competitors and app-store neighbors</em> than as parties who would oppose your mark — <em>unless</em> one of them owns a registration close to your specific slogan/name. That must be checked, but the dominant takeaway is that <strong>"Find Your People Outside" does not set you apart</strong> in this field. <span class="badge b-unk">Confirm each competitor's registrations.</span></p>
+
+  <!-- 11 -->
+  <h2 id="s11"><span class="num">11</span>Domain and Social Handle Findings</h2>
+  <div class="callout co-overclaim">
+    <p class="ct">Do not overclaim</p>
+    <p>Domain and handle availability was <strong>not verified live</strong> in this working draft and changes constantly. Every row is <span class="badge b-unk">Unclear — verify live</span> at a registrar / on each platform before relying on it. The notes below are reasoned expectations only, explicitly labeled as inference.</p>
+  </div>
+  <p><strong>Reasoned expectation (inference from the crowded-field findings, not a live check):</strong> the premium exact-match assets — <code>tandem.com</code>, <code>tandem.app</code>, and <code>@tandem</code> on major platforms — are almost certainly long taken by unrelated senior "Tandem" holders, and unlikely to be obtainable. Compound and prefixed forms (<code>tandemclub.com/.app</code>, <code>tandem.club</code>, <code>gettandem</code>, <code>jointandem</code>, <code>usetandem</code>, <code>@tandemclub</code>, <code>@tandemoutside/@tandemoutdoors</code>) are more plausibly available but must be checked one by one.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Asset class</th><th>Reasoned expectation (inference)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">tandem.com / .app · @tandem</td><td>Very likely taken by unrelated senior holders; effectively unavailable</td><td><span class="badge b-unk">Verify live</span></td></tr>
+        <tr><td class="mark">tandemclub.com / .app · tandem.club</td><td>Possibly available; check registrar + existing bicycle-club use</td><td><span class="badge b-unk">Verify live</span></td></tr>
+        <tr><td class="mark">tandemadventures.com / .app</td><td>May be held by an existing outdoor operator (see §9)</td><td><span class="badge b-unk">Verify live</span></td></tr>
+        <tr><td class="mark">get/join/use-tandem (.com/.club)</td><td>Prefixed forms often available; check each</td><td><span class="badge b-unk">Verify live</span></td></tr>
+        <tr><td class="mark">@tandemclub / @tandemoutside / @tandemoutdoors / @tandemadventures</td><td>Mixed; likely some available, some parked/taken</td><td><span class="badge b-unk">Verify live</span></td></tr>
+        <tr><td class="mark">findyourpeopleoutside.com / findyourpeopleoutdoors.com</td><td>Possibly available; low strategic value given weak tagline</td><td><span class="badge b-unk">Verify live</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>One word vs two: <code>tandemclub</code> vs "Tandem Club"</h3>
+  <p>For <strong>domains/handles</strong>, the one-word closed form <code>tandemclub</code> is generally easier to secure consistently across platforms and reads cleanly in a URL. For <strong>trademark</strong> purposes, closing the space is a minor visual difference and does <strong>not</strong>, on its own, create meaningful legal distance from "Tandem" or "Tandem Club" — the dominant term is still "Tandem." <span class="small">(Inference consistent with the findings.)</span> Net: the one-word form is a modest <em>practical</em> win for ownership/consistency, not a legal shield.</p>
+
+  <!-- 12 -->
+  <h2 id="s12"><span class="num">12</span>Business Entity Findings</h2>
+  <p>Multiple businesses using "Tandem" exist across states and industries. <strong>Entity-name availability at a Secretary of State is not trademark clearance</strong> — a state will happily let you form "Tandem Adventures, Inc." even if it would infringe someone's federal mark.</p>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway</p>
+    <p>Forming <strong>Tandem Ad, Inc.</strong>, <strong>Tandem Adventures, Inc.</strong>, or <strong>Tandem Club, Inc.</strong> does <strong>not</strong> materially reduce your trademark risk if consumers mainly see the app as <strong>"Tandem."</strong> Trademark rights flow from the mark <em>used in commerce</em> (the app name, icon, store listing, and merch), not from the corporate name on your incorporation papers. A safe-sounding entity name around a risky consumer mark gives false comfort.</p>
+  </div>
+  <ul>
+    <li><strong>Legal entity name</strong> ≠ <strong>app/brand name used in commerce.</strong> Diligence, refusals, and C&amp;Ds follow the latter.</li>
+    <li>Pick the entity name to be <em>flexible</em> (or generic) if you're unsure about the consumer mark — don't weld the C-Corp to a name you may have to abandon.</li>
+    <li>Specific "Tandem" entities and jurisdictions from the research pass should be listed and checked in the full record. <span class="badge b-unk">Verify per state + OpenCorporates.</span></li>
+  </ul>
+
+  <!-- 13 -->
+  <h2 id="s13"><span class="num">13</span>International Findings</h2>
+  <p>The Tripod/TANDEM app is Berlin-based, so <strong>EU/UK and international rights very likely exist</strong> (EUIPO and/or WIPO/Madrid) in addition to any U.S. rights. Because your app is globally visible in the app stores from day one, foreign rights are relevant even for a U.S.-first launch.</p>
+  <div class="callout co-verify">
+    <p class="ct">What a lawyer should verify</p>
+    <p>Search <a href="https://www.tmdn.org/tmview/">TMview</a>, <a href="https://euipo.europa.eu/eSearch/">EUIPO</a>, <a href="https://www.gov.uk/search-for-trademark">UKIPO</a>, <a href="https://branddb.wipo.int/">WIPO Global Brand Database</a>, <a href="https://www.dpma.de/english/">DPMA</a> (Germany), and <a href="https://www.ic.gc.ca/app/opic-cipo/trdmrks/srch/">CIPO</a> (Canada) for: Tripod/TANDEM's foreign registrations and their classes; any "Tandem Dating" or other Tandem social/events rights in the UK/EU; and international "Tandem" uses in software, social, recreation, dating, travel, cycling, skydiving, kayaking, and adventure travel. Also check foreign use of "Find Your People (Outside)."</p>
+  </div>
+  <p><strong>Practical read:</strong> a U.S.-only launch mainly needs U.S. clearance, but (a) app-store distribution is worldwide, and (b) if you ever expand or raise from investors who diligence globally, EU/UK TANDEM rights could constrain you. Treat international as a <em>must-check-before-scaling</em> item, not an ignore-for-now item.</p>
+
+  <!-- 14 -->
+  <h2 id="s14"><span class="num">14</span>Foreign-Language / Semantic Findings</h2>
+  <p>"Tandem" is a real, common word in many major languages, generally meaning <strong>two people / a pair working together, one behind the other</strong> (from tandem bicycles). This creates a <strong>positioning</strong> problem more than a legal one.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Language(s)</th><th>Sense of "tandem"</th><th>Implication</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">English</td><td>Two together; in tandem; tandem bike/kayak/skydive</td><td>Strong "pair of two" connotation</td></tr>
+        <tr><td class="mark">Spanish / French / Italian / Portuguese</td><td>Pair / duo; tandem bicycle; "working in tandem"</td><td>Same two-person reading</td></tr>
+        <tr><td class="mark">German / Dutch</td><td>Common word; also the language-tandem (partner) concept</td><td>Reinforces the senior app's meaning</td></tr>
+        <tr><td class="mark">Turkish / Russian / Japanese / Chinese / Korean</td><td>Loanword or "pair/cooperation" sense where used</td><td>Generally "duo/cooperation," not "group/club"</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout co-concern">
+    <p class="ct">Main concern (branding, not legal)</p>
+    <p><strong>"Tandem" semantically implies two people</strong> — a couple, a duo, a pair — which mismatches a <em>many-person group / club</em> outdoor-friendship product. It also pattern-matches to tandem <em>bikes, kayaks, and skydiving</em> (and to the language-<em>tandem</em> partner concept the senior app owns). "Tandem Club" partly repairs the group meaning; bare "Tandem" leans into the couple/duo reading.</p>
+  </div>
+  <p><strong>"Outside" vs "Outdoors":</strong> both are descriptive of the activity. "Outdoors" is the more literal outdoor-recreation word; "outside" is slightly broader/warmer and marginally less generic-sounding, but neither is distinctive. "Find Your People Outside/Outdoors" translates without disaster in the major languages, but "outside" can also read as "outside [a place]" — a minor ambiguity, not a blocker.</p>
+
+  <!-- 15 -->
+  <h2 id="s15"><span class="num">15</span>Slogan and Tagline Findings</h2>
+  <p>"Find Your People" is <strong>heavily used</strong> across social, friendship, wellness, event, and outdoor marketing. Adding "Outside/Outdoors" keeps it <strong>descriptive/informational</strong>.</p>
+  <ul>
+    <li><strong>Registrability:</strong> weak. Widely-used, laudatory/informational phrases frequently draw a "<em>fails to function as a mark</em>" or merely-descriptive refusal at the USPTO. <span class="badge b-unk">Confirm current register status for the exact phrases.</span></li>
+    <li><strong>Distinctiveness in-category:</strong> low — competitors use "meet your people," "find adventure friends," "find real connection," "belong." (See §10.)</li>
+    <li><strong>Outside vs Outdoors:</strong> "outside" is marginally more ownable-sounding but still weak; choose on brand feel, not legal strength.</li>
+    <li><strong>File it?</strong> Not a priority. If you love it, an attorney could <em>attempt</em> a filing (likely needing acquired distinctiveness over time), but treat it as <strong>brand copy, not a core registrable asset</strong>.</li>
+  </ul>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway</p>
+    <p>Use the tagline for <em>positioning</em>, not as a moat. Don't spend early filing budget on "Find Your People Outside." Put trademark dollars into the name you'll actually build the company on.</p>
+  </div>
+
+  <!-- 16 -->
+  <h2 id="s16"><span class="num">16</span>Merch / Apparel / Sticker Risk Analysis</h2>
+  <p>This is a distinct exposure and deserves its own analysis, because <strong>the word you print is the mark you're using</strong> — regardless of what the app is "officially" called.</p>
+
+  <h3>The core problem: what mark are you actually using?</h3>
+  <div class="callout co-concern">
+    <p class="ct">Main concern</p>
+    <p>If the app is "Tandem Club" but shirts, stickers, hats, and social posts say only <strong>"Tandem,"</strong> then the trademark you are <em>using in commerce</em> is <strong>TANDEM</strong> — not "Tandem Club." Prominent bare-"Tandem" merch <strong>undermines</strong> any argument that your consumer-facing brand is "really Tandem Club," and it <strong>increases</strong> overlap and confusion with the senior Tripod/TANDEM app. It also opens a <em>separate</em> front: apparel/lifestyle "Tandem" marks in Class 25 (and related), which are a different set of owners than the software/social ones.</p>
+  </div>
+
+  <h3>Answers to the specific merch questions</h3>
+  <ol>
+    <li><strong>What mark is used in commerce?</strong> Whatever appears prominently on the goods. Bare "Tandem" merch = use of TANDEM.</li>
+    <li><strong>Does bare "Tandem" merch weaken the "it's really Tandem Club" argument?</strong> Yes — materially.</li>
+    <li><strong>Does it make confusion with the senior TANDEM app more likely?</strong> Yes.</li>
+    <li><strong>Separate apparel/outdoor/lifestyle conflicts?</strong> Possibly — Class 25/16/18/21 owners are distinct and must be searched. <span class="badge b-unk">Verify.</span></li>
+    <li><strong>Avoid bare "Tandem" on merch until cleared?</strong> Yes — recommended.</li>
+    <li><strong>Is "Tandem Club" on merch materially safer than "Tandem"?</strong> Yes.</li>
+    <li><strong>Does a design-heavy logo fix it?</strong> Only partly. If the dominant literal element is still the word "Tandem," the word generally controls the confusion analysis. A logo helps <em>most</em> when the wording is the compound.</li>
+    <li><strong>Additional classes to search/file?</strong> Yes if you produce/sell merch — see table below.</li>
+    <li><strong>File apparel classes now?</strong> Not yet — after the core mark is chosen and cleared, and only if merch becomes a real revenue line.</li>
+    <li><strong>Investor/rebrand risk from early merch?</strong> Yes — pre-clearance bare-"Tandem" merch creates a paper trail of a possibly-infringing use and a bigger sunk cost to unwind.</li>
+  </ol>
+
+  <h3>Merch classes to consider</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Class</th><th>Goods</th><th>When it matters</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">25</td><td>Shirts, hoodies, hats</td><td>Any branded apparel</td></tr>
+        <tr><td class="mark">16</td><td>Stickers, posters, flyers, printed materials</td><td>Stickers/print giveaways</td></tr>
+        <tr><td class="mark">18</td><td>Tote bags, backpacks</td><td>If produced</td></tr>
+        <tr><td class="mark">21</td><td>Water bottles, drinkware</td><td>If produced</td></tr>
+        <tr><td class="mark">35</td><td>Online retail / promotional services</td><td>If merch is <em>sold</em> as a revenue stream</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Per-merch-mark ratings</h3>
+  <p class="small">Preliminary reasoned assessment derived from the findings — not a substitute for a search of Class 25/16/18/21. Columns: USPTO refusal · C&amp;D · common-law apparel conflict · confusion w/ software-social app · confusion w/ outdoor/adventure brands.</p>
+  <div class="tablewrap">
+    <table class="matrix">
+      <thead>
+        <tr><th>Merch mark</th><th>USPTO</th><th>C&amp;D</th><th>Apparel CL</th><th>vs App</th><th>vs Outdoor</th><th>Effect on core mark</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mark">TANDEM</td><td><span class="badge b-high">High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-med">Med</span></td><td>Undermines</td><td><span class="verdict v-avoid">Avoid pre-clearance</span></td></tr>
+        <tr><td class="mark">TANDEM CLUB</td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td>Reinforces</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">TANDEMCLUB</td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td>Reinforces</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">TANDEM — FIND YOUR PEOPLE OUTSIDE</td><td><span class="badge b-high">High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-med">Med</span></td><td>Undermines (bare Tandem dominant)</td><td><span class="verdict v-avoid">Avoid pre-clearance</span></td></tr>
+        <tr><td class="mark">TANDEM CLUB — FIND YOUR PEOPLE OUTSIDE</td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td>Reinforces</td><td><span class="verdict v-clear">Needs clearance</span></td></tr>
+        <tr><td class="mark">FIND YOUR PEOPLE OUTSIDE (alone)</td><td><span class="badge b-high">High</span><span class="small"> (descriptive)</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-med">Med</span></td><td>Neutral</td><td><span class="verdict v-defensible">OK as decorative copy</span></td></tr>
+        <tr><td class="mark">Logo / icon only (no word "Tandem")</td><td><span class="badge b-unk">N/A</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-low">Low</span></td><td>Neutral / safe interim</td><td><span class="verdict v-discuss">Safest interim option</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Founder behavior before clearance — merch</h3>
+  <ul>
+    <li><strong>Wear/give out Tandem merch privately?</strong> Very low-volume, non-commercial personal use is low risk — but it still builds a bare-"Tandem" habit you may have to unwind. Prefer "Tandem Club" or logo-only.</li>
+    <li><strong>Distribute Tandem stickers at Cal Poly SLO?</strong> Prefer <strong>"Tandem Club"</strong> or logo-only stickers until cleared; avoid bare "Tandem."</li>
+    <li><strong>Sell Tandem hoodies?</strong> <span class="verdict v-avoid">Hold.</span> Selling bare-"Tandem" apparel pre-clearance is the highest-risk merch act (commercial use + Class 25 exposure).</li>
+    <li><strong>Ambassadors wear Tandem hats?</strong> Use "Tandem Club" or logo-only.</li>
+    <li><strong>Use "Tandem Club" on all physical goods?</strong> Yes — recommended default.</li>
+    <li><strong>Hold merch until attorney clearance?</strong> Hold <em>bare-"Tandem"</em> and <em>sold</em> merch; logo-only / "Tandem Club" giveaways are lower risk.</li>
+    <li><strong>Merch says "Tandem Club" while app nickname stays "Tandem"?</strong> Workable as a bridge, but understand the nickname still creates app-lane exposure (§7); it does not make bare-"Tandem" merch safe.</li>
+  </ul>
+
+  <!-- 17 -->
+  <h2 id="s17"><span class="num">17</span>Legal-Risk Analysis</h2>
+  <p>Pulling the threads together, the dominant legal risks are:</p>
+  <ul>
+    <li><strong>Likelihood of confusion with a senior social app (Tripod/TANDEM).</strong> Same medium, audience, and features; identical dominant term. Drives USPTO refusal risk (Cl. 9/45) and opposition/C&amp;D risk. <span class="badge b-high">High for bare Tandem</span> · <span class="badge b-medhigh">Med–High for the compound</span>.</li>
+    <li><strong>Crowded field / weak distinctiveness.</strong> "Tandem" is diluted across industries → hard to register bare, hard to enforce, invites opposition if filed bare.</li>
+    <li><strong>Descriptive tagline.</strong> "Find Your People Outside/Outdoors" risks failure-to-function/descriptiveness refusal and is not a reliable asset.</li>
+    <li><strong>Common-law adjacents.</strong> Bicycle "Tandem Clubs" and outdoor "Tandem Adventures" operators could contest the specific compound in their territory/field. <span class="badge b-unk">Verify.</span></li>
+    <li><strong>Merch amplification.</strong> Bare-"Tandem" goods expand exposure into apparel classes and strengthen a confusion argument by the senior app.</li>
+    <li><strong>International overhang.</strong> EU/UK TANDEM rights likely exist and matter at scale/diligence.</li>
+  </ul>
+
+  <!-- 18 -->
+  <h2 id="s18"><span class="num">18</span>Brand-Risk Analysis</h2>
+  <p>Even setting law aside, "Tandem" is a <strong>workable-but-weak</strong> brand for this product:</p>
+  <ul>
+    <li><strong>Semantic mismatch:</strong> "tandem" = two/couple/duo, which fights a <em>many-person group / club</em> product and pattern-matches to bikes/kayaks/skydiving and the language-partner app.</li>
+    <li><strong>"Tandem Club" helps</strong> restore the group/community meaning and adds a little distinctiveness; <strong>"tandemclub"</strong> (one word) is marginally more ownable as a handle/URL but not as a legal matter.</li>
+    <li><strong>"Club"</strong> cuts both ways — it fits "outdoor clubs" (good, on-brief) but is descriptive (weak as a source identifier).</li>
+    <li><strong>"Tandem Adventures"</strong> signals outdoors but "adventures" is descriptive and crowded in recreation; it trades one weakness for another.</li>
+    <li><strong>Enforceability:</strong> in a crowded field with a senior social-app owner, your ability to stop future copycats is limited — a real concern for a brand you want to defend at national scale.</li>
+    <li><strong>Investor diligence:</strong> a name with a live senior registrant in the exact category, plus weak distinctiveness, is the kind of finding that shows up in IP diligence and invites a rebrand conversation.</li>
+    <li><strong>Comprehension:</strong> campus outdoor clubs and freshmen will understand "Tandem Club" quickly enough, and the emotional read (partner/together/outdoors) is <em>fine</em> — the problem is ownership, not comprehension.</li>
+  </ul>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway</p>
+    <p>Direct read: <strong>legally crowded and brand-diluted, emotionally acceptable.</strong> If the goal is a defensible national brand you can own and enforce, a <strong>distinctive coined name</strong> is the stronger long-term play. If you stay with Tandem, go compound-only, clear it properly, and keep expectations realistic about enforcement.</p>
+  </div>
+
+  <!-- 19 -->
+  <h2 id="s19"><span class="num">19</span>Risk Matrix</h2>
+  <p class="small">Preliminary reasoned assessment derived from the findings in §§6–18 — <strong>not</strong> a cleared opinion and not a substitute for counsel. Cells reflect relative risk given the senior Tripod/TANDEM registration, field crowding, and descriptiveness. <span class="badge b-unk">Verify underlying records.</span></p>
+  <div class="legend small">Columns → USPTO refusal · C&amp;D · Opposition · Common-law · App-store confusion · Business-competition · Domain/social · Brand clarity · Ownability · Investor diligence</div>
+  <div class="tablewrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Candidate</th><th>USPTO</th><th>C&amp;D</th><th>Opp.</th><th>Comm-law</th><th>App-store</th><th>Biz-comp</th><th>Domain/social</th><th>Brand clarity</th><th>Ownability</th><th>Investor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mark">TANDEM</td>
+          <td><span class="badge b-high">High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-unk">Weak</span></td><td><span class="badge b-unk">Weak</span></td><td><span class="badge b-high">High</span></td>
+        </tr>
+        <tr>
+          <td class="mark">tandemclub</td>
+          <td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM CLUB</td>
+          <td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM CLUB — FIND YOUR PEOPLE OUTSIDE</td>
+          <td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM — FIND YOUR PEOPLE OUTSIDE</td>
+          <td><span class="badge b-high">High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-high">High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-unk">Weak–Mod</span></td><td><span class="badge b-unk">Weak</span></td><td><span class="badge b-medhigh">Med–High</span></td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM ADVENTURES</td>
+          <td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">TANDEM ADVENTURES — FIND YOUR PEOPLE OUTSIDE</td>
+          <td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">FIND YOUR PEOPLE OUTSIDE</td>
+          <td><span class="badge b-high">High</span><span class="small"> (descr.)</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-unk">Weak</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+        <tr>
+          <td class="mark">FIND YOUR PEOPLE OUTDOORS</td>
+          <td><span class="badge b-high">High</span><span class="small"> (descr.)</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-low">Low</span></td><td><span class="badge b-medhigh">Med–High</span></td><td><span class="badge b-med">Med</span></td><td><span class="badge b-med">Moderate</span></td><td><span class="badge b-unk">Weak</span></td><td><span class="badge b-med">Med</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Candidate</th><th>Plain-English recommendation</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">TANDEM</td><td><span class="verdict v-avoid">Avoid / not worth building around</span> as a standalone social-app mark.</td></tr>
+        <tr><td class="mark">tandemclub</td><td><span class="verdict v-clear">Use only after attorney clearance</span> — most defensible in the family.</td></tr>
+        <tr><td class="mark">Tandem Club</td><td><span class="verdict v-clear">Use only after attorney clearance</span>.</td></tr>
+        <tr><td class="mark">Tandem Club — Find Your People Outside</td><td><span class="verdict v-clear">Use only after attorney clearance</span>; tagline is decorative.</td></tr>
+        <tr><td class="mark">Tandem — Find Your People Outside</td><td><span class="verdict v-avoid">Avoid</span> — bare Tandem dominant.</td></tr>
+        <tr><td class="mark">Tandem Adventures (± tagline)</td><td><span class="verdict v-defensible">Risky but potentially defensible</span> — clear common-law outdoor users first.</td></tr>
+        <tr><td class="mark">Find Your People Outside / Outdoors</td><td><span class="verdict v-defensible">Use as brand copy</span>; don't rely on it as a registrable asset.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 20 -->
+  <h2 id="s20"><span class="num">20</span>Recommended Filing Strategy</h2>
+  <ol>
+    <li><strong>Do not file bare TANDEM.</strong> High refusal odds against Tripod/TANDEM and likely opposition bait in a crowded field.</li>
+    <li><strong>File the compound, intent-to-use (§1(b)).</strong> <code>TANDEM CLUB</code> (or <code>TANDEMCLUB</code>) as the lead application, filed ITU before public launch to lock a priority date.</li>
+    <li><strong>Classes, first wave:</strong> start with <strong>Class 9</strong> (the app) and add <strong>41 / 42 / 45</strong> to cover events/community, SaaS portal, and social networking — the last being where the senior TANDEM app sits, so expect the most scrutiny there.</li>
+    <li><strong>Classes, later / conditional:</strong> <strong>35</strong> (brand partnerships, merch retail, marketplace-style discovery) and <strong>39</strong> (carpool/trip coordination) once those are real. Don't over-file speculative classes early.</li>
+    <li><strong>Logo/design mark:</strong> file <em>after</em> the wordmark decision and visual identity settle. A logo helps most when the wording is the compound, not bare "Tandem."</li>
+    <li><strong>Nickname discipline:</strong> if you file "Tandem Club" but market as "Tandem," the gap between the registered mark and the mark-in-use creates enforcement/validity soft spots — keep "Tandem Club" prominent in actual use.</li>
+    <li><strong>Parallel track:</strong> have counsel pressure-test a <strong>coined alternative</strong> before you commit filing budget; it may clear faster and cheaper and be far more ownable.</li>
+    <li><strong>Tagline:</strong> deprioritize filing "Find Your People Outside/Outdoors" (descriptive). Revisit only with acquired distinctiveness.</li>
+  </ol>
+  <div class="callout co-verify">
+    <p class="ct">What a lawyer should verify</p>
+    <p>Before filing: a full clearance search of TANDEM CLUB / TANDEMCLUB in Cl. 9/41/42/45; the exact Tripod/TANDEM recitations to gauge overlap; whether any bicycle-club or outdoor "Tandem" registration blocks the compound; and whether to add a disclaimer of "CLUB." Confirm ITU vs use-based basis and specimen strategy.</p>
+  </div>
+
+  <!-- 21 -->
+  <h2 id="s21"><span class="num">21</span>Draft Goods / Services Language for Attorney Review</h2>
+  <div class="callout co-overclaim">
+    <p class="ct">Do not overclaim</p>
+    <p><strong>Non-legal draft language only.</strong> These are starting points to hand to counsel, <em>not</em> filing-ready identifications. An attorney must tailor them to the USPTO ID Manual, your actual features at filing, and an appropriate (non-overreaching) scope.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Class</th><th>Draft identification (for attorney review)</th></tr></thead>
+      <tbody>
+        <tr><td class="mark">9</td><td>Downloadable mobile application software for discovering outdoor clubs, events, and trips; for creating user profiles; for messaging and social networking; and for organizing and joining group recreational activities.</td></tr>
+        <tr><td class="mark">41</td><td>Organizing and conducting outdoor recreational events and outings; providing information about hiking, camping, and outdoor club activities; arranging and coordinating community-based recreational events.</td></tr>
+        <tr><td class="mark">42</td><td>Providing temporary use of non-downloadable web-based software for outdoor-club organizers to publish trips, manage registrations and attendance, and coordinate group activities.</td></tr>
+        <tr><td class="mark">45</td><td>Online social networking services; providing an online community and social-introduction services for connecting people with shared outdoor interests.</td></tr>
+        <tr><td class="mark">35 <span class="small">(later)</span></td><td>Promoting the goods and services of others through brand partnerships; online retail store services featuring branded apparel and accessories. <span class="small">(Only if merch is sold / partnerships launch.)</span></td></tr>
+        <tr><td class="mark">39 <span class="small">(later)</span></td><td>Arranging and coordinating carpooling and group transportation for recreational outings and trips. <span class="small">(Only when this feature is real.)</span></td></tr>
+        <tr><td class="mark">25 <span class="small">(merch, later)</span></td><td>Clothing, namely t-shirts, hooded sweatshirts, and hats. <span class="small">(Only if apparel becomes a real line.)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 22 -->
+  <h2 id="s22"><span class="num">22</span>Immediate Founder Next Steps</h2>
+  <h3>This week</h3>
+  <ul>
+    <li>Engage a trademark attorney for a <strong>full clearance opinion</strong> on <code>TANDEM CLUB</code>/<code>TANDEMCLUB</code> (Cl. 9/41/42/45), with the Tripod/TANDEM conflict as the headline question.</li>
+    <li>Pull the <strong>full research record</strong> and verify the Tripod/TANDEM identifiers on TSDR (serial, reg #, status, Section 8/15).</li>
+    <li>Do a live pass on <strong>domains/handles</strong> for the compound + prefixed forms (don't rely on the §11 expectations).</li>
+    <li>Make a provisional <strong>name-architecture</strong> decision: compound-only in commerce; no bare "Tandem" on anything public.</li>
+    <li>Spin up <strong>one coined alternative</strong> as a backup to test with counsel.</li>
+  </ul>
+  <h3>Before forming the C-Corp</h3>
+  <ul>
+    <li>Don't weld the entity name to a risky consumer mark. Consider a <strong>neutral/holding-style entity name</strong> (or delay) until the consumer mark clears.</li>
+    <li>Remember the entity name gives <strong>no</strong> trademark protection for the app (§12).</li>
+  </ul>
+  <h3>Before public launch</h3>
+  <ul>
+    <li>File the ITU on the compound; settle app-store display name to match the registered mark.</li>
+    <li>Lock a <strong>backup name</strong> you could switch to without a full rebuild.</li>
+    <li>Make domain/social/app-store naming <strong>consistent</strong> (all "Tandem Club," not a mix).</li>
+    <li>Keep merch to <strong>"Tandem Club" or logo-only</strong> until clearance (§16).</li>
+  </ul>
+  <h3>Defer until after beta</h3>
+  <ul>
+    <li>Logo/design-mark registration; tagline registration; international filings; Classes 35/39; and any <em>sold</em> apparel program.</li>
+  </ul>
+
+  <!-- 23 -->
+  <h2 id="s23"><span class="num">23</span>Questions for a Trademark Attorney</h2>
+  <ol>
+    <li>Given Tripod Technology's TANDEM registration(s), what's the realistic refusal risk for <code>TANDEM CLUB</code> in Class 9 and Class 45 — and is the compound enough distance?</li>
+    <li>Is the Tripod/TANDEM registration <strong>incontestable</strong> (Section 15 confirmed) or merely eligible, and how does that change our exposure?</li>
+    <li>Would you file bare <code>TANDEM</code> at all, or only the compound? Would filing bare provoke opposition?</li>
+    <li>Which classes first — start at 9 only, or 9/41/42/45 together? Include 35/39 now or later?</li>
+    <li>Should "CLUB" be disclaimed, and does that weaken the mark?</li>
+    <li>Do the bicycle "Tandem Club" or outdoor "Tandem Adventures" common-law users create priority problems in our target states?</li>
+    <li>How risky is marketing as "Tandem" while registering "Tandem Club" (gap between mark-as-filed and mark-in-use)?</li>
+    <li>Is bare-"Tandem" merch (esp. sold apparel) a meaningful added risk before clearance, and what Class 25/16 conflicts exist?</li>
+    <li>Do EU/UK TANDEM rights constrain a U.S.-first launch that's globally visible in app stores?</li>
+    <li>Is "Find Your People Outside/Outdoors" registrable at all, or should we treat it as unprotectable copy?</li>
+    <li>Given all of the above, would you advise a distinctive <strong>coined</strong> name instead — and can you clear one quickly?</li>
+  </ol>
+
+  <!-- 24 -->
+  <h2 id="s24"><span class="num">24</span>Final Recommendation</h2>
+  <div class="callout co-takeaway">
+    <p class="ct">Founder takeaway — direct answer</p>
+    <p><strong>Do not build around bare "Tandem."</strong> It is legally crowded, semantically mismatched to a group product, and sits directly against a senior, enforcement-active social app (Tripod/TANDEM) — <span class="verdict v-avoid">avoid as a standalone mark</span>.</p>
+    <p><strong>If you stay in the family, use <code>tandemclub</code> / "Tandem&nbsp;Club"</strong> — <span class="verdict v-clear">only after attorney clearance</span> — filed intent-to-use on the compound (never bare "Tandem"), kept prominent in actual use, with merch limited to "Tandem Club" or logo-only until cleared. Expect a diluted, harder-to-enforce brand.</p>
+    <p><strong>Strongest long-term move:</strong> in parallel, seriously evaluate a <strong>distinctive coined name</strong> you could actually own and enforce nationally. Given the senior social-app conflict and the field crowding, that is the path most likely to survive IP diligence and support a defensible brand.</p>
+    <p class="small" style="margin-top:10px">No candidate on this record is "cleared." Every specific record identifier, domain/handle status, and international right in this memo must be verified from the full research record and confirmed by a licensed trademark attorney before you rely on it or spend money against it.</p>
+  </div>
+
+  <div class="footer">
+    <p><strong>Sources &amp; verification.</strong> This memo synthesizes a prior research pass. Confirm each factual claim against primary sources before relying on it: USPTO Trademark Search (<a href="https://tmsearch.uspto.gov/">tmsearch.uspto.gov</a>) and TSDR (<a href="https://tsdr.uspto.gov/">tsdr.uspto.gov</a>); Justia Trademarks; Trademarkia; uspto.report; the TTAB docket (TTABVUE); EUIPO / <a href="https://www.tmdn.org/tmview/">TMview</a>; <a href="https://www.gov.uk/search-for-trademark">UKIPO</a>; <a href="https://branddb.wipo.int/">WIPO Global Brand Database</a>; <a href="https://www.dpma.de/english/">DPMA</a>; <a href="https://www.ic.gc.ca/app/opic-cipo/trdmrks/srch/">CIPO</a>; the Apple App Store and Google Play; Crunchbase; OpenCorporates and state Secretary-of-State registries; and live registrar / platform checks for domains and handles.</p>
+    <p><strong>Not legal advice.</strong> This is a preliminary, pre-attorney issue-spotting memo prepared for internal strategy discussion. It does not constitute a legal opinion, does not create an attorney–client relationship, and must not be used as a substitute for clearance and advice from a licensed trademark attorney.</p>
+  </div>
+
+</div>
+</body>
+</html>

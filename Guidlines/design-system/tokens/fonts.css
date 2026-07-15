@@ -1,0 +1,14 @@
+/* ============================================================
+   Fonts — webfonts for tandemclub.
+   SUBSTITUTION NOTE: the greyscale wireframes used the native
+   system stack only (SF Pro / -apple-system). The Impressionist
+   brand asks for something warmer and more painterly, so these
+   Google Font faces are a net-new brand choice, flagged in
+   readme.md. Swap freely once the founder blesses them.
+     - Display / headings: Newsreader — a warm literary serif with
+       expressive italics, for "memory"/nostalgic moments.
+     - UI / body: Hanken Grotesk — a friendly humanist sans that
+       stays legible at the small sizes the wireframes use.
+     - Mono / meta: Space Mono — occasional timestamps, coords.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap");

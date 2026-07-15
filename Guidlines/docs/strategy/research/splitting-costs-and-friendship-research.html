@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who Pays for the Trip? — Cost-Splitting &amp; Friendship Research</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #2a2520;
+      background: #fdfbf7;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 28px 80px;
+    }
+
+    .masthead {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a08c6b;
+      margin-bottom: 48px;
+      border-bottom: 1px solid #ece5d8;
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      color: #1f1a14;
+      margin-bottom: 14px;
+    }
+
+    .subtitle {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 1.05rem;
+      color: #6b6156;
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #ece5d8;
+      margin: 44px 0;
+    }
+
+    .section-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #b3a184;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1f1a14;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1f1a14;
+      margin: 26px 0 10px;
+    }
+
+    p { margin-bottom: 18px; color: #33291f; }
+
+    a { color: #8a6d3b; text-decoration: none; border-bottom: 1px solid #d9c9a8; }
+    a:hover { border-bottom-color: #8a6d3b; }
+
+    .quote-block {
+      background: #f6f1e7;
+      border-left: 3px solid #c9a86a;
+      padding: 18px 22px;
+      margin: 28px 0;
+      font-style: italic;
+      color: #4a4137;
+    }
+    .quote-block .attribution {
+      display: block;
+      margin-top: 8px;
+      font-style: normal;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      color: #a08c6b;
+    }
+
+    .takeaway {
+      background: #eef2e6;
+      border-left: 3px solid #7d9b5e;
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .takeaway .label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7d9b5e;
+      margin-bottom: 6px;
+    }
+    .takeaway p { margin-bottom: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14.5px;
+      line-height: 1.5;
+    }
+    th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #b3a184;
+      border-bottom: 2px solid #ece5d8;
+      padding: 8px 10px 8px 0;
+    }
+    td {
+      border-bottom: 1px solid #f0eade;
+      padding: 10px 10px 10px 0;
+      vertical-align: top;
+      color: #33291f;
+    }
+    td:first-child { font-weight: 600; white-space: nowrap; }
+
+    ul, ol { margin: 0 0 18px 22px; }
+    li { margin-bottom: 8px; color: #33291f; }
+
+    .sources {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #6b6156;
+    }
+    .sources li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="masthead">tandemclub · research · July 2026</div>
+
+    <h1>Who Pays for the Trip?</h1>
+    <p class="subtitle">Field notes on how friends, clubs, and workplaces actually split costs — and the psychology of generosity, awkwardness, and owing your friends. Research for how tandemclub should handle money between people who are becoming friends.</p>
+
+    <hr class="divider" />
+
+    <div class="section-label">Part I — The Field</div>
+    <h2>How people actually split costs</h2>
+
+    <h3>Friends: vibes over math</h3>
+    <p>Forum threads (Ask MetaFilter, TripAdvisor) are consistent: friends split <strong>gas only</strong>, never wear-and-tear, rounded to the nearest $10 or $20. Fill the tank at the start and end, split the total. Charging a friend an IRS-style mileage rate reads as offensive.</p>
+    <div class="quote-block">
+      "It's like that friend who breaks out a calculator when you go out to dinner with them — I just don't go next time."
+      <span class="attribution">Ask MetaFilter, "Gas money in 2024"</span>
+    </div>
+    <p>Many drivers never ask at all. Passengers settle by buying the driver a meal or a drink — payment in kind avoids the money conversation entirely. It's also cultural: in some circles asking for gas money is rude and you reciprocate with food; German friend groups keep receipts and split with apps, no awkwardness at all.</p>
+    <p><strong>The key pattern:</strong> one-off trips stay casual, but recurring groups need a policy — because the same person with the reliable car drives every trip, and quiet resentment compounds.</p>
+
+    <h3>Outdoor clubs: the club sets the rate</h3>
+    <p>The Colorado Mountain Club publishes a cents-per-mile table indexed to gas prices (42–56¢/mile as of 2026). Passengers pay <em>miles × rate ÷ people in the car</em>. It's a <em>guideline, not a policy</em> — the club names the number so no individual has to. That's the whole trick: the ask moves from person-to-person to person-to-institution.</p>
+    <p>College clubs mostly do bureaucratic reimbursement instead: the driver fronts gas, submits receipts and a Google Maps printout, and waits weeks for student government to pay (the UVA Outdoors Club model). Michigan pays a mileage rate (72.5¢/mile in 2026) instead of gas receipts. Slow, painful, and the driver always fronts the money.</p>
+
+    <h3>Workplaces: kill the reimbursement</h3>
+    <p>Companies use mileage reimbursement (fair, non-taxable, but employees front cash and over-report ~28%), fuel cards (no fronting, but leakage and tax mess), flat car allowances (simple, unfair), FAVR programs (fixed + variable rates tuned to local costs — fairest, complex), and per diems (flat daily cash, zero receipts). The modern corporate trend is the most telling: <strong>eliminate reimbursement entirely</strong> — issue cards so shared money is spent at the point of sale and nobody ever fronts anything or waits to be paid back.</p>
+
+    <hr class="divider" />
+
+    <div class="section-label">Part II — The Catalog</div>
+    <h2>Nine ways groups split a cost</h2>
+
+    <table>
+      <tr><th>Model</th><th>How it works</th><th>Watch out for</th></tr>
+      <tr><td>Ledger + settle up</td><td>Log expenses with weights (Splitwise-style), app nets debts to minimum transfers, settle via Venmo.</td><td>Everyone must install the app; free-tier caps and ads; makes friendship feel like accounting.</td></tr>
+      <tr><td>Kitty / pot</td><td>Everyone puts $40 in up front; shared costs come from the pot; refund leftovers.</td><td>Needs a trusted holder; digital versions: KttiPay, Venmo Groups.</td></tr>
+      <tr><td>Rotating payer</td><td>"I got this tank, you get the next." A social ledger — no math.</td><td>Only works for repeated events; never quite zeroes out (that's a feature).</td></tr>
+      <tr><td>One cardholder</td><td>One person pays everything on a points card; others pay them back.</td><td>Points reward the fronting; loser if people are slow to repay.</td></tr>
+      <tr><td>Category assignment</td><td>You cover gas, I cover the campsite, she covers food.</td><td>Rough fairness only; needs similar-sized categories.</td></tr>
+      <tr><td>Proportional split</td><td>By income, room quality, or share size (kids at half-share).</td><td>Requires an awkward conversation once, then runs itself.</td></tr>
+      <tr><td>Auction / fair division</td><td>Bid on rooms; algorithm finds envy-free prices (Spliddit).</td><td>Nerdy; best for big-ticket items like lodging.</td></tr>
+      <tr><td>Flat trip fee</td><td>Leader posts "$25 covers gas + campsite," collects at signup, pays drivers per mile from the pool.</td><td>Leader must estimate well; the club-native model.</td></tr>
+      <tr><td>Payment in kind</td><td>Meals, drinks, favors — the dominant currency among friends.</td><td>Illegible to apps; the thing apps accidentally destroy.</td></tr>
+    </table>
+
+    <hr class="divider" />
+
+    <div class="section-label">Part III — The Psychology</div>
+    <h2>Four questions the literature answers</h2>
+
+    <h3>1. Does generosity build friendship?</h3>
+    <p>Yes — with two twists. Spending on others reliably boosts the giver's own happiness (Dunn, Aknin &amp; Norton, replicated across 136 countries, though a 2022 replication found the effect smaller than first claimed). The deeper theory is Clark &amp; Mills' distinction between <strong>communal</strong> and <strong>exchange</strong> relationships: friendships are communal — you give based on the other person's <em>need</em>, and you keep track of their needs, not their inputs. The moment giving becomes tracked and repaid tit-for-tat, the relationship reads as exchange (a coworker, a stranger) and closeness drops. Generosity builds friendship <em>only when it's untracked</em>.</p>
+    <p>The second twist is the <strong>Ben Franklin effect</strong> (Jecker &amp; Landy, 1969): the person who does <em>you</em> a favor ends up liking <em>you</em> more. Receiving builds friendship too — letting someone help you is itself a gift. It works better for social favors than for money.</p>
+
+    <h3>2. Why is splitting the bill awkward?</h3>
+    <p>Three solid findings. Gneezy, Haruvy &amp; Yafe's restaurant field experiment — the "unscrupulous diner's dilemma" — showed equal splitting makes people order about 37% more, and 80% of diners would rather just pay their own way.</p>
+    <p>The most important recent result is Alberhasky &amp; Kumar's six experiments (cost held constant): settling shared experiences through Venmo-style apps, versus <em>taking turns paying</em>, reduced social bonding, enjoyment, and even the desire to repeat the experience with that person. The mechanism is <strong>perceived transactionality</strong> — the app quietly reframes the relationship as market-based. The critical mitigation: an <strong>explicit prior agreement</strong> to use the app largely erases the penalty.</p>
+    <p>The counterpoint: HCI research (Li, Freeman &amp; Knijnenburg) finds apps <em>reduce</em> the face-to-face awkwardness of asking for money, and a study of college students found Venmo memos — inside jokes, emojis — used as belongingness signals. The payment note is a social text.</p>
+
+    <h3>3. Where is the field heading?</h3>
+    <p>The arc: social exchange and equity theory (1960s–70s) → Clark &amp; Mills' communal relationships (1980s–90s) → the gratitude boom of positive psychology (2000s, when indebtedness was cast as the "bad" emotion) → <strong>the current wave: rehabilitating indebtedness</strong>. Peng, Nelissen &amp; Zeelenberg argue it's indebtedness, not gratitude, that actually restores balance in social exchange; Goyal et al. put it as "gratitude endures while indebtedness persuades." The other growth area is exactly tandemclub's space: fintech &times; relationships — P2P payment apps, and couples' money conversations (which people systematically underestimate enjoying).</p>
+
+    <h3>4. Is keeping a debt sometimes good?</h3>
+    <p>Yes — the most interesting answer of the four. In Mauss's gift theory, immediate exact repayment "amounts to a refusal" of the relationship; the <em>suspended</em> debt is a useful tension that keeps the bond alive. Barter creates no relationship; delayed exchange does. A 2024 study in <em>Emotion</em> found romantic partners literally <strong>share each other's social debts</strong> to third parties — and indebtedness, not gratitude, is the mechanism binding communal pairs.</p>
+    <p>The caveat: indebtedness <em>feels</em> bad (stress and avoidance — Greenberg's classic theory). The resolution:</p>
+    <div class="takeaway">
+      <div class="label">The core distinction</div>
+      <p><strong>Fuzzy favor-debts are glue; precise money-debts are stress.</strong> "You drove last time, I've got gas this time" bonds people. "$13.47 outstanding for 3 weeks" corrodes.</p>
+    </div>
+
+    <h3>5. Is there a limit? The dollar line where the rules flip</h3>
+    <p>Yes — the norms aren't one set of rules, they're <em>two</em> sets with a threshold between them, and the threshold shows up everywhere once you look for it.</p>
+    <p>Survey data puts the floor around <strong>$5</strong>: 55% of people say you shouldn't Venmo a friend for less than that, and 85% don't expect repayment at all under $5. Requesting tiny or exact amounts carries a <em>pettiness penalty</em> — "the more precise your payment, the more petty you seem." Behavioral economics calls the underlying bias the <strong>peanuts effect</strong>: below a certain stake, people simply stop treating money as money worth accounting for.</p>
+    <p>The forum threads show the same tiering in the wild: under a quarter tank, "forget it, don't mention it"; a short ride is a coffee; only past real distance ("&gt;400 miles") does splitting kick in. And the ceiling matters just as much as the floor — a 2024 Cash App survey found <strong>73% of people have had at least one major negative cost-sharing experience with friends</strong>. Let big amounts slide and resentment compounds; chase small amounts and you're the petty one. Timing has its own norm too: requests should go out within about 24 hours, and be paid within 24 hours of receipt. A debt that's both precise <em>and</em> stale is the worst combination.</p>
+    <div class="takeaway">
+      <div class="label">The two-zone rule</div>
+      <p><strong>Below the line, tracking is rude. Above the line, <em>not</em> tracking is risky.</strong> The exact line moves with the group (income, trip size), but every group has one. For college students, roughly $15–20 — burrito territory below, real money above.</p>
+    </div>
+    <p><strong>Crucially, the line applies to the per-person share, not the total.</strong> A $20 tank split across five friends is a $4 ask per head — every one of those requests sits under the pettiness line, so the driver shouldn't ask, even though the total is real money to them. But that's exactly how the repeat-driver trap forms: each individual ask is too small to make, so nothing is ever asked, and the driver's <em>cumulative</em> cost silently compounds ($20 a weekend is $80 a month). Two meters, two rules: the <strong>pettiness meter</strong> runs per person, per trip; the <strong>resentment meter</strong> runs on the driver's running total. Casual groups only ever see the first meter — which is why the second one needs structure (rotation, a trip fee, a club rate) to be visible at all.</p>
+
+    <hr class="divider" />
+
+    <div class="section-label">Part IV — The Driver's Burden</div>
+    <h2>What the person with the car actually carries</h2>
+
+    <h3>The math: gas is a sixth of the real cost</h3>
+    <p>AAA's 2025 driving-cost study puts the all-in cost of running a car at about <strong>77¢ per mile</strong> ($11,577 a year over 15,000 miles). Fuel is only <strong>13¢</strong> of that. Depreciation alone is 28.9¢ — more than double the gas. So the universal friend custom of "split the gas" reimburses roughly a sixth of what the trip actually costs the driver — and the forums show drivers often wave off even that. Every trip, the car owner quietly subsidizes everyone in the back seat.</p>
+
+    <h3>The compounding: it's always the same person</h3>
+    <p>Groups don't rotate cars evenly — they take the biggest, most reliable one, which means the same member drives nearly every trip. Combine that with the pettiness bar from Part III (a $4-per-head ask is too small to make) and the burden becomes structurally invisible: no single trip ever justifies a request, so no request is ever made, and $20 a weekend becomes $80 a month. The MetaFilter mountaineering crowd named this exactly: in a group that does repeated outings, "there's usually one person who ends up covering almost every trip. That adds up and you don't want to take advantage."</p>
+
+    <h3>The invisible labor</h3>
+    <p>Money is only half the burden. The driver does the pickups, plans the timing, stays alert for three hours while everyone else naps, stays sober at the tailgate, deals with the sand in the seats, hunts the parking spot, and — the part nobody says out loud — carries the liability: if something goes wrong, it's the driver's insurance and the driver's problem. Passengers on a club trip ride on their friend's risk.</p>
+    <div class="quote-block">
+      "I would never charge a friend 33.5 cents per mile, as that is like them paying me up to 18 bucks an hour to drive."
+      <span class="attribution">Ask MetaFilter — revealing, in reverse, that driving is unpriced labor</span>
+    </div>
+    <p>That commenter meant it as a reason <em>not</em> to charge — but read it backwards and it's the whole problem: driving is real work that friend-norms forbid pricing. The driver gives labor, capital, and risk, and etiquette allows them to recover, at most, a share of the gas.</p>
+
+    <h3>Institutions can say what friends can't</h3>
+    <p>This is why organized clubs all converge on the same fix: the club prices the burden so no friendship has to. The Colorado Mountain Club's rate (42–56¢/mile) exists precisely because "car-related costs increased faster than overall prices" — it's a burden-acknowledgment mechanism, not a gas calculator. College clubs pay drivers from pooled funds. Some groups run <strong>"driver rides free"</strong>: passengers' trip fees cover the driver's share of the campsite and food, repaying the burden without a single person-to-person dollar. A friend group has no polite way to build any of this — an app does.</p>
+    <div class="takeaway">
+      <div class="label">The gap tandemclub fills</div>
+      <p>The driver's burden is real (~77¢/mile plus unpriced labor and risk), structurally invisible (no single ask ever clears the pettiness bar), and unspeakable between friends. Making it visible and repaying it — through pooled fees, rotation, or driver-rides-free — is something only the institution layer can do.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section-label">Part V — What This Means for tandemclub</div>
+    <h2>Design principles</h2>
+
+    <ol>
+      <li><strong>The app is the bad guy so friends don't have to be.</strong> Publish the rate the way the Colorado Mountain Club does. "That's just the club rate" depersonalizes the ask — nobody has to be the calculator friend.</li>
+      <li><strong>Flat trip fee beats a ledger.</strong> Collect one fee at signup ("$25 covers gas + campsite") and pay drivers from the pool. Everyone settles with <em>the trip</em>, not with each other — N settlements instead of N×N, and no student ever fronts money like the college-reimbursement mess.</li>
+      <li><strong>Prior agreement removes the sting.</strong> Alberhasky &amp; Kumar's mitigation is a design gift: a fee agreed at signup <em>is</em> the explicit prior agreement, so paying never feels transactional.</li>
+      <li><strong>Settle money fast, keep the social ledger open.</strong> Kill precise dollar debts quickly (those are the aversive kind), but deliberately preserve the warm, fuzzy reciprocity — who drove, who brought the stove, whose turn it is. That never-quite-zero balance is what friendship runs on. Splitwise optimizes for zeroing out; the research says don't.</li>
+      <li><strong>Leave room for payment in kind.</strong> The dominant currency between friends is meals, drinks, and favors. An app that forces every debt into dollars destroys the bonding layer. Let a driver be "paid" in burritos.</li>
+      <li><strong>Put the line in the product: auto-split when the per-person share clears ~$20, stay silent below.</strong> Test the threshold against each person's share, not the total — a $100 campsite split six ways is a real ask; a $20 tank split five ways is not. The app being the one to say "this splits" removes the pettiness penalty from the person who paid. Below the line the app doesn't track, doesn't nag, doesn't even offer — burrito territory. Make the line adjustable per club or trip, but ship with a default so nobody has to negotiate it.</li>
+      <li><strong>Track the driver's cumulative contribution, and rebalance with turns, not dollars.</strong> Small shares never clear the pettiness bar, so the repeat driver never gets paid — the app should watch the running total across trips and nudge the <em>group</em>, not the debtors: "Jake's driven three of the last four — who's got this one?" Rotation settles the resentment meter in the friendship currency (turns and favors), not in $4 requests.</li>
+    </ol>
+
+    <hr class="divider" />
+
+    <div class="section-label">Appendix</div>
+    <h2>Sources</h2>
+
+    <h3>Field &amp; norms</h3>
+    <ul class="sources">
+      <li><a href="https://ask.metafilter.com/380383/Gas-money-in-2024">Ask MetaFilter — "Gas money" in 2024</a></li>
+      <li><a href="https://ask.metafilter.com/238952/Would-you-expect-to-split-gas-money">Ask MetaFilter — Would you expect to split gas money?</a></li>
+      <li><a href="https://www.tripadvisor.com/ShowTopic-g1-i12567-k11481528-o70-Splitting_gas_costs_should_the_car_owner_pay_less-Road_Trips.html">TripAdvisor — Should the car owner pay less?</a></li>
+      <li><a href="https://www.cmc.org/community/front-range-groups/denver/trip-leader-school-info/mileage-reimbursement-recommendation">Colorado Mountain Club — Mileage reimbursement for trip leaders</a></li>
+      <li><a href="https://outdoorsatuva.org/resources/">Outdoors at UVA — Reimbursement process</a> · <a href="https://soas.umich.edu/article/reimbursement">UMich SOAS — Reimbursement rules</a></li>
+      <li><a href="https://timeero.com/post/gas-card-vs-mileage-reimbursement">Timeero — Gas card vs. mileage reimbursement</a> · <a href="https://cardata.co/blog/car-allowances-vs-fuel-cards">Cardata — FAVR programs</a></li>
+      <li><a href="https://spliit.pro/blog/best-splitwise-alternative-2026/">Spliit — Splitwise alternatives 2026</a> · <a href="https://www.kittysplit.com/en">Kittysplit</a> · <a href="https://kttipay.com/">KttiPay</a> · <a href="https://help.venmo.com/cs/articles/setting-up-a-group-vhel106">Venmo Groups</a></li>
+      <li><a href="https://newsroom.aaa.com/2025/09/aaa-new-vehicle-costs-drop-to-11577/">AAA (2025) — Your Driving Costs: $11,577/year, ~77¢/mile all-in, fuel only 13¢</a></li>
+    </ul>
+
+    <h3>Psychology &amp; economics</h3>
+    <ul class="sources">
+      <li><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4949668">Alberhasky &amp; Kumar — Splitting, More Wisely: P2P payment services make relationships more transactional (SSRN)</a></li>
+      <li><a href="https://psycnet.apa.org/record/2023-90952-001">Peng, Nelissen &amp; Zeelenberg (2024) — Emotional consequences of social debt sharing in communal relationships, <em>Emotion</em></a> (full text via Cal Poly OneSearch)</li>
+      <li><a href="https://www.tandfonline.com/doi/full/10.1080/02699931.2017.1353484">Peng et al. (2018) — Reconsidering gratitude and indebtedness in social exchange</a></li>
+      <li><a href="https://www.researchgate.net/publication/247497268_The_Debt_of_Gratitude_Dissociating_Gratitude_and_Indebtedness">Watkins et al. (2006) — The debt of gratitude</a> · <a href="https://link.springer.com/chapter/10.1007/978-1-4613-3087-5_1">Greenberg (1980) — A theory of indebtedness</a></li>
+      <li><a href="https://journals.sagepub.com/doi/10.1177/0146167293196003">Clark &amp; Mills (1993) — Communal vs. exchange relationships</a> · <a href="https://clarkrelationshiplab.yale.edu/sites/default/files/files/Record%20keeping%20in%20two%20types%20of%20relationships.pdf">Record keeping in two types of relationships</a></li>
+      <li><a href="https://rady.ucsd.edu/_files/faculty-research/uri-gneezy/splitting-bill.pdf">Gneezy, Haruvy &amp; Yafe (2004) — The inefficiency of splitting the bill</a></li>
+      <li><a href="https://journals.sagepub.com/doi/abs/10.1177/0963721413512503">Dunn, Aknin &amp; Norton — Prosocial spending and happiness</a> · <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0272434">2022 replication (PLOS One)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Ben_Franklin_effect">Jecker &amp; Landy (1969) — the Ben Franklin effect</a></li>
+      <li><a href="https://www.researchgate.net/publication/321637185_Friends_Don%27t_Need_Receipts_The_Curious_Case_of_Social_Awareness_Streams_in_the_Mobile_Payment_App_Venmo">Li, Freeman &amp; Knijnenburg — P2P payments and offline relationships</a> · <a href="https://www.sciencedirect.com/science/article/abs/pii/S8755461524000240">Pennell &amp; Riley (2024) — Venmo belongingness in college students</a> (via Cal Poly)</li>
+      <li><a href="https://en.wikipedia.org/wiki/Reciprocity_(cultural_anthropology)">Mauss — The Gift &amp; reciprocity</a> · <a href="https://journals.sagepub.com/doi/10.1177/19485506261427859">Garcia-Rada et al. (2026) — Couples underestimate financial conversations</a></li>
+      <li><a href="https://money.com/venmo-payment-app-etiquette-zelle-cash/">Money.com — Payment-app etiquette (the $5 rule, pettiness penalty)</a> · <a href="https://www.mondayeconomist.com/p/venmo">Monday Economist — What your Venmo behavior says about you</a></li>
+      <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6084950/">Risk attitudes at small stakes — the "peanuts effect"</a></li>
+    </ul>
+
+  </div>
+</body>
+</html>

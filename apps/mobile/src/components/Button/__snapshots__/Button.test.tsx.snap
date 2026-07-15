@@ -1,0 +1,507 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Button renders disabled 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": true,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#F24E00",
+      },
+      {
+        "borderColor": "transparent",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      {
+        "opacity": 0.4,
+      },
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#FFFFFF",
+        },
+      ]
+    }
+  >
+    Disabled
+  </Text>
+</View>
+`;
+
+exports[`Button renders the accent variant 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#05332B",
+      },
+      {
+        "borderColor": "transparent",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      false,
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#FFFFFF",
+        },
+      ]
+    }
+  >
+    accent
+  </Text>
+</View>
+`;
+
+exports[`Button renders the apple variant 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#05332B",
+      },
+      {
+        "borderColor": "transparent",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      false,
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#FFFFFF",
+        },
+      ]
+    }
+  >
+    apple
+  </Text>
+</View>
+`;
+
+exports[`Button renders the ghost variant 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+      },
+      {
+        "borderColor": "rgba(5,51,43,0.16)",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      false,
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#05332B",
+        },
+      ]
+    }
+  >
+    ghost
+  </Text>
+</View>
+`;
+
+exports[`Button renders the primary variant 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#F24E00",
+      },
+      {
+        "borderColor": "transparent",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      false,
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#FFFFFF",
+        },
+      ]
+    }
+  >
+    primary
+  </Text>
+</View>
+`;
+
+exports[`Button renders the subtle variant 1`] = `
+<View
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": false,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "alignItems": "center",
+        "borderRadius": 12,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "gap": 8,
+        "justifyContent": "center",
+      },
+      {
+        "paddingHorizontal": 18,
+        "paddingVertical": 15,
+      },
+      {
+        "backgroundColor": "#E9E7E5",
+      },
+      {
+        "borderColor": "rgba(5,51,43,0.08)",
+      },
+      {
+        "alignSelf": "stretch",
+        "width": "100%",
+      },
+      false,
+      false,
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontFamily": "HankenGrotesk_700Bold",
+          "fontSize": 16,
+          "letterSpacing": -0.2,
+        },
+        {
+          "fontSize": 16,
+        },
+        {
+          "color": "#05332B",
+        },
+      ]
+    }
+  >
+    subtle
+  </Text>
+</View>
+`;

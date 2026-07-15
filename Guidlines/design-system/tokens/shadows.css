@@ -1,0 +1,11 @@
+/* ============================================================
+   Shadows & elevation — soft, warm-tinted (not pure black) so
+   surfaces feel sunlit rather than clinical.
+   ============================================================ */
+:root {
+  --shadow-card:   0 1px 2px rgba(60,40,20,.06), 0 1px 1px rgba(60,40,20,.04);
+  --shadow-raised: 0 4px 14px rgba(60,40,20,.08), 0 1px 3px rgba(60,40,20,.05);
+  --shadow-pop:    0 12px 40px rgba(50,35,20,.20);
+  --shadow-sheet:  0 -8px 40px rgba(50,35,20,.16);
+  --shadow-device: 0 30px 80px rgba(40,28,15,.26), 0 8px 20px rgba(40,28,15,.12);
+}

@@ -1,0 +1,27 @@
+/* ============================================================
+   Base — minimal element defaults + link colors.
+   Kept intentionally light so consumers opt in via tokens.
+   ============================================================ */
+:root {
+  color-scheme: light;
+}
+
+a {
+  color: var(--action);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--action-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+::selection {
+  background: var(--action-soft);
+  color: var(--text-primary);
+}
+
+/* Utility surface helpers consumers may lean on */
+.tc-app     { background: var(--surface-app); color: var(--text-primary); font-family: var(--font-ui); }
+.tc-display { font-family: var(--font-display); }
+.tc-mono    { font-family: var(--font-mono); }

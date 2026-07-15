@@ -1,0 +1,54 @@
+<!-- @dsCard group="Components" viewport="700x360" name="Forms" subtitle="Inputs, segmented control, toggle, stepper" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  body { margin: 0; background: var(--surface-app); font-family: var(--font-ui); padding: 22px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+  .lbl { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 10px; }
+  .row { display: flex; gap: 12px; align-items: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Input, Segment, Toggle, Stepper } = window.TandemclubDesignSystem_d44a9e;
+function Demo() {
+  return (
+    <div className="cols">
+      <div>
+        <div className="lbl">Text field</div>
+        <Input label="What should we call you?" placeholder="First name" defaultValue="Sam" />
+        <div style={{ height: 16 }} />
+        <Input label="Short bio" multiline maxLength={250} defaultValue="Freshman, first quarter. Looking for people to get outside with." />
+      </div>
+      <div style={{ display: "grid", gap: 24 }}>
+        <div>
+          <div className="lbl">Segmented control</div>
+          <Segment options={["Sign ups", "Archives"]} />
+          <div style={{ height: 12 }} />
+          <Segment options={["Activities", "Adventures"]} />
+        </div>
+        <div>
+          <div className="lbl">Toggle</div>
+          <div className="row"><Toggle defaultOn /> <span>Split a budget</span></div>
+          <div className="row" style={{ marginTop: 10 }}><Toggle /> <span>Repeat weekly</span></div>
+        </div>
+        <div>
+          <div className="lbl">Stepper</div>
+          <div className="row"><Stepper defaultValue={6} /> <span style={{color:"var(--text-tertiary)"}}>headcount</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

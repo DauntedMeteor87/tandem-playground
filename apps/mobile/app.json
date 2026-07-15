@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "tandemclub",
+    "slug": "tandemclub",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "scheme": "tandemclub",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F0EFEE"
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "experiments": {
+      "reactCompiler": true
+    }
+  }
+}

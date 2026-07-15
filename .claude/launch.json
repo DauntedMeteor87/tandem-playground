@@ -12,38 +12,6 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@tandemclub/mobile", "web"],
       "port": 8081
-    },
-    {
-      "name": "wireframe-0.4",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["apps/mobile/Prototypes/Wireframe 0.4/server.js"],
-      "port": 4602,
-      "autoPort": true
-    },
-    {
-      "name": "wireframe-0.3",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["apps/mobile/Prototypes/Wireframe 0.3/server.js"],
-      "port": 4601,
-      "autoPort": true
-    },
-    {
-      "name": "wireframe-0.2",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["apps/mobile/Prototypes/Wireframe 0.2/server.js"],
-      "port": 4600
-    },
-    {
-      "name": "wireframes",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["apps/mobile/Prototypes/Wireframe 0.1/server.js"],
-      "port": 4599
-    },
-    {
-      "name": "web-wireframe-0.1",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["apps/web/Prototypes-web/Wireframe 0.1/server.js"],
-      "port": 5501
     }
   ]
 }

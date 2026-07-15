@@ -58,14 +58,15 @@ Modular vertical slices — one feature at a time, fully working (screens + data
 
 ## A note on names
 
-Earlier research was done under the codenames *Kindred* and *Ozola*. Those docs
-are kept dated in `docs/` as founder/IP records and are intentionally not renamed.
-The product's name is **tandemclub** — use only that in code and new docs.
+Earlier research was done under the codenames *Kindred* and *Ozola*. Those
+strategy/research docs were removed from the repo in the 2026-07 cleanup and
+live with the founder as IP records. The product's name is **tandemclub** —
+use only that in code and new docs.
 
 ## Deeper docs (read on demand)
 
-- `docs/strategy/kindred-architecture-memo.html` — full stack decision memo.
-- `docs/strategy/kindred_market_breakdown.html` — market & rollout by segment.
-- `docs/strategy/Kindred_Competition_Report.docx` — competitive landscape.
-- `docs/strategy/research/kindred App_Ultimate OG_.docx` — build methodology & order.
-- `docs/strategy/kindred_business_plan.docx` — full business plan.
+- `docs/backend-hookup-guide.md` — the playbook for wiring the real backend.
+- `docs/empty-states.md` — the blank-state playbook, with the full inventory.
+- `docs/figma-workflow.md` — Figma ↔ code round-trip workflow.
+- `../design-system/readme.md` — the full design guide (tokens, components, UI kits).
+- `../../BUILD_LOG.md` — the dated record of what's been built.

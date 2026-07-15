@@ -182,6 +182,38 @@ export interface NavItem {
    ============================================================ */
 export const USER: User = { name: "Maya", initials: "M" };
 
+/* ---------- Topbar notifications (bell dropdown) ----------
+   TODO: backend seam — becomes the leader's notifications feed. Demo items
+   read true to the seeded clubs/adventures. */
+export interface StudioNotification {
+  id: string;
+  text: string;
+  when: string;
+  /** Where clicking it lands. */
+  href: string;
+}
+
+export const STUDIO_NOTIFICATIONS: StudioNotification[] = [
+  {
+    id: "n1",
+    text: "2 join requests waiting for Field Studies.",
+    when: "2h ago",
+    href: "/manage-club",
+  },
+  {
+    id: "n2",
+    text: "Sykes Hot Springs Overnight is at 9 of 12 spots.",
+    when: "Yesterday",
+    href: "/manage-adventures",
+  },
+  {
+    id: "n3",
+    text: "Montaña de Oro Car Camp goes live in 3 weeks — gear list still empty.",
+    when: "2d ago",
+    href: "/manage-adventures",
+  },
+];
+
 /* ============================================================
    Wizard steps
    ============================================================ */

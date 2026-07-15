@@ -1,10 +1,20 @@
 /* ============================================================
    tandemclub Studio — design tokens
-   Source of truth: Guidlines/docs/wireframe-to-typescript-migration.md §2
-   (the locked brand palette). The greyscale wireframe
-   (Prototypes-web/Wireframe 0.2/app.css) is re-expressed here on the
-   brand palette; the spacing scale is measured straight from that
-   app.css. Radii follow §2 (12 / 16 / 18 / pill).
+   Source of truth: the 2026-07 "Bringing tandemclub to life" theme
+   brief — the GOLDEN HOUR palette, mirrored 1:1 from
+   Guidlines/design-system/tokens/colors.css (the design system's
+   default mood). The spacing scale and radii carry over unchanged
+   from the wireframe port.
+
+   The token NAMES are kept from the first (pre-brief) palette so no
+   component changed — only the values did. Golden Hour mapping:
+     pine   → ink-900   warm near-black text
+     teal   → dusk-500  dusk violet accent
+     ember  → sun-500   sunset coral — the one action color
+     amber  → sun-400   amber glow highlight
+     leaf   → meadow    success / go
+     canvas → warm-50   sunlit cream app background
+     muted  → ink-700   warm secondary text
 
    Rule: never hardcode a hex outside this file — components read
    var(--tc-*). Derived neutrals are color-mix()ed from the palette so
@@ -12,28 +22,28 @@
    ============================================================ */
 
 :root {
-  /* ---- Brand palette (§2, locked) ---- */
-  --tc-pine: #05332B; /* primary dark — body copy, headings, deep surfaces */
-  --tc-teal: #1B564B; /* secondary dark — links, info */
-  --tc-ember: #F24E00; /* primary accent — one highlight per view, never body text */
-  --tc-amber: #F2B23C; /* sunlit highlight, warning */
-  --tc-leaf: #8BC97F; /* nature, success, growth */
-  --tc-canvas: #F0EFEE; /* app / page background */
-  --tc-paper: #FFFFFF; /* cards, raised surfaces */
-  --tc-muted: #5E6F68; /* secondary text */
+  /* ---- Brand palette (Golden Hour) ---- */
+  --tc-pine: #2a231b; /* ink-900 — body copy, headings, deep surfaces (warm near-black) */
+  --tc-teal: #6f5f96; /* dusk-500 — violet accent: highlights & selected, never a second button */
+  --tc-ember: #e0703a; /* sun-500 — sunset coral: THE action color, one per view */
+  --tc-amber: #ef9459; /* sun-400 — amber glow: sunlit highlight, warning */
+  --tc-leaf: #7f9a5e; /* meadow-500 — nature, success, growth */
+  --tc-canvas: #faf6f0; /* warm-50 — app / page background: sunlit cream */
+  --tc-paper: #ffffff; /* cards, raised surfaces */
+  --tc-muted: #6a5d4d; /* ink-700 — secondary text */
 
-  /* ---- Status pairs (§2, in-family) ---- */
-  --tc-success: #8BC97F; /* leaf */
-  --tc-success-bg: #EAF3E4;
-  --tc-warning: #F2B23C; /* amber */
-  --tc-warning-bg: #FDF3E1;
-  --tc-error: #C7361B;
-  --tc-error-bg: #FBEAE2;
-  --tc-info: #1B564B; /* teal */
-  --tc-info-bg: #E9F1EF;
+  /* ---- Status pairs (Golden Hour semantics, warm tints) ---- */
+  --tc-success: #7f9a5e; /* meadow */
+  --tc-success-bg: #edf1e1;
+  --tc-warning: #c9802e; /* darker amber for legible warning text */
+  --tc-warning-bg: #fbeedf;
+  --tc-error: #c1503f; /* --danger */
+  --tc-error-bg: #f8e8e2;
+  --tc-info: #5b93a8; /* sky-500 */
+  --tc-info-bg: #e9f1f4;
 
   /* ---- Derived neutrals (mixed from the palette — no raw hex) ----
-     Each maps a greyscale wireframe token onto the brand family. */
+     Each maps a greyscale wireframe token onto the warm family. */
   --tc-muted-soft: color-mix(in srgb, var(--tc-muted) 62%, var(--tc-canvas)); /* tertiary text / icons  (was --c-ink-3 #97979c) */
   --tc-border: color-mix(in srgb, var(--tc-muted) 20%, var(--tc-canvas)); /* hairline               (was --c-line #e2e2e4) */
   --tc-border-strong: color-mix(in srgb, var(--tc-muted) 40%, var(--tc-canvas)); /* field / chip border    (was --c-line-2 #cccccf) */
@@ -45,11 +55,11 @@
   /* ---- Ink roles ---- */
   --tc-ink: var(--tc-pine); /* primary text */
   --tc-ink-2: var(--tc-muted); /* secondary text */
-  /* Tertiary TEXT reads as full muted: the soft mix (≈2.4:1 on canvas) fails
-     WCAG AA for reading text — a wireframe-inherited combo. The soft tone
-     stays for placeholder glyphs / decorative icons via --tc-muted-soft. */
+  /* Tertiary TEXT reads as full muted: the soft mix fails WCAG AA for reading
+     text — a wireframe-inherited combo. The soft tone stays for placeholder
+     glyphs / decorative icons via --tc-muted-soft. */
   --tc-ink-3: var(--tc-muted); /* tertiary text (AA-safe) */
-  --tc-on-fill: var(--tc-paper); /* text on pine / ember fills */
+  --tc-on-fill: #fff8f0; /* text on ink / coral fills (warm, never stark white) */
 
   /* ---- Spacing scale (measured from app.css :root) ---- */
   --tc-s1: 4px;
@@ -61,16 +71,16 @@
   --tc-s7: 32px;
   --tc-s8: 40px;
 
-  /* ---- Radii (§2: 12 / 16 / 18 / pill) ---- */
+  /* ---- Radii (12 / 16 / 18 / pill) ---- */
   --tc-radius-sm: 12px; /* fields, buttons, chips, banners */
   --tc-radius-md: 16px; /* mid surfaces */
   --tc-radius-lg: 18px; /* cards, tiles, permit cards */
   --tc-radius-pill: 999px; /* chips-on, toggles, toast, avatars */
 
-  /* ---- Shadow (§2 soft, pine-tinted — never pure black) ---- */
-  --tc-shadow: 0 18px 40px -30px rgba(5, 51, 43, 0.55);
-  --tc-shadow-soft: 0 1px 2px rgba(5, 51, 43, 0.06), 0 1px 1px rgba(5, 51, 43, 0.04); /* subtle card lift */
-  --tc-shadow-pop: 0 18px 44px -18px rgba(5, 51, 43, 0.45); /* overlays / sheets (W2) */
+  /* ---- Shadow (soft, warm-brown-tinted — never pure black) ---- */
+  --tc-shadow: 0 18px 40px -30px rgba(42, 35, 27, 0.55);
+  --tc-shadow-soft: 0 1px 2px rgba(42, 35, 27, 0.06), 0 1px 1px rgba(42, 35, 27, 0.04); /* subtle card lift */
+  --tc-shadow-pop: 0 18px 44px -18px rgba(42, 35, 27, 0.45); /* overlays / sheets / menus */
 
   /* ---- Type (families are injected by next/font on <html>;
           these are the fallbacks if the web fonts are unavailable) ---- */

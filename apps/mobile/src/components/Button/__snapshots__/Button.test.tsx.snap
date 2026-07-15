@@ -47,7 +47,7 @@ exports[`Button renders disabled 1`] = `
         "paddingVertical": 15,
       },
       {
-        "backgroundColor": "#F24E00",
+        "backgroundColor": "#E0703A",
       },
       {
         "borderColor": "transparent",
@@ -133,7 +133,7 @@ exports[`Button renders the accent variant 1`] = `
         "paddingVertical": 15,
       },
       {
-        "backgroundColor": "#05332B",
+        "backgroundColor": "#2A231B",
       },
       {
         "borderColor": "transparent",
@@ -217,7 +217,7 @@ exports[`Button renders the apple variant 1`] = `
         "paddingVertical": 15,
       },
       {
-        "backgroundColor": "#05332B",
+        "backgroundColor": "#2A231B",
       },
       {
         "borderColor": "transparent",
@@ -304,7 +304,7 @@ exports[`Button renders the ghost variant 1`] = `
         "backgroundColor": "#FFFFFF",
       },
       {
-        "borderColor": "rgba(5,51,43,0.16)",
+        "borderColor": "#CDBCA4",
       },
       {
         "alignSelf": "stretch",
@@ -328,7 +328,7 @@ exports[`Button renders the ghost variant 1`] = `
           "fontSize": 16,
         },
         {
-          "color": "#05332B",
+          "color": "#2A231B",
         },
       ]
     }
@@ -385,7 +385,7 @@ exports[`Button renders the primary variant 1`] = `
         "paddingVertical": 15,
       },
       {
-        "backgroundColor": "#F24E00",
+        "backgroundColor": "#E0703A",
       },
       {
         "borderColor": "transparent",
@@ -469,10 +469,10 @@ exports[`Button renders the subtle variant 1`] = `
         "paddingVertical": 15,
       },
       {
-        "backgroundColor": "#E9E7E5",
+        "backgroundColor": "#F4EDE2",
       },
       {
-        "borderColor": "rgba(5,51,43,0.08)",
+        "borderColor": "#E3D6C3",
       },
       {
         "alignSelf": "stretch",
@@ -496,7 +496,7 @@ exports[`Button renders the subtle variant 1`] = `
           "fontSize": 16,
         },
         {
-          "color": "#05332B",
+          "color": "#2A231B",
         },
       ]
     }

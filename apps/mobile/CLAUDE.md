@@ -18,11 +18,10 @@ See the root [`CLAUDE.md`](../../CLAUDE.md) and
 
 ## Where screens come from
 
-This build is a 1:1 port of the greyscale wireframe at
-[`Prototypes/Wireframe 0.4/`](Prototypes/) — layout, spacing, icons, and copy
-stay exactly as the wireframe has them; only color and type changed (the
-locked palette + Spectral/Hanken Grotesk). The build spec is
-[`Guidlines/docs/wireframe-to-typescript-migration.md`](../../Guidlines/docs/wireframe-to-typescript-migration.md).
+This build started as a 1:1 port of the greyscale flow wireframes (removed
+from the repo after the port — the TypeScript screens in `src/app/` are now
+the source of truth for layout, spacing, icons, and copy), with the locked
+palette + Spectral/Hanken Grotesk applied on top.
 Each component notes its wireframe source in a header comment, plus a
 `// TODO: Code Connect map once Figma frame exists` marker for the future
 Figma round-trip per

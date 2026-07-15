@@ -5,8 +5,8 @@ planning. Outdoor clubs publish trips; students find their people and turn one
 excursion into real friendships.
 
 **Name rule:** The product is **tandemclub** — one word. Never use "Kindred" or
-"Ozola" in code or new docs (those were earlier research codenames; their docs are
-kept below as dated records — don't rename or reference them in product work).
+"Ozola" in code or new docs (those were earlier research codenames; their docs
+were removed from the repo in the 2026-07 cleanup and live with the founder).
 
 ---
 
@@ -29,31 +29,14 @@ deeper on demand.
 ### Building the app
 
 - [Guidlines/docs/figma-workflow.md](Guidlines/docs/figma-workflow.md) — how a Figma screen becomes a React Native component under `apps/mobile/`, kept two-way with Code Connect. Read before translating any design.
+- [Guidlines/docs/empty-states.md](Guidlines/docs/empty-states.md) — the blank-state playbook: every dead end gets a designed empty state. Read before shipping any screen.
+- [Guidlines/docs/backend-hookup-guide.md](Guidlines/docs/backend-hookup-guide.md) — the playbook for wiring the real backend (Supabase + Render); every data touchpoint in the apps is marked `// TODO: backend seam`.
+- [BUILD_LOG.md](BUILD_LOG.md) — the dated record of what's been built so far, in plain English.
 
 ### Brand & UI
 
 - [brand/design-language.md](Guidlines/docs/brand/design-language.md) — the Impressionist visual soul; read before building anything visual.
-- [brand/competition-ui-analysis.html](Guidlines/docs/brand/competition-ui-analysis.html) — "The Trailhead Brief": concept & diligence notes with competitor UI teardown.
-  - _Note: `Guidlines/docs/strategy/competition-ui-analysis copy.html` is a byte-identical duplicate of this file — ignore it._
-
-### Strategy & market (`Guidlines/docs/strategy/`)
-
-- [kindred-architecture-memo.html](Guidlines/docs/strategy/kindred-architecture-memo.html) — backend/stack architecture decision memo for a solo founder building with Claude Code.
-- [kindred_market_breakdown.html](Guidlines/docs/strategy/kindred_market_breakdown.html) — market breakdown & serviceable market (SOM) by segment.
-- [Kindred_Competition_Report.docx](<Guidlines/docs/strategy/Kindred_Competition_Report.docx>) — competitive landscape.
-- [kindred_business_plan.docx](Guidlines/docs/strategy/kindred_business_plan.docx) — full business plan.
-- [Note_To_Self_How_Kindred_Stays_Different.html](Guidlines/docs/strategy/Note_To_Self_How_Kindred_Stays_Different.html) — differentiation / moat notes.
-- [cs_jargon_key.html](Guidlines/docs/strategy/cs_jargon_key.html) — CS jargon key in plain English (for the non-coder founder).
-- [kindred-brief.html](Guidlines/docs/strategy/kindred-brief.html) — "Why We Need the Outdoors Now More Than Ever" thesis essay.
-
-### Research (`Guidlines/docs/strategy/research/`)
-
-- [kindred App_Ultimate OG_.docx](<Guidlines/docs/strategy/research/kindred App_Ultimate OG_.docx>) — build methodology & feature order.
-- [kindred App.pdf](<Guidlines/docs/strategy/research/kindred App.pdf>) — original app concept deck.
-- [Kindred - Y Combinator structure_.docx](<Guidlines/docs/strategy/research/Kindred - Y Combinator structure_.docx>) — YC / company-structure notes.
-- [Kindred Ccorp Conversation.docx](<Guidlines/docs/strategy/research/Kindred Ccorp Conversation.docx>) — incorporation (C-corp) notes.
-- [kindred - Why We Need the Outdoors Now More Than Ever.docx](<Guidlines/docs/strategy/research/kindred - Why We Need the Outdoors Now More Than Ever.docx>) — outdoors thesis essay (same text as `kindred-brief.html`).
-- [codingcheatsheet.html](Guidlines/docs/strategy/research/codingcheatsheet.html) — build master cheat sheet.
+- [Guidlines/design-system/](Guidlines/design-system/readme.md) — the full design system: `styles.css` + `tokens/` (the only source of color/type/spacing), component specs, UI kits, and the mascot assets. Also an invocable skill (`SKILL.md`).
 
 ---
 

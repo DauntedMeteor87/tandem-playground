@@ -17,7 +17,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "Prototypes"
+    "node_modules"
   ]
 }

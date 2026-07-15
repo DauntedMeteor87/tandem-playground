@@ -21,6 +21,28 @@ seam is marked `// TODO: backend seam` · backend hookup playbook ready in
 
 ---
 
+## 2026-07-15 — Golden Hour: the app gets its color + the chrome comes alive — `7b5110a`
+
+The theme brief ("Bringing tandemclub to life") applied to both apps:
+warm cream surfaces, warm near-black ink, one sunset-coral action per
+screen, dusk-violet accent, warm-brown shadows — all by re-valuing the
+two token files (no component changed for the repaint). The top navbar
+now actually works: the profile avatar renders (a one-line web-only
+flexbox bug had collapsed it to zero height), and avatar / bell / paper
+plane land on three new screens — **Your profile**, the **Notifications
+hub** (empty case: "All quiet. We'll nudge you when something moves."),
+and the **Messages hub** (one row per crew, last word previewed, tap
+into the chat). Badge counts are computed from the demo data. The web
+Studio topbar grew the same powers: a bell with a working dropdown and
+a real profile menu. Bottom tab bar sized so all four tabs fit. Koa
+re-tinted to the brief's earth rust. 115 tests green, both apps driven
+end-to-end in the browser at the gate.
+
+**Still in your hands:** the four new painterly Koa stage images
+(climbing / dancing / walking / sitting) couldn't leave the chat as
+files — drop them into `Guidlines/design-system/assets/mascot/` and say
+the word, and the streak mascot swaps from the vector art to them.
+
 ## 2026-07-14 — Wave 4: the plan flows + the ✓/✕ loop — `1c5e1d6`
 
 The final build wave. Plan tab chooser; the 8-step Plan-an-Activity
